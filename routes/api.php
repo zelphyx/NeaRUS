@@ -9,6 +9,10 @@ use Illuminate\Support\Facades\Route;
 
 Route::controller(\App\Http\Controllers\API\User\AuthUserController::class)->group(function (){
     Route::post('login','login');
+    Route::post('registeruser','register');
+    Route::post('logout','logout');
+});
+Route::controller(\App\Http\Controllers\API\User\AuthOwnerController::class)->group(function (){
     Route::post('register','register');
 });
 
