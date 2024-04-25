@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('photo');
             $table->string('productname');
-            $table->foreignId('ownerid');
+            $table->foreignId('ownerId');
             $table->string('location');
             $table->string('category');
             $table->string('fasilitas');
