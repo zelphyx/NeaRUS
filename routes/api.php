@@ -15,11 +15,12 @@ Route::controller(\App\Http\Controllers\API\User\AuthUserController::class)->gro
     Route::post('logoutt','logoutuserowner');
     Route::post('user/{userId}/add-personal-data','addPersonalData');
     Route::post('reset-password','sendResetPasswordEmail');
-    Route::get('user','index')->middleware('auth:sanctum');;
+
 });
 Route::controller(\App\Http\Controllers\API\User\AuthOwnerController::class)->group(function (){
     Route::post('register','register');
 });
+Route::get('/user',[\App\Http\Controllers\API\User\AuthUserController::class,'index']);
 
 Route::controller(\App\Http\Controllers\API\ProductController::class)->group(function (){
     Route::post('addproduct','create');
