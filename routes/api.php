@@ -14,7 +14,7 @@ Route::controller(\App\Http\Controllers\API\User\AuthUserController::class)->gro
     Route::post('registeruser','register');
     Route::post('logoutt','logoutuserowner');
     Route::post('user/{userId}/add-personal-data','addPersonalData');
-    Route::post('reset-password','reset');
+    Route::post('reset-password','sendResetPasswordEmail');
     Route::get('user','index')->middleware('auth:sanctum');;
 });
 Route::controller(\App\Http\Controllers\API\User\AuthOwnerController::class)->group(function (){
