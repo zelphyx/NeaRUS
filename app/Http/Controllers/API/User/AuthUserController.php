@@ -2,13 +2,15 @@
 
 namespace App\Http\Controllers\API\User;
 use Illuminate\Auth\Events\Registered;
+use Illuminate\Support\Facades\Mail;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
-
+use App\Mail\ResetPasswordMail;
+use Illuminate\Support\Str;
 class AuthUserController extends Controller
 {
     public function index()
@@ -67,9 +69,9 @@ class AuthUserController extends Controller
 
         $user = User::create($input);
 
-        // Prepare user data for response
+
         $userData = [
-            'ownerId' => $user->ownerId, // Changed from $user->ownerId to $user->id
+            'ownerId' => $user->ownerId,
             'name' => $user->name,
             'websiterole' => $user->websiterole,
             'email' => $user->email,
@@ -107,6 +109,21 @@ class AuthUserController extends Controller
         ]);
     }
 
+    public function sendResetPasswordEmail(Request $request)
+    {
+        $user = User::where('email', $request->email)->first();
+
+        if (!$user) {
+            return response()->json(['message' => 'Email not found'], 404);
+        }
+
+        $token = Str::random(60);
+        $user->update(['reset_password_token' => $token]);
+
+        Mail::to($user->email)->send(new ResetPasswordMail($user));
+
+        return response()->json(['message' => 'Reset password email sent']);
+    }
 
 
 
@@ -167,9 +184,8 @@ class AuthUserController extends Controller
 
 
 
-    public function login(Request $request)
+    public function loginuserowner(Request $request)
     {
-
         $validator = Validator::make($request->all(), [
             "email" => "required|email:dns",
             "password" => "required"
@@ -180,34 +196,32 @@ class AuthUserController extends Controller
         }
 
         if (!Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
-
             return $this->UnathorizeRes("Email or Password Incorrect");
         }
 
-
         $user = Auth::user();
         $success['name'] = $user->name;
-        $success['token'] = $user->createToken('auth_token')->plainTextToken;
-
+        $token = $user->createToken('user')->plainTextToken;
 
         return $this->succesRes([
             'success' => true,
             'data' => $success,
+            'token' => $token,
             'message' => 'User Logged In'
         ]);
     }
 
-    public function logout()
+    public function logoutuserowner(Request $request)
     {
-        if (!auth("sanctum")->check()) {
-            return $this->UnathorizeRes("Unauthenticated");
+        if (auth()->check()) {
+            $user = auth()->user();
+            $user->tokens()->delete();
+            return response()->json(['message' => 'Logout successful.']);
+        } else {
+            return response()->json(['message' => 'User not authenticated.'], 401);
         }
-
-        auth('sanctum')->user()->tokens()->delete();
-        return $this->succesRes([
-            'success' => true,
-            'data' => null,
-            'message' => 'Logout Success'
-        ]);
     }
+
+
+
 }

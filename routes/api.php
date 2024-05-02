@@ -10,10 +10,12 @@ use Illuminate\Support\Facades\Auth;
 //})->middleware('auth:sanctum');
 
 Route::controller(\App\Http\Controllers\API\User\AuthUserController::class)->group(function (){
-    Route::post('login','login');
+    Route::post('loginn','loginuserowner');
     Route::post('registeruser','register');
-    Route::post('logout','logout');
+    Route::post('logoutt','logoutuserowner');
     Route::post('user/{userId}/add-personal-data','addPersonalData');
+    Route::post('reset-password','sendResetPasswordEmail');
+
 });
 Route::controller(\App\Http\Controllers\API\User\AuthOwnerController::class)->group(function (){
     Route::post('register','register');
@@ -29,7 +31,6 @@ Route::controller(\App\Http\Controllers\API\ProductController::class)->group(fun
     Route::get('product/{id}/edit', 'edit');
     Route::put('product/{id}', 'update');
     Route::delete('product/{id}','destroy');
-
 });
 Auth::routes(['verify' => true]);
 Route::middleware('verified')->group(function () {
@@ -37,7 +38,6 @@ Route::middleware('verified')->group(function () {
     Route::get('/', function () {
         return view('welcome');
     });
-
 });
 Route::get('/email/verify', 'VerificationController@verify')->middleware('verified');
 
