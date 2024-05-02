@@ -20,6 +20,7 @@ Route::controller(\App\Http\Controllers\API\User\AuthUserController::class)->gro
 Route::controller(\App\Http\Controllers\API\User\AuthOwnerController::class)->group(function (){
     Route::post('register','register');
 });
+
 Route::get('/user',[\App\Http\Controllers\API\User\AuthUserController::class,'index']);
 
 Route::controller(\App\Http\Controllers\API\ProductController::class)->group(function (){
