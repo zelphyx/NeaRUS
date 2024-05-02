@@ -20,6 +20,7 @@ Route::controller(\App\Http\Controllers\API\User\AuthUserController::class)->gro
 Route::controller(\App\Http\Controllers\API\User\AuthOwnerController::class)->group(function (){
     Route::post('register','register');
 });
+
 Route::controller(\App\Http\Controllers\API\ProductController::class)->group(function (){
     Route::post('addproduct','create');
     Route::get('product','index');
@@ -33,7 +34,6 @@ Route::middleware('verified')->group(function () {
     Route::get('/', function () {
         return view('welcome');
     });
-
 });
 Route::get('/email/verify', 'VerificationController@verify')->middleware('verified');
 
