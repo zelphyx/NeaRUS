@@ -10,24 +10,22 @@ use Illuminate\Support\Facades\Auth;
 //})->middleware('auth:sanctum');
 
 Route::controller(\App\Http\Controllers\API\User\AuthUserController::class)->group(function (){
-    Route::post('login','login');
+    Route::post('loginn','loginuserowner');
     Route::post('registeruser','register');
-    Route::post('logout','logout');
+    Route::post('logoutt','logoutuserowner');
     Route::post('user/{userId}/add-personal-data','addPersonalData');
+    Route::post('reset-password','reset');
+    Route::get('user','index')->middleware('auth:sanctum');;
 });
 Route::controller(\App\Http\Controllers\API\User\AuthOwnerController::class)->group(function (){
     Route::post('register','register');
 });
-
-Route::get('/user',[\App\Http\Controllers\API\User\AuthUserController::class,'index']);
-
 Route::controller(\App\Http\Controllers\API\ProductController::class)->group(function (){
     Route::post('addproduct','create');
     Route::get('product','index');
     Route::get('product/{id}/edit', 'edit');
     Route::put('product/{id}', 'update');
     Route::delete('product/{id}','destroy');
-
 });
 Auth::routes(['verify' => true]);
 Route::middleware('verified')->group(function () {
