@@ -196,7 +196,7 @@ class AuthUserController extends Controller
         }
 
         if (!Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
-            return $this->UnathorizeRes("Email or Password Incorrect");
+                return $this->UnathorizeRes("Email or Password Incorrect");
         }
 
         $user = Auth::user();
