@@ -10,15 +10,15 @@ use Illuminate\Support\Facades\Auth;
 //})->middleware('auth:sanctum');
 
 Route::controller(\App\Http\Controllers\API\User\AuthUserController::class)->group(function (){
-    Route::post('loginn','loginuserowner');
-    Route::post('registeruser','register');
+    Route::post('masuk','loginuserowner');
+    Route::post('daftaruser','register');
     Route::post('logoutt','logoutuserowner');
     Route::post('user/{userId}/add-personal-data','addPersonalData');
     Route::post('reset-password','sendResetPasswordEmail');
 
 });
 Route::controller(\App\Http\Controllers\API\User\AuthOwnerController::class)->group(function (){
-    Route::post('register','register');
+    Route::post('daftar','register');
 });
 
 
