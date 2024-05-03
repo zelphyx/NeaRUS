@@ -11,14 +11,14 @@ use Illuminate\Support\Facades\Auth;
 
 Route::controller(\App\Http\Controllers\API\User\AuthUserController::class)->group(function (){
     Route::post('masuk','loginuserowner');
-    Route::post('registeruser','register');
+    Route::post('daftaruser','register');
     Route::post('logoutt','logoutuserowner');
     Route::post('user/{userId}/add-personal-data','addPersonalData');
     Route::post('reset-password','sendResetPasswordEmail');
 
 });
 Route::controller(\App\Http\Controllers\API\User\AuthOwnerController::class)->group(function (){
-    Route::post('register','register');
+    Route::post('daftar','register');
 });
 
 Route::get('/user',[\App\Http\Controllers\API\User\AuthUserController::class,'index']);
