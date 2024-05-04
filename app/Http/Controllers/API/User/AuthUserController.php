@@ -72,7 +72,7 @@ class AuthUserController extends Controller
         $verificationToken = Str::random(60);
         $user->update(['email_verification_token' => $verificationToken]);
 
-        Mail::to($user->email)->send(new VerificationMail($user));
+        Mail::to($user->email)->send(new VerificationMail($user, $verificationToken));
 
         $userData = [
             'ownerId' => $user->ownerId,

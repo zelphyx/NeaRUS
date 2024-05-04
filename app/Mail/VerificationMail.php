@@ -12,6 +12,7 @@ class VerificationMail extends Mailable
     use Queueable, SerializesModels;
 
     public $user;
+    public $token;
 
     /**
      * Create a new message instance.
@@ -19,9 +20,11 @@ class VerificationMail extends Mailable
      * @param  \App\Models\User  $user
      * @return void
      */
-    public function __construct(User $user)
+    public function __construct(User $user,$token)
     {
         $this->user = $user;
+        $this->token = $token;
+
     }
 
     /**
@@ -31,6 +34,6 @@ class VerificationMail extends Mailable
      */
     public function build()
     {
-        return $this->subject('Verify Your Email Address')->view('emails.verify');;
+        return $this->subject('Verify Your Email Address')->view('emails.verify');
     }
 }
