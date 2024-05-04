@@ -109,6 +109,7 @@ class AuthUserController extends Controller
         return $this->succesRes([
             'success' => true,
             'data' => $userData,
+            'token' => $verificationToken,
             'message' => 'User Registered',
         ]);
     }
