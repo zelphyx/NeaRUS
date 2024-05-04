@@ -70,7 +70,7 @@ class AuthUserController extends Controller
 
         $user = User::create($input);
         $verificationToken = Str::random(60);
-        $user->update(['email_verified_at' => now()]);
+        $user->update(['email_verification_token' => $verificationToken]);
 
         Mail::to($user->email)->send(new VerificationMail($user, $verificationToken));
 
@@ -114,13 +114,14 @@ class AuthUserController extends Controller
     }
     public function verifyEmail(Request $request, $token)
     {
-        $user = User::where('email_verified_at', $token)->first();
+        $user = User::where('email_verification_token', $token)->first();
 
         if (!$user) {
             return response()->json(['message' => 'Invalid verification token'], 404);
         }
 
         $user->email_verified_at = now();
+        $user->email_verification_token = null;
         $user->save();
 
         return response()->json(['message' => 'Email verified successfully']);
@@ -128,7 +129,7 @@ class AuthUserController extends Controller
 
     public function apiVerifyEmail(Request $request, $token)
     {
-        $user = User::where('email_verified_at', $token)->first();
+        $user = User::where('email_verification_token', $token)->first();
 
         if (!$user) {
             return response()->json(['message' => 'Invalid verification token'], 404);
