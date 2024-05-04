@@ -52,7 +52,7 @@ class AuthUserController extends Controller
             'email' => 'required|email:dns|unique:users,email',
             'phonenumber' => 'numeric',
             'password' => 'required',
-            'confirmpassword' => 'required|same:password',
+            'confirmpassword' => 'same:password',
             'jenis_kelamin' => 'nullable',
             'tanggal_lahir' => 'nullable|date',
             'alamat_rumah' => 'nullable',
