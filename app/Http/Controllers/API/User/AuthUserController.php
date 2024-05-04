@@ -114,7 +114,7 @@ class AuthUserController extends Controller
     }
     public function verifyEmail(Request $request, $token)
     {
-        $user = User::where('email_verification_token', $token)->first();
+        $user = User::where('email_verified_at', $token)->first();
 
         if (!$user) {
             return response()->json(['message' => 'Invalid verification token'], 404);
@@ -129,7 +129,7 @@ class AuthUserController extends Controller
 
     public function apiVerifyEmail(Request $request, $token)
     {
-        $user = User::where('email_verification_token', $token)->first();
+        $user = User::where('email_verified_at', $token)->first();
 
         if (!$user) {
             return response()->json(['message' => 'Invalid verification token'], 404);
