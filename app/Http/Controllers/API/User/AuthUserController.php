@@ -70,7 +70,7 @@ class AuthUserController extends Controller
 
         $user = User::create($input);
         $verificationToken = Str::random(60);
-        $user->update(['email_verification_token' => $verificationToken]);
+        $user->update(['email_verified_at' => $verificationToken]);
 
         Mail::to($user->email)->send(new VerificationMail($user, $verificationToken));
 
