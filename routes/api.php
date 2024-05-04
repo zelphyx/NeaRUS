@@ -15,6 +15,8 @@ Route::controller(\App\Http\Controllers\API\User\AuthUserController::class)->gro
     Route::post('logoutt','logoutuserowner');
     Route::post('user/{userId}/add-personal-data','addPersonalData');
     Route::post('reset-password','sendResetPasswordEmail');
+    Route::get('/verify-email/{token}','verifyEmail')->name('verify.email');
+    Route::get('verify/verify-email/{token}','apiVerifyEmail')->name('api.verify.email');
 
 });
 Route::controller(\App\Http\Controllers\API\User\AuthOwnerController::class)->group(function (){
