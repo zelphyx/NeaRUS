@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use App\Mail\ResetPasswordMail;
 use Illuminate\Support\Str;
+use App\Mail\VerificationMail;
 class AuthUserController extends Controller
 {
     public function index()
@@ -68,7 +69,10 @@ class AuthUserController extends Controller
         $input['websiterole'] = 'User';
 
         $user = User::create($input);
+        $verificationToken = Str::random(60);
+        $user->update(['email_verification_token' => $verificationToken]);
 
+        Mail::to($user->email)->send(new VerificationMail($user));
 
         $userData = [
             'ownerId' => $user->ownerId,
@@ -108,7 +112,35 @@ class AuthUserController extends Controller
             'message' => 'User Registered',
         ]);
     }
+    public function verifyEmail(Request $request, $token)
+    {
+        $user = User::where('email_verification_token', $token)->first();
 
+        if (!$user) {
+            return response()->json(['message' => 'Invalid verification token'], 404);
+        }
+
+        $user->email_verified_at = now();
+        $user->email_verification_token = null;
+        $user->save();
+
+        return response()->json(['message' => 'Email verified successfully']);
+    }
+
+    public function apiVerifyEmail(Request $request, $token)
+    {
+        $user = User::where('email_verification_token', $token)->first();
+
+        if (!$user) {
+            return response()->json(['message' => 'Invalid verification token'], 404);
+        }
+
+        $user->email_verified_at = now();
+        $user->email_verification_token = null;
+        $user->save();
+
+        return response()->json(['message' => 'Email verified successfully']);
+    }
     public function sendResetPasswordEmail(Request $request)
     {
         $user = User::where('email', $request->email)->first();
