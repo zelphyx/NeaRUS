@@ -30,7 +30,8 @@ class User extends Authenticatable implements MustVerifyEmail
         'alamat_rumah',
         'urgent_fullname',
         'urgent_status',
-        'urgent_phonenumber'
+        'urgent_phonenumber',
+        'email_verification_token'
     ];
 
     /**
