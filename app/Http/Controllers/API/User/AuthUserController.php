@@ -131,7 +131,40 @@ class AuthUserController extends Controller
         $user->email_verification_token = null;
         $user->save();
 
-        return response()->json(['message' => 'Email verified successfully']);
+        return view(
+            'afterlink'
+        );
+    }
+
+    public function resendVerification(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|email:dns'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => $validator->errors()->all()
+            ], 422);
+        }
+
+        $user = User::where('email', $request->email)->first();
+
+        if (!$user) {
+            return response()->json(['message' => 'User not found'], 404);
+        }
+
+        if ($user->email_verified_at) {
+            return response()->json(['message' => 'Email already verified'], 400);
+        }
+
+        $verificationToken = Str::random(60);
+        $user->update(['email_verification_token' => $verificationToken]);
+
+        Mail::to($user->email)->send(new VerificationMail($user, $verificationToken));
+
+        return response()->json(['message' => 'Verification email resent successfully']);
     }
 
     public function apiVerifyEmail(Request $request, $token)
