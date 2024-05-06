@@ -148,7 +148,7 @@ class AuthUserController extends Controller
         if ($user->email_verified_at) {
             return response()->json(['message' => 'Email already verified'], 400);
         }
-
+        $user->update(['email_verification_token' => null]);
         $verificationToken = Str::random(60);
         $user->update(['email_verification_token' => $verificationToken]);
 
