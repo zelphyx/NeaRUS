@@ -138,16 +138,6 @@ class AuthUserController extends Controller
 
     public function resendVerification(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'email' => 'required|email:dns'
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'message' => $validator->errors()->all()
-            ], 422);
-        }
 
         $user = User::where('email', $request->email)->first();
 
