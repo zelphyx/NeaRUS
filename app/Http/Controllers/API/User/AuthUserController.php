@@ -63,24 +63,6 @@ class AuthUserController extends Controller
 
 
         if ($validator->fails()) {
-
-            if ($validator->errors()->has('email.dns')) {
-                return response()->json([
-                    'success' => false,
-                    'errorCode' => 555,
-                    'message' => 'Email is not valid. Please provide a valid email address.'
-                ], 555);
-            }
-
-
-            if ($validator->errors()->has('email.unique')) {
-                return response()->json([
-                    'success' => false,
-                    'errorCode' => 666,
-                    'message' => 'Email is already registered. Please use a different email address.'
-                ], 666);
-            }
-
             return response()->json([
                 'success' => false,
                 'message' => $validator->errors()->all()
