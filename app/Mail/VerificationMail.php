@@ -2,12 +2,13 @@
 
 namespace App\Mail;
 
+use AllowDynamicProperties;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 use App\Models\User;
 
-class VerificationMail extends Mailable
+#[AllowDynamicProperties] class VerificationMail extends Mailable
 {
     use Queueable, SerializesModels;
 
@@ -20,10 +21,11 @@ class VerificationMail extends Mailable
      * @param  \App\Models\User  $user
      * @return void
      */
-    public function __construct(User $user,$token)
+    public function __construct(User $user,$verificationLink)
     {
         $this->user = $user;
-        $this->token = $token;
+        $this->verificationLink = $verificationLink;
+
 
     }
 
