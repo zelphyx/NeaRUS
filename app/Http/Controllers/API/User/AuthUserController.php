@@ -257,21 +257,25 @@ class AuthUserController extends Controller
             return $this->invalidRes($validator->getMessageBag());
         }
 
-        if (!Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
-                return $this->UnathorizeRes("Email or Password Incorrect");
+        $credentials = $request->only('email', 'password');
+        $remember = $request->has('remember');
+
+        if (Auth::attempt($credentials, $remember)) {
+            $user = Auth::user();
+            $success['name'] = $user->name;
+            $token = $user->createToken('user')->plainTextToken;
+
+            return $this->succesRes([
+                'success' => true,
+                'data' => $success,
+                'token' => $token,
+                'message' => 'User Logged In'
+            ]);
+        } else {
+            return $this->UnathorizeRes("Email or Password Incorrect");
         }
-
-        $user = Auth::user();
-        $success['name'] = $user->name;
-        $token = $user->createToken('user')->plainTextToken;
-
-        return $this->succesRes([
-            'success' => true,
-            'data' => $success,
-            'token' => $token,
-            'message' => 'User Logged In'
-        ]);
     }
+
 
     public function logoutuserowner(Request $request)
     {
