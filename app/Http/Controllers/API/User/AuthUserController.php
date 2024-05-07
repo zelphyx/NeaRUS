@@ -136,7 +136,7 @@ class AuthUserController extends Controller
         );
     }
 
-    public function resendVerification(Request $request)
+    public function resendVerification(Request $request )
     {
 
         $user = User::where('email', $request->email)->first();
