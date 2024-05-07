@@ -79,7 +79,7 @@ class AuthUserController extends Controller
         $user->update(['email_verification_token' => $verificationToken]);
 
         $verificationLink = URL::temporarySignedRoute(
-            'verify-email', now()->addMinutes(60), ['token' => $verificationToken]
+            'verify.email', now()->addMinutes(60), ['token' => $verificationToken]
         );
         Mail::to($user->email)->send(new VerificationMail($user, $verificationLink));
 
