@@ -122,6 +122,7 @@ class AuthUserController extends Controller
         $user = User::where('email_verification_token', $token)->first();
 
         if (!$user) {
+
             return view(
                 'afterlink'
             );
