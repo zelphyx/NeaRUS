@@ -12,8 +12,6 @@ use Illuminate\Support\Facades\Validator;
 use App\Mail\ResetPasswordMail;
 use Illuminate\Support\Str;
 use App\Mail\VerificationMail;
-use Illuminate\Support\Facades\URL;
-
 class AuthUserController extends Controller
 {
     public function index()
@@ -78,10 +76,7 @@ class AuthUserController extends Controller
         $verificationToken = Str::random(60);
         $user->update(['email_verification_token' => $verificationToken]);
 
-        $verificationLink = URL::temporarySignedRoute(
-            'verify.email', now()->addMinutes(60), ['token' => $verificationToken]
-        );
-        Mail::to($user->email)->send(new VerificationMail($user, $verificationLink));
+        Mail::to($user->email)->send(new VerificationMail($user, $verificationToken));
 
         $userData = [
             'ownerId' => $user->ownerId,
@@ -127,7 +122,6 @@ class AuthUserController extends Controller
         $user = User::where('email_verification_token', $token)->first();
 
         if (!$user) {
-
             return view(
                 'afterlink'
             );
