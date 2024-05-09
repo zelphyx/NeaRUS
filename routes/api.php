@@ -34,7 +34,7 @@ Route::controller(\App\Http\Controllers\API\ProductController::class)->group(fun
     Route::get('product/{id}/edit', 'edit');
     Route::put('product/{id}', 'update');
     Route::delete('product/{id}','destroy');
-});
+})->middleware('owner');
 Auth::routes(['verify' => true]);
 Route::middleware('verified')->group(function () {
     // Routes that require verified email

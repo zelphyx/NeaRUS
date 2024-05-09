@@ -24,15 +24,26 @@ class AuthOwnerController extends Controller
             'email' => 'required|email:dns|unique:users,email',
             'phonenumber' => 'numeric',
             'password' => 'required',
-            'confirmpassword' => 'required|same:password'
+            'confirmpassword' => 'same:password',
+            'jenis_kelamin' => 'nullable',
+            'tanggal_lahir' => 'nullable|date',
+            'alamat_rumah' => 'nullable',
+            'urgent_fullname' => 'nullable',
+            'urgent_status' => 'nullable',
+            'urgent_phonenumber' => 'numeric'
         ]);
-        if ($validator->fails()) {
-            return $this->invalidRes($validator->getMessageBag());
-        }
-        $input = $request->all();
-        $input['websiterole'] = 'Owner';
-        User::create($input);
 
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => $validator->errors()->all()
+            ], 422);
+        }
+
+        $input = $request->all();
+        $input['websiterole'] = 'Owner Request';
+
+        Owner::create($input);
 
         return $this->succesRes([
             'success' => true,
