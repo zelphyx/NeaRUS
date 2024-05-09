@@ -18,6 +18,12 @@ Route::middleware('verified')->group(function () {
     });
 
 });
+Route::get('reset-password',function (){
+    return view('resetpass');
+});
+Route::controller(\App\Http\Controllers\API\User\AuthUserController::class)->group(function (){
+    Route::post('reset-password','reset');
+});
 Route::controller(\App\Http\Controllers\API\ProductController::class)->group(function (){
     Route::post('addproduct','create');
     Route::get('product','index');

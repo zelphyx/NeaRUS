@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\API\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Http\RedirectResponse;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
@@ -171,6 +173,7 @@ class AuthUserController extends Controller
 
         return response()->json(['message' => 'Email verified successfully']);
     }
+
     public function sendResetPasswordEmail(Request $request)
     {
         $user = User::where('email', $request->email)->first();
@@ -187,7 +190,26 @@ class AuthUserController extends Controller
         return response()->json(['message' => 'Reset password email sent']);
     }
 
+    public function reset(Request $request)
+    {
+        $request->validate([
+            'token' => 'required|string',
+            'password' => 'required|string|confirmed|min:8',
+        ]);
 
+        $user = User::where('reset_password_token', $request->token)->first();
+
+        if (!$user) {
+            return redirect()->back()->with('error', 'Invalid reset token.');
+        }
+
+        $user->password = Hash::make($request->password);
+        $user->reset_password_token = null;
+        $user->save();
+
+        $externalUrl = 'https://www.example.com';
+        return new RedirectResponse($externalUrl);
+    }
 
 
     public function addPersonalData(Request $request, $ownerId)

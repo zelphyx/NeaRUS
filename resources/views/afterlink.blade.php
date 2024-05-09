@@ -8,5 +8,9 @@
 <body>
 <h1>Email Anda sudah diverifikasi</h1>
 <p>Terima kasih telah melakukan verifikasi email.</p>
+<a href="http://localhost:5173/login">Go Back to Login Page</a>
+
+
+<a href="https://samehadaku.email">Klik di sini untuk mengunjungi website lain</a>
 </body>
 </html>

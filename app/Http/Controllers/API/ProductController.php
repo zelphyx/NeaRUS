@@ -26,7 +26,7 @@ class ProductController extends Controller
     public function create(Request $request)
     {
         $validatedData = Validator::make($request->all(), [
-            'images.*' => 'image|file',
+            'image' => 'array|nullable',
             'productname' => 'required|unique:products,productname',
             'ownerId' => 'required',
             'location' => 'required',
@@ -43,20 +43,21 @@ class ProductController extends Controller
 
         $input = $request->all();
 
-        // If fasilitas is not an array, convert it to an array with a single value
         if (!is_array($input['fasilitas'])) {
             $input['fasilitas'] = [$input['fasilitas']];
         }
 
-        // Imploding the array into a comma-separated string
         $input['fasilitas'] = implode(',', $input['fasilitas']);
 
-        if ($request->hasFile('images')) {
+        if ($request->image != null) {
             $images = [];
-            foreach ($request->file('images') as $image) {
-                $new_name = rand() . '.' . $image->getClientOriginalName();
+            foreach ($request->image as $image) {
+                $new_name = rand() . '.' .$image->extension();
                 $image->move(public_path('storage/post-images'), $new_name);
-                $newImagePath = '/storage/post-images/' . $new_name;
+                $newImagePath =config('app.url') . '/storage/post-images/' . $new_name;
+//                $imageName = time() . '.' . $image->extension();
+//                $image->storeAs('public/image_profile', $imageName);
+//                $newImagePath = env('APP_URL') . '/storage/app/public/image_profile/' . $imageName;
                 $images[] = $newImagePath;
             }
             $input['image'] = implode(',', $images);
@@ -125,7 +126,7 @@ class ProductController extends Controller
             $input['fasilitas'] = [$input['fasilitas']];
         }
 
-        $input['fasilitas'] = implode(',', $input['fasilitas']);
+        $input['fasilitas'] = implode(' , ', $input['fasilitas']);
 
         if ($request->hasFile('images')) {
             if ($product->image) {
