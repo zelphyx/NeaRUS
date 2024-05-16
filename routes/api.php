@@ -13,7 +13,7 @@ Route::controller(\App\Http\Controllers\API\User\AuthUserController::class)->gro
     Route::post('masuk','loginuserowner');
     Route::post('daftaruser','register');
     Route::post('logoutt','logoutuserowner');
-    Route::post('user/{userId}/add-personal-data','addPersonalData');
+    Route::post('user/{ownerId}/add-personal-data','addPersonalData');
     Route::post('reset-password','sendResetPasswordEmail');
     Route::get('/verify-email/{token}','verifyEmail')->name('verify.email');
     Route::get('verify/verify-email/{token}','apiVerifyEmail')->name('api.verify.email');
@@ -25,6 +25,11 @@ Route::controller(\App\Http\Controllers\API\User\AuthOwnerController::class)->gr
 });
 
 Route::get('/user',[\App\Http\Controllers\API\User\AuthUserController::class,'index']);
+
+Route::controller(\App\Http\Controllers\API\User\ProfileController::class)->group(function (){
+    Route::post('profile/update','updateProfile');
+})->middleware('auth:api');
+
 
 Route::controller(\App\Http\Controllers\API\ProductController::class)->group(function (){
     Route::post('addproduct','create');
