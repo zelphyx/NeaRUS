@@ -256,7 +256,6 @@ class AuthUserController extends Controller
         $userData['urgent_phonenumber'] = $request->input('urgent_phonenumber');
     }
 
-        // Update the user with the new data
         $user->update($userData);
 
         return $this->succesRes([

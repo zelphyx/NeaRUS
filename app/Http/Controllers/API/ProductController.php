@@ -121,7 +121,6 @@ class ProductController extends Controller
 
         $input = $request->all();
 
-        // Check if fasilitas is a string, convert it to an array
         if (!is_array($input['fasilitas'])) {
             $input['fasilitas'] = [$input['fasilitas']];
         }
