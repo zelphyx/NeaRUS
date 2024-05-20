@@ -7,10 +7,47 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rule;
 
 
 class ProfileController extends Controller
 {
+    public function updateprofilebackup(Request $request) {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'phonenumber' => 'numeric',
+            'photoprofile' => 'image',
+        ]);
+
+        $user = $request->user();
+        $oldprofilepict = $user->photoprofile;
+
+        if ($request->hasFile('photoprofile')){
+            $image = $request->file('photoprofile');
+            $new_name = time() . '.' . $image->getClientOriginalExtension();
+            $image->move(public_path('storage/photo_profile'), $new_name);
+            $newImagePath = '/storage/photo_profile/' . $new_name;
+
+            // Update the path to the new image
+            $path = $newImagePath;
+            $user->photoprofile = $path;
+        }
+
+        $user->name = $request->name;
+        $user->phonenumber = $request->phonenumber;
+
+        if ($user->save()){
+            if ($oldprofilepict != $user->photoprofile){
+                Storage::delete($oldprofilepict);
+            }
+            return response()->json($user, 200);
+        } else {
+            return response()->json([
+                'message' => 'Error Occurred'
+            ], 500);
+        }
+    }
+
     public function updateProfile(Request $request)
     {
         $user = $request->user();
@@ -20,8 +57,8 @@ class ProfileController extends Controller
             ], 401);
         }
         $validator = Validator::make($request->all(), [
-            'email' => 'email|unique:users,email,' . $user->email,
-            'name' => 'string|max:255',
+            'email' => 'email|unique:users,email' . $user->ownerId . ',ownerId',
+            'name' => 'required|string|max:255',
             'phonenumber' => 'numeric',
             'photoprofile' => 'image',
         ]);
@@ -39,7 +76,6 @@ class ProfileController extends Controller
             $image->move(public_path('storage/photo_profile'), $new_name);
             $newImagePath = '/storage/photo_profile/' . $new_name;
 
-            // Delete old profile photo if exists
             if ($user->photoprofile) {
                 $oldImagePath = str_replace('/storage', 'public', $user->photoprofile);
                 Storage::delete($oldImagePath);

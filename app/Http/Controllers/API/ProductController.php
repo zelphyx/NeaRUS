@@ -31,8 +31,8 @@ class ProductController extends Controller
             'ownerId' => 'required',
             'location' => 'required',
             'category' => 'required',
-            'fasilitas' => 'required|min:1', // Ensure fasilitas is an array
-            'fasilitas.*' => 'string', // Validate each fasilitas item as a string
+            'fasilitas' => 'required|min:1',
+            'fasilitas.*' => 'string',
             'roomid' => 'required',
             'about' => 'required',
         ]);
@@ -54,7 +54,7 @@ class ProductController extends Controller
             foreach ($request->image as $image) {
                 $new_name = rand() . '.' .$image->extension();
                 $image->move(public_path('storage/post-images'), $new_name);
-                $newImagePath =config('app.url') . '/storage/post-images/' . $new_name;
+                $newImagePath ='/storage/post-images/' . $new_name;
 //                $imageName = time() . '.' . $image->extension();
 //                $image->storeAs('public/image_profile', $imageName);
 //                $newImagePath = env('APP_URL') . '/storage/app/public/image_profile/' . $imageName;
