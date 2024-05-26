@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\ProductResource;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -17,7 +18,10 @@ class ProductController extends Controller
     public function index()
     {
         $properties = Product::all();
-        return response()->json($properties);
+        return  response()->json([
+            "message" => "success get all product",
+            "data" => ProductResource::collection($properties)
+        ]);
     }
 
     /**
@@ -30,6 +34,7 @@ class ProductController extends Controller
             'productname' => 'required|unique:products,productname',
             'ownerId' => 'required',
             'location' => 'required',
+            'linklocation' => 'required',
             'category' => 'required',
             'fasilitas' => 'required|min:1',
             'fasilitas.*' => 'string',
@@ -54,7 +59,7 @@ class ProductController extends Controller
             foreach ($request->image as $image) {
                 $new_name = rand() . '.' .$image->extension();
                 $image->move(public_path('storage/post-images'), $new_name);
-                $newImagePath ='/storage/post-images/' . $new_name;
+                $newImagePath =config('app.url') . '/storage/post-images/' . $new_name;
 //                $imageName = time() . '.' . $image->extension();
 //                $image->storeAs('public/image_profile', $imageName);
 //                $newImagePath = env('APP_URL') . '/storage/app/public/image_profile/' . $imageName;
@@ -85,7 +90,7 @@ class ProductController extends Controller
      */
     public function show($id)
     {
-        $product = Product::findOrFail($id); // Retrieve product data by ID
+        $product = Product::findOrFail($id);
         return view('image', compact('product'));
     }
 
@@ -109,6 +114,7 @@ class ProductController extends Controller
             'productname' => 'required' . $product->productname,
             'ownerId' => 'required',
             'location' => 'required',
+            'linklocation' => 'required',
             'category' => 'required',
             'fasilitas' => 'required|min:1',
             'roomid' => 'required',

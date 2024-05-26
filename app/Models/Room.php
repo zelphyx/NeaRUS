@@ -5,24 +5,23 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Product extends Model
+class Room extends Model
 {
     use HasFactory;
-
     protected $fillable = [
-        'image',
-        'productname',
-        'ownerId',
-        'linklocation',
-        'location',
+        'kostid',
+        'name',
         'category',
         'fasilitas',
-        'roomid',
-        'about'
+        'image',
+        'price',
+        'time',
+        'availability'
     ];
 
     protected $hidden = [
         "created_at",
-        "updated_at"
+        "updated_at",
+        "remember_token"
     ];
 }
