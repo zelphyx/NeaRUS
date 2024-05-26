@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\SearchController;
 use App\Http\Middleware\OwnerMiddleware;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -32,6 +33,7 @@ Route::get('/user',[\App\Http\Controllers\API\User\AuthUserController::class,'in
 Route::middleware('auth:sanctum')->group(function () {
     Route::controller(\App\Http\Controllers\API\User\ProfileController::class)->group(function () {
         Route::post('profile/update', 'updateprofilebackup');
+        Route::post('profile/reset-password','profileresetpass');
     });
 });
 
@@ -52,7 +54,9 @@ Route::controller(\App\Http\Controllers\API\ProductController::class)->group(fun
 
 
 Auth::routes(['verify' => true]);
-
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('search', [SearchController::class, 'search']);
+});
 
 Route::middleware('verified')->group(function () {
     // Routes that require verified email

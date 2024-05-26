@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
 
 
 class ProfileController extends Controller
@@ -151,5 +153,32 @@ class ProfileController extends Controller
             'data' => $userData,
             'message' => 'User data updated successfully',
         ]);
+    }
+
+    public function profileresetpass(Request $request){
+        $user = Auth::user();
+
+        // Validate input
+        $validator = Validator::make($request->all(), [
+            'current_password' => 'required',
+            'new_password' => 'required|min:6',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 400);
+        }
+
+        // Check if current password matches
+        if (!Hash::check($request->current_password, $user->password)) {
+            return response()->json(['error' => 'Current password does not match.'], 400);
+        }
+
+        $user->password = Hash::make($request->new_password);
+        $user->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Password updated successfully.',
+        ], 200);
     }
 }
