@@ -51,6 +51,14 @@ Route::controller(\App\Http\Controllers\API\ProductController::class)->group(fun
     Route::get('product','index');
 })->middleware(['auth:sanctum']);
 
+Route::middleware('auth:sanctum')->group(function () {
+    Route::controller(\App\Http\Controllers\API\RoomController::class)->group(function () {
+        Route::post('rooms/create','create');
+        Route::get('rooms/get','index');
+    });
+});
+
+
 
 Auth::routes(['verify' => true]);
 Route::middleware('auth:sanctum')->group(function () {

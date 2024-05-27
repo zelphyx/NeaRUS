@@ -25,7 +25,7 @@ class ProductFactory extends Factory
             'productname' => $this->faker->unique()->word,
             'ownerId' => User::factory(),
             'location' => $this->faker->address,
-            'category' => $this->faker->word,
+            'category' => $this->faker->randomElement(['Pria', 'Wanita']),
             'fasilitas' => implode(',', $this->faker->words(3)),
             'roomid' => $this->faker->numberBetween(1, 100),
             'about' => $this->faker->paragraph,

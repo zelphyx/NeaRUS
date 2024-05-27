@@ -28,45 +28,61 @@ class RoomController extends Controller
      */
     public function create(Request $request)
     {
-        $validatedData = Validator::make($request->all(), [
-            'kostid' => "required",
-            'name' => "required",
-            'category' => "required",
-            'fasilitas' => "required|min:1",
-            'image' => "array|nullable",
-            'price' => "required",
-            'time' => "required",
-            'availability' => "required",
+        $user = auth()->user();
+
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Unauthorized'
+            ], 401);
+        }
+
+        $kostid = $user->ownerId;
+
+        if (!$kostid) {
+            return response()->json([
+                'success' => false,
+                'message' => 'kostid is required for this user'
+            ], 400);
+        }
+
+        $request->merge(['ownerId' => $kostid]);
+
+        $validatedData = $request->validate([
+            'ownerId' => 'required',
+            'name' => 'required',
+            'category' => 'required',
+            'fasilitas' => 'required|array|min:1',
+            'image' => 'array|nullable',
+            'image.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'price' => 'required',
+            'time' => 'required',
+            'availability' => 'required',
         ]);
-        if ($validatedData->fails()) {
-            return $this->invalidRes($validatedData->getMessageBag());
-        }
 
-        $input = $request->all();
+        $validatedData['fasilitas'] = implode(',', $validatedData['fasilitas']);
 
-        if (!is_array($input['fasilitas'])) {
-            $input['fasilitas'] = [$input['fasilitas']];
-        }
-        $input['fasilitas'] = implode(',', $input['fasilitas']);
-        if ($request->image != null) {
+        if (!empty($validatedData['image'])) {
             $images = [];
-            foreach ($request->image as $image) {
-                $new_name = rand() . '.' .$image->extension();
+            foreach ($validatedData['image'] as $image) {
+                $new_name = rand() . '.' . $image->extension();
                 $image->move(public_path('storage/room-images'), $new_name);
-                $newImagePath =config('app.url') . '/storage/room-images/' . $new_name;
-//                $imageName = time() . '.' . $image->extension();
-//                $image->storeAs('public/image_profile', $imageName);
-//                $newImagePath = env('APP_URL') . '/storage/app/public/image_profile/' . $imageName;
+                $newImagePath = config('app.url') . '/storage/room-images/' . $new_name;
                 $images[] = $newImagePath;
             }
-            $input['image'] = implode(',', $images);
+            $validatedData['image'] = implode(',', $images);
+        } else {
+            $validatedData['image'] = null;
         }
-        Room::create($input);
-        return $this->succesRes([
+
+        Room::create($validatedData);
+
+        return response()->json([
             'success' => true,
-            'message' => 'Product Registered'
+            'message' => 'Rooms Registered'
         ]);
     }
+
 
     /**
      * Store a newly created resource in storage.
