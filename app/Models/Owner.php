@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Events\NewOwnerRequest;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -9,7 +10,9 @@ class Owner extends Model
 {
     use HasFactory;
     protected $table = 'owner_request';
+
     protected $fillable = [
+
         'name',
         'websiterole',
         'email',
@@ -26,7 +29,12 @@ class Owner extends Model
     protected $hidden = [
         'password',
     ];
-
+    protected static function booted()
+    {
+        static::created(function ($ownerRequest) {
+            event(new NewOwnerRequest($ownerRequest));
+        });
+    }
     public function getDataPribadiAttribute()
     {
         return [
@@ -38,7 +46,7 @@ class Owner extends Model
             'urgent_phonenumber' => $this->urgent_phonenumber
         ];
     }
-    protected $primaryKey = 'ownerId';
+    protected $primaryKey = 'requestId';
     /**
      * Get the attributes that should be cast.
      *

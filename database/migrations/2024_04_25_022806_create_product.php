@@ -15,12 +15,12 @@ return new class extends Migration
             $table->id('kostid');
             $table->string('image');
             $table->string('productname');
-            $table->foreignId('ownerId');
+            $table->foreign('ownerId');
             $table->string('location');
             $table->string('linklocation');
             $table->string('category');
             $table->string('fasilitas');
-            $table->foreignId('roomid');
+            $table->foreignId('roomid')->nullable();
             $table->text("about");
             $table->timestamps();
         });
