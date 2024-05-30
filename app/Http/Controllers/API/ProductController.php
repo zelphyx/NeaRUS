@@ -40,21 +40,6 @@ class ProductController extends Controller
             'fasilitas' => 'required|min:1',
             'fasilitas.*' => 'string',
             'roomid' => 'nullable|array',
-            'roomid.*' => [
-                'nullable',
-                function ($attribute, $value, $fail) {
-                    if ($value) {
-                        $ownerId = Auth::id();
-                        $roomExists = DB::table('rooms')
-                            ->where('roomid', $value)
-                            ->where('ownerId', $ownerId)
-                            ->exists();
-                        if (!$roomExists) {
-                            $fail('The selected room id ' . $value . ' is invalid.');
-                        }
-                    }
-                },
-            ],
             'about' => 'required',
         ]);
 
@@ -70,7 +55,6 @@ class ProductController extends Controller
         }
 
         $input['fasilitas'] = implode(',', $input['fasilitas']);
-        $input['roomid'] = isset($input['roomid']) ? implode(',', $input['roomid']) : null;
 
         if ($request->image != null) {
             $images = [];
@@ -116,12 +100,16 @@ class ProductController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit($id)
+    public function edit($kostid)
     {
-        $product = Product::findOrFail($id);
+        $product = Product::findOrFail($kostid);
         return response()->json($product);
     }
-
+    public function findbyeachid($kostid)
+    {
+        $product = Product::findOrFail($kostid);
+        return response()->json($product);
+    }
 
     /**
      * Update the specified resource in storage.

@@ -50,6 +50,16 @@
         </tbody>
     </table>
 </div>
+<script>
+    window.Echo.channel('owner-request')
+        .listen('OwnerRequestUpdated', (e) => {
+            // Logic to update the table with the new data.
+            let user = e.user;
+            // For simplicity, let's reload the page to reflect the changes.
+            // You can implement a more sophisticated way to update the table dynamically.
+            location.reload();
+        });
+</script>
 
 <!-- Bootstrap JS  -->
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>

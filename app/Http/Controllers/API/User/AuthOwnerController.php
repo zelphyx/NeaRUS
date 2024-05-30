@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\User;
 
+use App\Events\ownerrequest;
 use App\Http\Controllers\Controller;
 use App\Mail\OwnerApproved;
 use App\Models\Owner;
@@ -9,6 +10,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
+use App\Events\OwnerRequestUpdated;
 
 class AuthOwnerController extends Controller
 {
@@ -81,6 +83,8 @@ class AuthOwnerController extends Controller
             $user->websiterole = 'Owner';
             $user->email_verified_at = now();
             $user->save();
+            event(new ownerrequest($user));
+
             Mail::to($user->email)->send(new OwnerApproved($user));
             return redirect()->route('owner.requests')->with('success', 'Owner approved successfully.');
         } catch (\Exception $e) {

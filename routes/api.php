@@ -66,6 +66,7 @@ Route::controller(\App\Http\Controllers\API\RoomController::class)->group(functi
 });
 Route::controller(\App\Http\Controllers\API\ProductController::class)->group(function (){
     Route::get('product','index');
+    Route::get('product/{id}','findbyeachid');
 });
 Route::controller(\App\Http\Controllers\SearchController::class)->group(function (){
     Route::get('search','search');
