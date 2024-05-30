@@ -61,7 +61,7 @@ class ProductController extends Controller
             foreach ($request->image as $image) {
                 $new_name = rand() . '.' . $image->extension();
                 $image->move(public_path('storage/post-images'), $new_name);
-                $newImagePath = config('app.url') . '/storage/post-images/' . $new_name;
+                $newImagePath = '/storage/post-images/' . $new_name;
                 $images[] = $newImagePath;
             }
             $input['image'] = implode(',', $images);
