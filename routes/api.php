@@ -42,8 +42,8 @@ Route::middleware(['auth:sanctum','websiterole'])->group(function (){
     Route::controller(\App\Http\Controllers\API\ProductController::class)->group(function (){
         Route::post('addproduct','create');
         Route::get('product/{id}/edit', 'edit');
-        Route::put('product/{id}', 'update');
-        Route::delete('product/{id}','destroy');
+        Route::put('product/put/{id}', 'update');
+        Route::delete('product/delete/{id}','destroy');
     });
 });
 
@@ -66,7 +66,7 @@ Route::controller(\App\Http\Controllers\API\RoomController::class)->group(functi
 });
 Route::controller(\App\Http\Controllers\API\ProductController::class)->group(function (){
     Route::get('product','index');
-    Route::get('product/{id}','findbyeachid');
+    Route::get('product/get/{id}','findbyeachid');
 });
 Route::controller(\App\Http\Controllers\SearchController::class)->group(function (){
     Route::get('search','search');
