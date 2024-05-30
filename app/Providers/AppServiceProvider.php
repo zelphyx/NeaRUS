@@ -2,6 +2,9 @@
 
 namespace App\Providers;
 
+use App\Events\RoomCreated;
+use App\Listeners\UpdateProductRoomId;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -11,6 +14,11 @@ class AppServiceProvider extends ServiceProvider
     /**
      * Register any application services.
      */
+    protected $listen = [
+        RoomCreated::class => [
+            UpdateProductRoomId::class,
+        ],
+    ];
     public function register(): void
     {
         //
@@ -21,6 +29,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        Event::listen(
+            RoomCreated::class ,
+        UpdateProductRoomId::class,
+        );
+
         VerifyEmail::toMailUsing(function (object $notifiable, string $url) {
             return (new MailMessage)
                 ->subject('Verify Email Address')

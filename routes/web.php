@@ -1,8 +1,13 @@
 <?php
 
+use App\Http\Controllers\Api\User\AuthOwnerController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
+Route::get('/owner-requests', [AuthOwnerController::class, 'showOwnerRequests'])->name('owner.requests');
+Route::patch('/owner-requests/approve/{id}', [AuthOwnerController::class, 'approveOwner'])->name('owner.approve');
+Route::delete('/owner-requests/delete/{id}', [AuthOwnerController::class, 'deleteOwner'])->name('owner.delete');
+Route::get('/owners', [AuthOwnerController::class, 'showOwners'])->name('owners.index');
 
 Route::get('/', function () {
     return view('welcome');

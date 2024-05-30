@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Events\RoomCreated;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\RoomResource;
 use App\Models\Room;
@@ -77,13 +78,30 @@ class RoomController extends Controller
 
         Room::create($validatedData);
 
+
         return response()->json([
             'success' => true,
             'message' => 'Rooms Registered'
         ]);
     }
 
+    public function showbyid($ownerId)
+    {
+        $rooms = Room::where('ownerId', $ownerId)->get();
 
+        if (!$rooms->isEmpty()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Rooms found',
+                'data' => RoomResource::collection($rooms)
+            ]);
+        } else {
+            return response()->json([
+                'success' => false,
+                'message' => 'No rooms found for the specified ownerId'
+            ], 404);
+        }
+    }
     /**
      * Store a newly created resource in storage.
      */

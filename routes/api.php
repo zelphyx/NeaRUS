@@ -23,7 +23,7 @@ Route::controller(\App\Http\Controllers\API\User\AuthUserController::class)->gro
 
 
 Route::controller(\App\Http\Controllers\API\User\AuthOwnerController::class)->group(function (){
-    Route::post('daftar','register');
+    Route::post('daftar','daftarowner');
 });
 
 
@@ -38,33 +38,42 @@ Route::middleware('auth:sanctum')->group(function () {
 });
 
 
-
-Route::controller(\App\Http\Controllers\API\ProductController::class)->group(function (){
-    Route::post('addproduct','create');
-    Route::get('product/{id}/edit', 'edit');
-    Route::put('product/{id}', 'update');
-    Route::delete('product/{id}','destroy');
-})->middleware(['websiterole','auth:sanctum']);
-
-
-
-Route::controller(\App\Http\Controllers\API\ProductController::class)->group(function (){
-    Route::get('product','index');
-})->middleware(['auth:sanctum']);
-
-Route::middleware('auth:sanctum')->group(function () {
-    Route::controller(\App\Http\Controllers\API\RoomController::class)->group(function () {
-        Route::post('rooms/create','create');
-        Route::get('rooms/get','index');
+Route::middleware(['auth:sanctum','websiterole'])->group(function (){
+    Route::controller(\App\Http\Controllers\API\ProductController::class)->group(function (){
+        Route::post('addproduct','create');
+        Route::get('product/{id}/edit', 'edit');
+        Route::put('product/{id}', 'update');
+        Route::delete('product/{id}','destroy');
     });
 });
 
 
 
-Auth::routes(['verify' => true]);
+
+
+
 Route::middleware('auth:sanctum')->group(function () {
-    Route::get('search', [SearchController::class, 'search']);
+    Route::controller(\App\Http\Controllers\API\RoomController::class)->group(function () {
+        Route::post('rooms/create','create');
+
+    });
 });
+
+
+Route::controller(\App\Http\Controllers\API\RoomController::class)->group(function (){
+    Route::get('rooms/get','index');
+    Route::get('rooms/{ownerId}','showbyid');
+});
+Route::controller(\App\Http\Controllers\API\ProductController::class)->group(function (){
+    Route::get('product','index');
+});
+Route::controller(\App\Http\Controllers\SearchController::class)->group(function (){
+    Route::get('search','search');
+});
+
+
+Auth::routes(['verify' => true]);
+
 
 Route::middleware('verified')->group(function () {
     // Routes that require verified email

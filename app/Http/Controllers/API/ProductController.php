@@ -6,8 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\ProductResource;
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
 
 
 class ProductController extends Controller
@@ -32,13 +34,27 @@ class ProductController extends Controller
         $validatedData = Validator::make($request->all(), [
             'image' => 'array|nullable',
             'productname' => 'required|unique:products,productname',
-            'ownerId' => 'required',
             'location' => 'required',
             'linklocation' => 'required',
             'category' => 'required',
             'fasilitas' => 'required|min:1',
             'fasilitas.*' => 'string',
-            'roomid' => 'required',
+            'roomid' => 'nullable|array',
+            'roomid.*' => [
+                'nullable',
+                function ($attribute, $value, $fail) {
+                    if ($value) {
+                        $ownerId = Auth::id();
+                        $roomExists = DB::table('rooms')
+                            ->where('roomid', $value)
+                            ->where('ownerId', $ownerId)
+                            ->exists();
+                        if (!$roomExists) {
+                            $fail('The selected room id ' . $value . ' is invalid.');
+                        }
+                    }
+                },
+            ],
             'about' => 'required',
         ]);
 
@@ -47,32 +63,35 @@ class ProductController extends Controller
         }
 
         $input = $request->all();
+        $input['ownerId'] = Auth::id();
 
         if (!is_array($input['fasilitas'])) {
             $input['fasilitas'] = [$input['fasilitas']];
         }
 
         $input['fasilitas'] = implode(',', $input['fasilitas']);
+        $input['roomid'] = isset($input['roomid']) ? implode(',', $input['roomid']) : null;
 
         if ($request->image != null) {
             $images = [];
             foreach ($request->image as $image) {
-                $new_name = rand() . '.' .$image->extension();
+                $new_name = rand() . '.' . $image->extension();
                 $image->move(public_path('storage/post-images'), $new_name);
-                $newImagePath =config('app.url') . '/storage/post-images/' . $new_name;
-//                $imageName = time() . '.' . $image->extension();
-//                $image->storeAs('public/image_profile', $imageName);
-//                $newImagePath = env('APP_URL') . '/storage/app/public/image_profile/' . $imageName;
+                $newImagePath = config('app.url') . '/storage/post-images/' . $new_name;
                 $images[] = $newImagePath;
             }
             $input['image'] = implode(',', $images);
         }
-        Product::create($input);
+        $product = Product::create($input);
+        $roomIds = $request->input('roomid');
+        $product->rooms()->attach($roomIds);
         return $this->succesRes([
             'success' => true,
             'message' => 'Product Registered'
         ]);
     }
+
+
 
 
 
