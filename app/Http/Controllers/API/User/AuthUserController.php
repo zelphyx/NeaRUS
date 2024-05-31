@@ -185,7 +185,8 @@ class AuthUserController extends Controller
         $token = Str::random(60);
         $user->update(['reset_password_token' => $token]);
 
-        Mail::to($user->email)->send(new ResetPasswordMail($user));
+        $resetLink = url('/reset-password/' . $token);
+        Mail::to($user->email)->send(new ResetPasswordMail($user, $resetLink));
 
         return response()->json(['message' => 'Reset password email sent']);
     }
@@ -207,7 +208,8 @@ class AuthUserController extends Controller
         $user->reset_password_token = null;
         $user->save();
 
-        $externalUrl = 'https://www.example.com';
+
+        $externalUrl = 'https://www.samehadaku.email';
         return new RedirectResponse($externalUrl);
     }
 
