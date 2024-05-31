@@ -11,14 +11,19 @@ class BotController extends Controller
     public function handle()
     {
         $botman = app("botman");
-        $botman->hears('{message}', function($botman, $message) {
+        $botman->hears('apa itu nearus', function($botman) {
+            $botman->reply('nearus adalah ...');
+        });
 
+        $botman->hears('siapa saja developer nearus', function($botman) {
+            $botman->reply('developer dari nearus adalah ...');
+        });
+        $botman->hears('bisakah saya mendapat contact admin center nearus', function($botman) {
+            $botman->reply('Silahkan hubungi WhatsApp berikut: https://wa.me/1234567890');
+        });
+        $botman->hears('{message}', function($botman, $message) {
             if ($message == 'test') {
                 $this->askName($botman);
-            }
-
-            else{
-                $botman->reply("Start a conversation by saying hi.");
             }
 
         });

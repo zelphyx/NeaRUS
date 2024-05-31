@@ -10,7 +10,7 @@
 <p>Please confirm your new password below:</p>
 <form method="POST" action="{{ url('/reset-password') }}">
     @csrf
-    <input type="hidden" name="token" value="{{ $user->reset_password_token }}">
+    <input type="hidden" name="token" value="{{ request()->route('token') }}">
     <label for="password">New Password:</label>
     <input type="password" name="password" id="password" required>
     <label for="password_confirmation">Confirm New Password:</label>

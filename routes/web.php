@@ -18,10 +18,11 @@ Route::get('/products/{id}', [\App\Http\Controllers\API\ProductController::class
 Auth::routes(['verify' => true]);
 Route::middleware('verified')->group(function () {
     // Routes that require verified email
-    Route::get('/', function () {
-        return view('welcome');
-    });
 
+
+});
+Route::get('/', function () {
+    return view('welcome');
 });
 Route::get('reset-password',function (){
     return view('resetpass');
