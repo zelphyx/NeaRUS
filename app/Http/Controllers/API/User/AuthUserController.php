@@ -176,6 +176,8 @@ class AuthUserController extends Controller
 
     public function sendResetPasswordEmail(Request $request)
     {
+        $request->validate(['email' => 'required|email']);
+
         $user = User::where('email', $request->email)->first();
 
         if (!$user) {
@@ -183,9 +185,11 @@ class AuthUserController extends Controller
         }
 
         $token = Str::random(60);
-        $user->update(['reset_password_token' => $token]);
+        $user->reset_password_token = $token;
+        $user->save();
 
-        Mail::to($user->email)->send(new ResetPasswordMail($user, url('/reset-password/' . $token)));
+        $resetLink = url('/reset-password/' . $token);
+        Mail::to($user->email)->send(new ResetPasswordMail($user, $resetLink));
 
         return response()->json(['message' => 'Reset password email sent']);
     }
