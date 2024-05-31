@@ -28,6 +28,7 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('email_verification_token')->nullable()->unique();
             $table->rememberToken();
+            $table->string('reset_password_token', 60)->nullable();
             $table->timestamps();
         });
 
