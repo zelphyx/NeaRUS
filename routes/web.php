@@ -24,9 +24,9 @@ Route::middleware('verified')->group(function () {
 Route::get('/', function () {
     return view('welcome');
 });
-Route::get('reset-password',function (){
-    return view('resetpass');
-});
+Route::get('reset-password/{token}', function ($token) {
+    return view('reset-password', ['token' => $token]);
+})->name('password.reset');
 Route::controller(\App\Http\Controllers\API\User\AuthUserController::class)->group(function (){
     Route::post('reset-password','reset');
 });
