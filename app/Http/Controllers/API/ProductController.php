@@ -114,17 +114,17 @@ class ProductController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Product $product)
+    public function update(Request $request, $kostid)
     {
         $validatedData = Validator::make($request->all(), [
-            'images.*' => 'image|mimes:jpeg,png,jpg,gif',
-            'productname' => 'required' . $product->productname,
-            'ownerId' => 'required',
+            'image' => 'array|nullable',
+            'productname' => 'required|unique:products,productname,' . $kostid . ',kostid',
             'location' => 'required',
             'linklocation' => 'required',
             'category' => 'required',
             'fasilitas' => 'required|min:1',
-            'roomid' => 'required',
+            'fasilitas.*' => 'string',
+            'roomid' => 'nullable|array',
             'about' => 'required',
         ]);
 
@@ -132,37 +132,41 @@ class ProductController extends Controller
             return $this->invalidRes($validatedData->getMessageBag());
         }
 
+        $product = Product::findOrFail($kostid);
+
         $input = $request->all();
+        $input['ownerId'] = Auth::id();
 
         if (!is_array($input['fasilitas'])) {
             $input['fasilitas'] = [$input['fasilitas']];
         }
 
-        $input['fasilitas'] = implode(' , ', $input['fasilitas']);
+        $input['fasilitas'] = implode(',', $input['fasilitas']);
 
-        if ($request->hasFile('images')) {
-            if ($product->image) {
-                $oldImages = explode(',', $product->image);
-                foreach ($oldImages as $oldImage) {
-                    Storage::delete($oldImage);
-                }
-            }
-
+        if ($request->image != null) {
             $images = [];
-            foreach ($request->file('images') as $image) {
-                $imagePath = $image->store('public/post-images');
-                $images[] = $imagePath;
+            foreach ($request->image as $image) {
+                $new_name = rand() . '.' . $image->extension();
+                $image->move(public_path('storage/post-images'), $new_name);
+                $newImagePath = '/storage/post-images/' . $new_name;
+                $images[] = $newImagePath;
             }
             $input['image'] = implode(',', $images);
         }
 
         $product->update($input);
 
+        if ($request->has('roomid')) {
+            $roomIds = $request->input('roomid');
+            $product->rooms()->sync($roomIds);
+        }
+
         return $this->succesRes([
             'success' => true,
-            'message' => 'Product updated successfully.'
+            'message' => 'Product Updated'
         ]);
     }
+
 
 
 
