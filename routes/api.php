@@ -38,7 +38,7 @@ Route::middleware('auth:sanctum')->group(function () {
 });
 
 
-Route::middleware(['auth:sanctum','websiterole'])->group(function (){
+Route::middleware(['auth:sanctum'])->group(function (){
     Route::controller(\App\Http\Controllers\API\ProductController::class)->group(function (){
         Route::post('addproduct','create');
         Route::get('product/{id}/edit', 'edit');

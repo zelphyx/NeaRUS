@@ -212,8 +212,8 @@ class AuthUserController extends Controller
         $user->save();
 
 
-        $externalUrl = 'https://www.samehadaku.email';
-        return new RedirectResponse($externalUrl);
+
+        return response()->json(['message' => ' password changed']);
     }
 
 
