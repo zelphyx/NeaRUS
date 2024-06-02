@@ -45,7 +45,7 @@
             <div class="absolute left-[150px] top-[520px] text-center text-black text-[15px] font-extralight font-montserrat leading-none">
                 Anda bisa menutup email ini setelah anda selesai melakukan verfikasi email
             </div>
-            <a href="{{ route('verify.email', $token) }}">
+            <a href="">
                 <button class="w-[266px] h-[54px] absolute left-[292px] top-[443px] transition duration-300 ease-in-out transform hover:scale-105 bg-gradient-to-r from-sky-300 to-blue-500 rounded-md shadow">
                     <span class="absolute left-[70px] top-[15px] text-white text-xl font-bold font-montserrat">Verify Email</span>
                     <span class="absolute w-6 h-6 left-[220px] top-[15px]"></span>

@@ -41,3 +41,8 @@ Route::get('/test', function () {
     return view('formtest');
 });
 Route::get('/email/verify', 'VerificationController@verify')->middleware('verified');
+
+Route::get('/test', function () {
+    return view('test');
+});
+
