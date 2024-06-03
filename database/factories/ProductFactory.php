@@ -27,6 +27,7 @@ class ProductFactory extends Factory
             'location' => $this->faker->address,
             'category' => $this->faker->randomElement(['Pria', 'Wanita']),
             'fasilitas' => implode(',', $this->faker->words(3)),
+            'price' => $this->faker->numberBetween($min = 150000, $max = 1500000),
             'roomid' => $this->faker->numberBetween(1, 100),
             'about' => $this->faker->paragraph,
             'image' => $this->faker->imageUrl(640, 480, 'products', true),
