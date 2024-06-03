@@ -127,9 +127,9 @@
         </p>
         <p class="text-black text-sm font-light font-montserrat leading-none bottom-text">
             Anda bisa menutup email ini dan klik tombol untuk login
-                Login
+            Login
             </button>
-        </a>
+            </a>
 
     </div>
 </div>
