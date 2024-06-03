@@ -6,16 +6,6 @@
     @vite('resources/css/app.css')
     <style scoped>
         @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap');
-
-        .full-screen-bg {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-            background: url('{{ asset('images/bg-image.png') }}') center/cover no-repeat;
-        }
         body {
             font-family: 'Montserrat', sans-serif;
             margin: 0;
