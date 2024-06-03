@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('image');
             $table->string('productname');
             $table->foreignId('ownerId');
+            $table->integer('price')->nullable();
             $table->string('location');
             $table->string('linklocation');
             $table->string('category');
