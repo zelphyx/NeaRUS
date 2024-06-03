@@ -22,6 +22,7 @@ class ProductResource extends JsonResource
             "ownerId" => $this->ownerId,
             "location" => $this->location,
             "category" => $this->category,
+            "linklocation" => $this->linklocation,
             "fasilitas" => explode(",", $this->fasilitas),
             "roomid" => $this->roomid,
             "about" => $this->about

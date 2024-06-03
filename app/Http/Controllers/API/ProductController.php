@@ -66,9 +66,7 @@ class ProductController extends Controller
             }
             $input['image'] = implode(',', $images);
         }
-        $product = Product::create($input);
-        $roomIds = $request->input('roomid');
-        $product->rooms()->attach($roomIds);
+        Product::create($input);
         return $this->succesRes([
             'success' => true,
             'message' => 'Product Registered'
