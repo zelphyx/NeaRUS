@@ -33,7 +33,6 @@
             margin-bottom: 20px;
         }
         .header img {
-            margin-right: 15px;
             width: 150px;
             height: auto;
         }
