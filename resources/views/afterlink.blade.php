@@ -126,10 +126,12 @@
             Terima Kasih anda telah melakukan verifikasi akun anda.
         </p>
         <p class="text-black text-sm font-light font-montserrat leading-none bottom-text">
-            Anda bisa menutup email ini dan klik tombol untuk login
-            Login
+            Anda bisa menutup email ini setelah anda selesai melakukan verifikasi email
+        </p> <a href="http://localhost:5173/login">
+            <button>
+                Login
             </button>
-            </a>
+        </a>
 
     </div>
 </div>
