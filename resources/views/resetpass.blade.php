@@ -22,8 +22,8 @@
         Silahkan Masukkan Kata Sandi Baru Anda
     </div>
     <form method="POST" action="{{ url('/reset-password') }}">
-        @csrf
-        <input type="hidden" name="token" value="{{ $token }}">
+            @csrf
+            <input type="hidden" name="token" value="{{ $token }}">
 
 
     <div class="w-[571px] h-[90px] left-[55px] top-[250px] absolute" id="PasswordInput">
