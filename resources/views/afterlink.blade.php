@@ -126,8 +126,11 @@
             Terima Kasih anda telah melakukan verifikasi akun anda.
         </p>
         <p class="text-black text-sm font-light font-montserrat leading-none bottom-text">
-            Anda bisa menutup email ini setelah anda selesai melakukan verifikasi email
-        </p>
+            Anda bisa menutup email ini dan klik tombol untuk login
+                Login
+            </button>
+        </a>
+
     </div>
 </div>
 </body>
