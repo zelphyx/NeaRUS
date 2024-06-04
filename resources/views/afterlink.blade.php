@@ -110,6 +110,7 @@
             }
         }
     </style>
+    <title>Selamat</title>
 </head>
 <body>
 <div class="full-screen-bg"></div>

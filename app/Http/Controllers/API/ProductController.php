@@ -62,7 +62,7 @@ class ProductController extends Controller
             foreach ($request->image as $image) {
                 $new_name = rand() . '.' . $image->extension();
                 $image->move(public_path('storage/post-images'), $new_name);
-                $newImagePath = '/storage/post-images/' . $new_name;
+                $newImagePath = config('app.url') . '/storage/post-images/' . $new_name;
                 $images[] = $newImagePath;
             }
             $input['image'] = implode(',', $images);
@@ -121,7 +121,7 @@ class ProductController extends Controller
             'location' => 'required',
             'linklocation' => 'required',
             'category' => 'required',
-            'price' => 'nullable',
+            'price' => 'nullable|required',
             'fasilitas' => 'required|min:1',
             'fasilitas.*' => 'string',
             'roomid' => 'nullable|array',
@@ -155,11 +155,6 @@ class ProductController extends Controller
         }
 
         $product->update($input);
-
-        if ($request->has('roomid')) {
-            $roomIds = $request->input('roomid');
-            $product->rooms()->sync($roomIds);
-        }
 
         return $this->succesRes([
             'success' => true,

@@ -16,15 +16,10 @@ class AdminMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (!Auth::check()) {
-            return response()->json(['error' => 'You must be logged in.'], 401);
+        if (Auth::check() && Auth::user()->websiterole == 'Admin') {
+            return $next($request);
         }
 
-        $user = Auth::user();
-        if ($user->websiterole !== 'Admin') {
-            return response()->json(['error' => 'Access denied. Insufficient permissions.'], 403);
-        }
-
-        return $next($request);
+        return redirect('/login');
     }
 }

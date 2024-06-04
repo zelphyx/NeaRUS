@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id('requestId');
             $table->string('name');
             $table->string('websiterole');
+            $table->string('image')->nullable();
             $table->string('email')->unique();
             $table->string('phonenumber');
             $table->string('password');

@@ -32,6 +32,7 @@ class AuthOwnerController extends Controller
             'password' => 'required',
             'confirmpassword' => 'same:password',
             'jenis_kelamin' => 'nullable',
+            'image' => 'nullable',
             'tanggal_lahir' => 'nullable|date',
             'alamat_rumah' => 'nullable',
             'urgent_fullname' => 'nullable',
@@ -82,6 +83,8 @@ class AuthOwnerController extends Controller
             $user = User::findOrFail($id);
             $user->websiterole = 'Owner';
             $user->email_verified_at = now();
+            $user->update(['image' => null]);
+
             $user->save();
             event(new ownerrequest($user));
 
