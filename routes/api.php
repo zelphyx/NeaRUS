@@ -26,7 +26,6 @@ Route::controller(\App\Http\Controllers\API\User\AuthOwnerController::class)->gr
     Route::post('daftar','daftarowner');
 });
 
-
 Route::get('/user',[\App\Http\Controllers\API\User\AuthUserController::class,'index']);
 
 

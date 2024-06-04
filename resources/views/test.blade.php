@@ -6,6 +6,16 @@
     @vite('resources/css/app.css')
     <style scoped>
         @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap');
+
+        .full-screen-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: url('{{ asset('images/bg-image.png') }}') center/cover no-repeat;
+        }
         body {
             font-family: 'Montserrat', sans-serif;
             margin: 0;
@@ -33,6 +43,7 @@
             margin-bottom: 20px;
         }
         .header img {
+            margin-right: 15px;
             width: 150px;
             height: auto;
         }
@@ -109,16 +120,11 @@
     <div class="content">
         <img src="{{ asset('images/icon-mail.png') }}" alt="Mail Icon" />
         <div class="text-center text-black text-2xl font-semibold font-montserrat mb-4">
-            Verifikasi Email Anda
+            Akun Sudah Diverifikasi
         </div>
         <p class="text-black text-lg font-medium font-montserrat leading-snug mb-10">
-            Silahkan pencet tombol dibawah untuk melakukan verifikasi akun anda.
+            Terima Kasih anda telah melakukan verifikasi akun anda.
         </p>
-        <a href="{{ route('verify.email', $token) }}">
-            <button>
-                Verify Email
-            </button>
-        </a>
         <p class="text-black text-sm font-light font-montserrat leading-none bottom-text">
             Anda bisa menutup email ini setelah anda selesai melakukan verifikasi email
         </p>
