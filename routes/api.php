@@ -6,10 +6,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
-//Route::get('/user', function (Request $request) {
-//    return $request->user();
-//})->middleware('auth:sanctum');
 
+//User
 Route::controller(\App\Http\Controllers\API\User\AuthUserController::class)->group(function (){
     Route::post('masuk','loginuserowner');
     Route::post('daftaruser','register');
@@ -27,7 +25,7 @@ Route::controller(\App\Http\Controllers\API\User\AuthOwnerController::class)->gr
 
 Route::get('/user',[\App\Http\Controllers\API\User\AuthUserController::class,'index']);
 
-
+//Profile
 Route::middleware('auth:sanctum')->group(function () {
     Route::controller(\App\Http\Controllers\API\User\ProfileController::class)->group(function () {
         Route::put('profile/update', 'updateProfile');
@@ -37,6 +35,8 @@ Route::middleware('auth:sanctum')->group(function () {
 });
 
 
+
+//Product
 Route::middleware(['auth:sanctum'])->group(function (){
     Route::controller(\App\Http\Controllers\API\ProductController::class)->group(function (){
         Route::post('addproduct','create');
