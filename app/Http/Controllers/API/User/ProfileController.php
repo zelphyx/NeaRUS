@@ -59,7 +59,7 @@ class ProfileController extends Controller
 
         // Validation
         $validator = Validator::make($request->all(), [
-            'email' => 'nullable|email|unique:users,email,' . $user->id,
+            'email' => 'nullable|email|unique:users,email,' . $user->ownerId,
             'name' => 'nullable|string|max:255',
             'phonenumber' => 'nullable|numeric',
             'photoprofile' => 'nullable|image|max:2048',
