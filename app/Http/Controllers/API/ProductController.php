@@ -117,15 +117,15 @@ class ProductController extends Controller
     {
         $validatedData = Validator::make($request->all(), [
             'image' => 'array|nullable',
-            'productname' => 'required|unique:products,productname,' . $kostid . ',kostid',
-            'location' => 'required',
-            'linklocation' => 'required',
-            'category' => 'required',
-            'price' => 'nullable|required',
-            'fasilitas' => 'required|min:1',
+            'productname' => 'unique:products,productname,' . $kostid . ',kostid',
+            'location' => '',
+            'linklocation' => '',
+            'category' => '',
+            'price' => 'nullable',
+            'fasilitas' => 'min:1',
             'fasilitas.*' => 'string',
             'roomid' => 'nullable|array',
-            'about' => 'required',
+            'about' => '',
         ]);
 
         if ($validatedData->fails()) {

@@ -32,7 +32,7 @@ Route::get('/user',[\App\Http\Controllers\API\User\AuthUserController::class,'in
 Route::middleware('auth:sanctum')->group(function () {
     Route::controller(\App\Http\Controllers\API\User\ProfileController::class)->group(function () {
         Route::post('profile/update', 'updateprofilebackup');
-        Route::post('profile/reset-password','profileresetpass');
+        Route::post('profile/reset-password','resetpassprofile');
     });
 });
 

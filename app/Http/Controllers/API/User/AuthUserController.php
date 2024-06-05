@@ -50,10 +50,10 @@ class AuthUserController extends Controller
     public function register(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required',
-            'email' => 'required|email:dns|unique:users,email',
+            'name' => '',
+            'email' => 'email:dns|unique:users,email',
             'phonenumber' => 'numeric',
-            'password' => 'required',
+            'password' => '',
             'confirmpassword' => 'same:password',
             'jenis_kelamin' => 'nullable',
             'tanggal_lahir' => 'nullable|date',
@@ -193,6 +193,29 @@ class AuthUserController extends Controller
 
         return response()->json(['message' => 'Reset password email sent']);
     }
+    public function resetpassprofile(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+            'current_password' => 'required',
+            'new_password' => 'required|min:8|confirmed',
+        ]);
+
+        $user = User::where('email', $request->email)->first();
+
+        if (!$user) {
+            return response()->json(['message' => 'Email not found'], 404);
+        }
+
+        if (!Hash::check($request->current_password, $user->password)) {
+            return response()->json(['message' => 'Current password is incorrect'], 403);
+        }
+
+        $user->password = Hash::make($request->new_password);
+        $user->save();
+
+        return response()->json(['message' => 'Password has been updated successfully']);
+    }
 
     public function reset(Request $request)
     {
@@ -290,6 +313,7 @@ class AuthUserController extends Controller
             $user = Auth::user();
             $success['name'] = $user->name;
             $success['email'] = $user->email;
+            $success['phonenumber'] = $user->phonenumber;
             $token = $user->createToken('user')->plainTextToken;
 
             return $this->succesRes([
