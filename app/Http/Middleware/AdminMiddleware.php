@@ -16,7 +16,7 @@ class AdminMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (Auth::user()->websiterole == 'Admin') {
+        if (Auth::check()) {
             return $next($request);
         }
 
