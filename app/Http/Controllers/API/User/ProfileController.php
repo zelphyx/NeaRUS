@@ -74,7 +74,7 @@ class ProfileController extends Controller
             $image = $request->file('photoprofile');
             $new_name = rand() . '.' . $image->extension();
             $image->move(public_path('storage/profile-images'), $new_name);
-            $data['photoprofile'] = '/storage/profile-images/' . $new_name;
+            $data['photoprofile'] = config("app.url") . '/storage/profile-images/' . $new_name;
         }
 
         $user->update($data);
