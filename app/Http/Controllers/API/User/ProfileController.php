@@ -104,57 +104,50 @@ class ProfileController extends Controller
 
     public function addPersonalData(Request $request)
     {
+        // Validation rules
         $validator = Validator::make($request->all(), [
-            'name' => 'nullable',
-            'jenis_kelamin' => 'nullable',
+            'name' => 'nullable|string|max:255',
+            'jenis_kelamin' => 'nullable|string|max:10',
             'tanggal_lahir' => 'nullable|date',
-            'alamat_rumah' => 'nullable',
-            'urgent_fullname' => 'nullable',
-            'urgent_status' => 'nullable',
-            'urgent_phonenumber' => 'numeric'
+            'alamat_rumah' => 'nullable|string|max:255',
+            'urgent_fullname' => 'nullable|string|max:255',
+            'urgent_status' => 'nullable|string|max:50',
+            'urgent_phonenumber' => 'nullable|numeric'
         ]);
 
+        // Return validation errors
         if ($validator->fails()) {
-            return response()->json(['error' => $validator->errors()], 422);
+            return response()->json(['errors' => $validator->errors()], 422);
         }
 
+        // Get authenticated user
         $user = Auth::user();
         if (!$user) {
             return response()->json(['error' => 'User not found'], 404);
         }
 
-        $userData = $user->toArray();
+        // Prepare user data for update
+        $userData = $request->only([
+            'name',
+            'jenis_kelamin',
+            'tanggal_lahir',
+            'alamat_rumah',
+            'urgent_fullname',
+            'urgent_status',
+            'urgent_phonenumber'
+        ]);
 
-        if ($request->has('jenis_kelamin')) {
-            $userData['jenis_kelamin'] = $request->input('jenis_kelamin');
-        }
-
-        if ($request->has('tanggal_lahir')) {
-            $userData['tanggal_lahir'] = $request->input('tanggal_lahir');
-        }
-
-        if ($request->has('alamat_rumah')) {
-            $userData['alamat_rumah'] = $request->input('alamat_rumah');
-        }
-
-        if ($request->has('urgent_fullname')) {
-            $userData['urgent_fullname'] = $request->input('urgent_fullname');
-        }
-        if ($request->has('urgent_status')) {
-            $userData['urgent_status'] = $request->input('urgent_status');
-        }
-        if ($request->has('urgent_phonenumber')) {
-            $userData['urgent_phonenumber'] = $request->input('urgent_phonenumber');
-        }
-
+        // Update user data
         $user->update($userData);
 
-        return $this->succesRes([
+        // Return success response
+        return response()->json([
             'success' => true,
-            'data' => $userData,
+            'data' => $user,
             'message' => 'User data updated successfully',
         ]);
     }
+
 
     public function profileresetpass(Request $request){
         $user = Auth::user();
