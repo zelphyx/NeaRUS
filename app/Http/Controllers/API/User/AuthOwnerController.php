@@ -32,7 +32,7 @@ class AuthOwnerController extends Controller
             'password' => 'required',
             'confirmpassword' => 'same:password',
             'jenis_kelamin' => 'nullable',
-            'image' => 'nullable',
+            'buktiimage' => 'nullable',
             'tanggal_lahir' => 'nullable|date',
             'alamat_rumah' => 'nullable',
             'urgent_fullname' => 'nullable',
@@ -50,7 +50,12 @@ class AuthOwnerController extends Controller
         try {
             $input = $request->all();
             $input['websiterole'] = 'Owner Request';
-
+            if ($request->hasFile('buktiimage')) {
+                $image = $request->file('buktiimage');
+                $new_name = rand() . '.' . $image->extension();
+                $image->move(public_path('storage/proof-images'), $new_name);
+                $input['photoprofile'] = config("app.url") . '/storage/proof-images/' . $new_name;
+            }
             User::create($input);
 
             return $this->succesRes([
