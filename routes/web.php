@@ -12,7 +12,7 @@ Route::get('/login', function () {
 
 // Handle login form submission
 Route::post('/login', [LoginController::class, 'login'])->name('login.submit');
-Route::middleware(['auth:sanctum','adminmiddleware'])->group(function (){
+Route::middleware(['auth:sanctum'])->group(function (){
     Route::get('/owner-requests', [AuthOwnerController::class, 'showOwnerRequests'])->name('owner.requests');
     Route::get('/owners', [AuthOwnerController::class, 'showOwners'])->name('owners.index');
 });
