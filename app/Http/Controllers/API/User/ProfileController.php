@@ -54,49 +54,39 @@ class ProfileController extends Controller
     {
         $user = $request->user();
         if (is_null($user)) {
-            return response()->json([
-                'message' => 'User not authenticated',
-            ], 401);
+            return response()->json(['message' => 'User not authenticated'], 401);
         }
+
         $validator = Validator::make($request->all(), [
-            'email' => 'email|unique:users,email' . $user->ownerId . ',ownerId',
-            'name' => 'string|max:255',
-            'phonenumber' => 'numeric',
-            'photoprofile' => 'image',
+            'email' => 'nullable|email|unique:users,email,' . $user->ownerId,
+            'name' => 'nullable|string|max:255',
+            'phonenumber' => 'nullable|numeric',
+            'photoprofile' => 'nullable|image|max:2048',
         ]);
 
         if ($validator->fails()) {
-            return response()->json([
-                'message' => 'Validation fails',
-                'errors' => $validator->errors()
-            ], 422);
+            return response()->json(['message' => 'Validation fails', 'errors' => $validator->errors()], 422);
         }
+
+        $data = $request->only(['email', 'name', 'phonenumber']);
 
         if ($request->hasFile('photoprofile')) {
             $image = $request->file('photoprofile');
-            $new_name = time() . '.' . $image->getClientOriginalExtension();
-            $image->move(public_path('storage/photo_profile'), $new_name);
-            $newImagePath = '/storage/photo_profile/' . $new_name;
+            $newName = time() . '.' . $image->getClientOriginalExtension();
+            $image->move(public_path('storage/photo_profile'), $newName);
+            $newImagePath = '/storage/photo_profile/' . $newName;
 
             if ($user->photoprofile) {
                 $oldImagePath = str_replace('/storage', 'public', $user->photoprofile);
                 Storage::delete($oldImagePath);
             }
-        } else {
-            $newImagePath = $user->photoprofile;
+
+            $data['photoprofile'] = $newImagePath;
         }
 
-        $user->update([
-            'email' => $request->get('email', $user->email),
-            'name' => $request->get('name', $user->name),
-            'phonenumber' => $request->get('phonenumber', $user->phonenumber),
-            'photoprofile' => $newImagePath,
-        ]);
+        $user->update($data);
 
-        return response()->json([
-            'message' => 'Profile updated successfully',
-            'user' => $user
-        ], 200);
+        return response()->json(['message' => 'Profile updated successfully', 'user' => $user], 200);
     }
 
 
@@ -104,7 +94,6 @@ class ProfileController extends Controller
 
     public function addPersonalData(Request $request)
     {
-        // Validation rules
         $validator = Validator::make($request->all(), [
             'name' => 'nullable|string|max:255',
             'jenis_kelamin' => 'nullable|string|max:10',
@@ -115,18 +104,15 @@ class ProfileController extends Controller
             'urgent_phonenumber' => 'nullable|numeric'
         ]);
 
-        // Return validation errors
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
         }
 
-        // Get authenticated user
         $user = Auth::user();
         if (!$user) {
             return response()->json(['error' => 'User not found'], 404);
         }
 
-        // Prepare user data for update
         $userData = $request->only([
             'name',
             'jenis_kelamin',
@@ -137,7 +123,6 @@ class ProfileController extends Controller
             'urgent_phonenumber'
         ]);
 
-        // Update user data
         $user->update($userData);
 
         // Return success response
@@ -150,29 +135,25 @@ class ProfileController extends Controller
 
 
     public function profileresetpass(Request $request){
-        $user = Auth::user();
-
-        // Validate input
-        $validator = Validator::make($request->all(), [
+        $request->validate([
+            'email' => 'required|email',
             'current_password' => 'required',
-            'new_password' => 'required|min:6',
+            'new_password' => 'required|min:8|confirmed',
         ]);
 
-        if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 400);
+        $user = User::where('email', $request->email)->first();
+
+        if (!$user) {
+            return response()->json(['message' => 'Email not found'], 404);
         }
 
-        // Check if current password matches
         if (!Hash::check($request->current_password, $user->password)) {
-            return response()->json(['error' => 'Current password does not match.'], 400);
+            return response()->json(['message' => 'Current password is incorrect'], 403);
         }
 
         $user->password = Hash::make($request->new_password);
         $user->save();
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Password updated successfully.',
-        ], 200);
+        return response()->json(['message' => 'Password has been updated successfully']);
     }
 }
