@@ -300,7 +300,7 @@ class AuthUserController extends Controller
         $user = Auth::user();
 
         $validator = Validator::make($request->all(), [
-            'photoprofile' => 'nullable',
+            'photoprofile' => 'nullable|image|max:2048',
             'name' => 'nullable|string|max:255',
             'email' => 'nullable|email|unique:users,email,' . $user->ownerId,
             'phonenumber' => 'nullable|numeric',
@@ -332,8 +332,8 @@ class AuthUserController extends Controller
         if ($request->filled('password')) {
             $data['password'] = Hash::make($request->password);
         }
+
         if ($request->hasFile('photoprofile')) {
-            // Delete old profile picture if exists
             if ($user->photoprofile) {
                 Storage::disk('public')->delete($user->photoprofile);
             }
@@ -341,10 +341,14 @@ class AuthUserController extends Controller
             $imagePath = $request->file('photoprofile')->store('profile_pics', 'public');
             $data['photoprofile'] = $imagePath;
         }
+
+        // Update user data
         $user->update($data);
 
+        // Return response
         return response()->json(['message' => 'Profile updated successfully', 'data' => $user]);
     }
+
 
 
 
