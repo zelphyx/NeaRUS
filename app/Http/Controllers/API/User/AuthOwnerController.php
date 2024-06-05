@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\User;
 use App\Events\ownerrequest;
 use App\Http\Controllers\Controller;
 use App\Mail\OwnerApproved;
+use App\Mail\OwnerRejected;
 use App\Models\Owner;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -112,11 +113,7 @@ class AuthOwnerController extends Controller
             $user = User::findOrFail($id);
             $user->delete();
 
-            $userEmail = $user->email;
-
-            Notification::route('mail', $userEmail)
-                ->notify(new ApprovalDeleted($user->name));
-
+            Mail::to($user->email)->send(new OwnerRejected($user));
             return redirect()->route('owner.requests')->with('success', 'Owner deleted successfully.');
         } catch (\Exception $e) {
             return redirect()->route('owner.requests')->with('error', 'Failed to delete owner.');

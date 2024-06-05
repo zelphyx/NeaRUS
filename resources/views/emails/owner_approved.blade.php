@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <title>Owner Request Approved</title>
+    <title> Permintaan Akses Diterima</title>
 </head>
 <body>
-<h1>Congratulations, {{ $ownerRequest->name }}!</h1>
-<p>Your owner request has been approved. You can now log in to the platform using your registered email and password.</p>
+<h1>Selamat, {{ $ownerRequest->name }}!</h1>
+<p>Permintaan Akses Owner anda telah diterima oleh admin kami, silahkan login dengan email dan password yang telah anda daftarkan</p>
 </body>
 </html>

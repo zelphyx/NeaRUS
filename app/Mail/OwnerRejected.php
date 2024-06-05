@@ -9,18 +9,16 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class OwnerApproved extends Mailable
+class OwnerRejected extends Mailable
 {
     use Queueable, SerializesModels;
     public $ownerRequest;
-
     /**
      * Create a new message instance.
      */
     public function __construct($ownerRequest)
     {
         $this->ownerRequest = $ownerRequest;
-
     }
 
     /**
@@ -29,7 +27,7 @@ class OwnerApproved extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Owner Approved',
+            subject: 'Owner Rejected',
         );
     }
 
@@ -39,7 +37,7 @@ class OwnerApproved extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'emails.owner_approved',
+            view: 'emails.owner_rejected',
         );
     }
 
@@ -54,7 +52,7 @@ class OwnerApproved extends Mailable
     }
     public function build()
     {
-        return $this->subject('Permintaan Akses Owner Diterima')
-            ->view('emails.owner_approved');
+        return $this->subject('Permintaan Akses Owner Ditolak')
+            ->view('emails.owner_rejected');
     }
 }
