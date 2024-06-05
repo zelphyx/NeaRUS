@@ -32,7 +32,7 @@ class AuthOwnerController extends Controller
             'password' => 'required',
             'confirmpassword' => 'same:password',
             'jenis_kelamin' => 'nullable',
-            'buktiimage' => 'nullable',
+            'buktiimage' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'tanggal_lahir' => 'nullable|date',
             'alamat_rumah' => 'nullable',
             'urgent_fullname' => 'nullable',
@@ -53,8 +53,8 @@ class AuthOwnerController extends Controller
             if ($request->hasFile('buktiimage')) {
                 $image = $request->file('buktiimage');
                 $new_name = rand() . '.' . $image->extension();
-                $image->move(public_path('storage/proof-images'), $new_name);
-                $input['photoprofile'] = config("app.url") . '/storage/proof-images/' . $new_name;
+                $image->move(public_path('storage/bukti-images'), $new_name);
+                $input['buktiimage'] = config("app.url") . '/storage/bukti-images/' . $new_name;
             }
             User::create($input);
 
