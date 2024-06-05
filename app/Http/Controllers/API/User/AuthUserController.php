@@ -302,7 +302,7 @@ class AuthUserController extends Controller
         $validator = Validator::make($request->all(), [
             'photoprofile' => 'nullable|image|max:2048',
             'name' => 'nullable|string|max:255',
-            'email' => 'nullable|email|unique:users,email,' . $user->ownerId,
+            'email' => 'nullable|email|unique:users,email,',
             'phonenumber' => 'nullable|numeric',
             'password' => 'nullable|string|min:8|confirmed',
             'jenis_kelamin' => 'nullable|string',
