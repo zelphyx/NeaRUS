@@ -57,9 +57,8 @@ class ProfileController extends Controller
             return response()->json(['message' => 'User not authenticated'], 401);
         }
 
-        // Validation
         $validator = Validator::make($request->all(), [
-            'email' => 'nullable|email|unique:users,email,' . $user->ownerId,
+            'email' => 'nullable|email|unique:users,email,' . $user->ownerId . ',ownerId',
             'name' => 'nullable|string|max:255',
             'phonenumber' => 'nullable|numeric',
             'photoprofile' => 'nullable|image|max:2048',
@@ -69,10 +68,8 @@ class ProfileController extends Controller
             return response()->json(['message' => 'Validation failed', 'errors' => $validator->errors()], 422);
         }
 
-        // Gather data for update
         $data = $request->only(['email', 'name', 'phonenumber']);
 
-        // Handle photo upload
         if ($request->hasFile('photoprofile')) {
             $image = $request->file('photoprofile');
             $new_name = rand() . '.' . $image->extension();
@@ -80,7 +77,6 @@ class ProfileController extends Controller
             $data['photoprofile'] = '/storage/profile-images/' . $new_name;
         }
 
-        // Update user
         $user->update($data);
 
         return response()->json(['message' => 'Profile updated successfully', 'user' => $user], 200);
