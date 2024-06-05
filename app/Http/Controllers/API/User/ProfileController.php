@@ -70,18 +70,13 @@ class ProfileController extends Controller
 
         $data = $request->only(['email', 'name', 'phonenumber']);
 
-        if ($request->hasFile('photoprofile')) {
-            $image = $request->file('photoprofile');
-            $newName = time() . '.' . $image->getClientOriginalExtension();
-            $image->move(public_path('storage/photo_profile'), $newName);
-            $newImagePath = '/storage/photo_profile/' . $newName;
-
-            if ($user->photoprofile) {
-                $oldImagePath = str_replace('/storage', 'public', $user->photoprofile);
-                Storage::delete($oldImagePath);
+        if ($request->image != null) {
+            foreach ($request->image as $image) {
+                $new_name = rand() . '.' . $image->extension();
+                $image->move(public_path('storage/post-images'), $new_name);
+                $newImagePath = '/storage/post-images/' . $new_name;
+                $data['photoprofile'] = $newImagePath;
             }
-
-            $data['photoprofile'] = $newImagePath;
         }
 
         $user->update($data);
