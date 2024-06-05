@@ -10,6 +10,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use App\Mail\ResetPasswordMail;
 use Illuminate\Support\Str;
@@ -315,7 +316,6 @@ class AuthUserController extends Controller
         }
 
         $data = $request->only([
-            'photoprofile',
             'name',
             'email',
             'phonenumber',
@@ -330,7 +330,15 @@ class AuthUserController extends Controller
         if ($request->filled('password')) {
             $data['password'] = Hash::make($request->password);
         }
+        if ($request->hasFile('photoprofile')) {
+            // Delete old profile picture if exists
+            if ($user->photoprofile) {
+                Storage::disk('public')->delete($user->photoprofile);
+            }
 
+            $imagePath = $request->file('photoprofile')->store('profile_pics', 'public');
+            $data['photoprofile'] = $imagePath;
+        }
         $user->update($data);
 
         return response()->json(['message' => 'Profile updated successfully', 'data' => $user]);
