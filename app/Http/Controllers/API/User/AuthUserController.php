@@ -297,6 +297,7 @@ class AuthUserController extends Controller
         $user = Auth::user();
 
         $validator = Validator::make($request->all(), [
+            'photoprofile' => 'nullable',
             'name' => 'nullable|string|max:255',
             'email' => 'nullable|email|unique:users,email,' . $user->ownerId,
             'phonenumber' => 'nullable|numeric',
@@ -314,6 +315,7 @@ class AuthUserController extends Controller
         }
 
         $data = $request->only([
+            'photoprofile',
             'name',
             'email',
             'phonenumber',
