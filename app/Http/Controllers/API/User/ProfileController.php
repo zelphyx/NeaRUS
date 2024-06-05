@@ -52,37 +52,40 @@ class ProfileController extends Controller
 
     public function updateProfile(Request $request)
     {
-        $user = $request->user();
+        $user = Auth::user();
         if (is_null($user)) {
             return response()->json(['message' => 'User not authenticated'], 401);
         }
 
+        // Validation
         $validator = Validator::make($request->all(), [
-            'email' => 'nullable|email|unique:users,email,' . $user->ownerId,
+            'email' => 'nullable|email|unique:users,email,' . $user->id,
             'name' => 'nullable|string|max:255',
             'phonenumber' => 'nullable|numeric',
             'photoprofile' => 'nullable|image|max:2048',
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['message' => 'Validation fails', 'errors' => $validator->errors()], 422);
+            return response()->json(['message' => 'Validation failed', 'errors' => $validator->errors()], 422);
         }
 
+        // Gather data for update
         $data = $request->only(['email', 'name', 'phonenumber']);
 
-        if ($request->image != null) {
-            foreach ($request->image as $image) {
-                $new_name = rand() . '.' . $image->extension();
-                $image->move(public_path('storage/post-images'), $new_name);
-                $newImagePath = '/storage/post-images/' . $new_name;
-                $data['photoprofile'] = $newImagePath;
-            }
+        // Handle photo upload
+        if ($request->hasFile('photoprofile')) {
+            $image = $request->file('photoprofile');
+            $new_name = rand() . '.' . $image->extension();
+            $image->move(public_path('storage/profile-images'), $new_name);
+            $data['photoprofile'] = '/storage/profile-images/' . $new_name;
         }
 
-        $user->save($data);
+        // Update user
+        $user->update($data);
 
         return response()->json(['message' => 'Profile updated successfully', 'user' => $user], 200);
     }
+
 
 
 

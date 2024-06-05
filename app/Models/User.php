@@ -45,12 +45,12 @@ class User extends Authenticatable implements MustVerifyEmail
         'remember_token',
     ];
     protected $visible = [
-        'id', 'name', 'email', 'phonenumber', 'websiterole',
-        'jenis_kelamin', 'tanggal_lahir', 'alamat_rumah', // Include these fields in visible
+        'id', 'name', 'email', 'phonenumber', 'websiterole','photoprofile',
+        'jenis_kelamin', 'tanggal_lahir', 'alamat_rumah',
         'email_verified_at', 'created_at', 'updated_at',
         'data_pribadi','urgent_fullname',
         'urgent_status',
-        'urgent_phonenumber' // Add 'data_pribadi' for the custom accessor
+        'urgent_phonenumber'
     ];
     public function getDataPribadiAttribute()
     {
