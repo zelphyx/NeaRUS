@@ -104,7 +104,13 @@
                 <td>{{ $user->ownerId }}</td>
                 <td>{{ $user->name }}</td>
                 <td>{{ $user->email }}</td>
-                <td>{{ $user->image }}</td>
+                <td>
+                    @if($user->buktiimage)
+                        <img src="{{ $user->buktiimage }}" alt="Bukti Image" style="max-width: 100px; max-height: 100px;">
+                    @else
+                        No image
+                    @endif
+                </td>
                 <td>{{ $user->phonenumber }}</td>
                 <td>
                     <form id="approveForm{{ $user->ownerId }}" action="{{ route('owner.approve', $user->ownerId) }}" method="POST" style="display:inline-block;" onsubmit="return confirm('Are you sure you want to approve this owner?');">
