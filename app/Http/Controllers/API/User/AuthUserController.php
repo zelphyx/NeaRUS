@@ -244,6 +244,8 @@ class AuthUserController extends Controller
     public function addPersonalData(Request $request, $ownerId)
     {
         $validator = Validator::make($request->all(), [
+            'name' => 'nullable|string|max:255',
+            'phonenumber' => 'nullable|numeric',
             'jenis_kelamin' => 'nullable',
             'tanggal_lahir' => 'nullable|date',
             'alamat_rumah' => 'nullable',
