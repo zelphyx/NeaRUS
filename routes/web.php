@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\Api\User\AuthOwnerController;
 use App\Http\Controllers\Auth\LoginController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
@@ -13,12 +12,12 @@ Route::get('/login', function () {
 // Handle login form submission
 Route::post('/login', [LoginController::class, 'login'])->name('login.submit');
 Route::middleware(['auth:sanctum'])->group(function (){
-    Route::get('/owner-requests', [AuthOwnerController::class, 'showOwnerRequests'])->name('owner.requests');
-    Route::get('/owners', [AuthOwnerController::class, 'showOwners'])->name('owners.index');
+    Route::get('/owner-requests', [\App\Http\Controllers\API\User\AuthOwnerController::class, 'showOwnerRequests'])->name('owner.requests');
+    Route::get('/owners', [\App\Http\Controllers\API\User\AuthOwnerController::class, 'showOwners'])->name('owners.index');
 });
 
-Route::patch('/owner-requests/approve/{id}', [AuthOwnerController::class, 'approveOwner'])->name('owner.approve');
-Route::delete('/owner-requests/delete/{id}', [AuthOwnerController::class, 'deleteOwner'])->name('owner.delete');
+Route::patch('/owner-requests/approve/{id}', [\App\Http\Controllers\API\User\AuthOwnerController::class, 'approveOwner'])->name('owner.approve');
+Route::delete('/owner-requests/delete/{id}', [\App\Http\Controllers\API\User\AuthOwnerController::class, 'deleteOwner'])->name('owner.delete');
 
 Route::get('/', function () {
     return view('welcome');
