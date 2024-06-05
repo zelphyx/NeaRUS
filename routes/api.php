@@ -14,7 +14,6 @@ Route::controller(\App\Http\Controllers\API\User\AuthUserController::class)->gro
     Route::post('masuk','loginuserowner');
     Route::post('daftaruser','register');
     Route::post('logoutt','logoutuserowner');
-    Route::post('user/{ownerId}/add-personal-data','addPersonalData');
     Route::post('reset-password','sendResetPasswordEmail');
     Route::get('/verify-email/{token}','verifyEmail')->name('verify.email');
     Route::get('verify/verify-email/{token}','apiVerifyEmail')->name('api.verify.email');
@@ -33,6 +32,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::controller(\App\Http\Controllers\API\User\ProfileController::class)->group(function () {
         Route::post('profile/update', 'updateProfile');
         Route::post('profile/reset-password','resetpassprofile');
+        Route::post('profile/add-personal-data','addPersonalData');
     });
 });
 
