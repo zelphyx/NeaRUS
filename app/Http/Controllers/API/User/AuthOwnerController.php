@@ -9,8 +9,10 @@ use App\Models\Owner;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Validator;
 use App\Events\OwnerRequestUpdated;
+use App\Notifications\ApprovalDeleted;
 
 class AuthOwnerController extends Controller
 {
@@ -110,11 +112,17 @@ class AuthOwnerController extends Controller
             $user = User::findOrFail($id);
             $user->delete();
 
+            $userEmail = $user->email;
+
+            Notification::route('mail', $userEmail)
+                ->notify(new ApprovalDeleted($user->name));
+
             return redirect()->route('owner.requests')->with('success', 'Owner deleted successfully.');
         } catch (\Exception $e) {
             return redirect()->route('owner.requests')->with('error', 'Failed to delete owner.');
         }
     }
+
     /**
      * Show the form for creating a new resource.
      */
