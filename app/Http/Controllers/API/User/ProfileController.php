@@ -102,7 +102,7 @@ class ProfileController extends Controller
 
 
 
-    public function addPersonalData(Request $request, $ownerId)
+    public function addPersonalData(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'name' => 'nullable',
