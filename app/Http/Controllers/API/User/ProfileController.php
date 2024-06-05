@@ -60,7 +60,7 @@ class ProfileController extends Controller
         }
         $validator = Validator::make($request->all(), [
             'email' => 'email|unique:users,email' . $user->ownerId . ',ownerId',
-            'name' => 'required|string|max:255',
+            'name' => 'string|max:255',
             'phonenumber' => 'numeric',
             'photoprofile' => 'image',
         ]);
@@ -105,6 +105,7 @@ class ProfileController extends Controller
     public function addPersonalData(Request $request, $ownerId)
     {
         $validator = Validator::make($request->all(), [
+            'name' => 'nullable',
             'jenis_kelamin' => 'nullable',
             'tanggal_lahir' => 'nullable|date',
             'alamat_rumah' => 'nullable',
