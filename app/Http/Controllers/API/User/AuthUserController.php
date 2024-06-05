@@ -292,6 +292,47 @@ class AuthUserController extends Controller
             'message' => 'User data updated successfully',
         ]);
     }
+    public function updateProfile(Request $request)
+    {
+        $user = Auth::user();
+
+        $validator = Validator::make($request->all(), [
+            'name' => 'nullable|string|max:255',
+            'email' => 'nullable|email|unique:users,email,' . $user->ownerId,
+            'phonenumber' => 'nullable|numeric',
+            'password' => 'nullable|string|min:8|confirmed',
+            'jenis_kelamin' => 'nullable|string',
+            'tanggal_lahir' => 'nullable|date',
+            'alamat_rumah' => 'nullable|string',
+            'urgent_fullname' => 'nullable|string',
+            'urgent_status' => 'nullable|string',
+            'urgent_phonenumber' => 'nullable|numeric'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
+        $data = $request->only([
+            'name',
+            'email',
+            'phonenumber',
+            'jenis_kelamin',
+            'tanggal_lahir',
+            'alamat_rumah',
+            'urgent_fullname',
+            'urgent_status',
+            'urgent_phonenumber'
+        ]);
+
+        if ($request->filled('password')) {
+            $data['password'] = Hash::make($request->password);
+        }
+
+        $user->update($data);
+
+        return response()->json(['message' => 'Profile updated successfully', 'data' => $user]);
+    }
 
 
 
