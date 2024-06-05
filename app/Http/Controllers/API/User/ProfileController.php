@@ -118,7 +118,7 @@ class ProfileController extends Controller
             return response()->json(['error' => $validator->errors()], 422);
         }
 
-        $user = User::find($ownerId);
+        $user = Auth::user();
         if (!$user) {
             return response()->json(['error' => 'User not found'], 404);
         }
