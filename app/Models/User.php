@@ -9,22 +9,16 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
 
-
 class User extends Authenticatable implements MustVerifyEmail
 {
-    use HasFactory, Notifiable,HasApiTokens;
+    use HasFactory, Notifiable, HasApiTokens;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
     protected $fillable = [
         'name',
-        'photoprofile',
-        'websiterole',
         'email',
         'phonenumber',
+        'photoprofile',
+        'websiterole',
         'password',
         'jenis_kelamin',
         'tanggal_lahir',
@@ -36,23 +30,26 @@ class User extends Authenticatable implements MustVerifyEmail
         'buktiimage'
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
-     */
+    // Ensure other parts of the model are as required
     protected $hidden = [
         'password',
         'remember_token',
     ];
+
     protected $visible = [
-        'id', 'name', 'email', 'phonenumber', 'websiterole','photoprofile','buktiimage',
+        'id', 'name', 'email', 'phonenumber', 'websiterole', 'photoprofile', 'buktiimage',
         'jenis_kelamin', 'tanggal_lahir', 'alamat_rumah',
         'email_verified_at', 'created_at', 'updated_at',
-        'data_pribadi','urgent_fullname',
-        'urgent_status',
-        'urgent_phonenumber'
+        'data_pribadi', 'urgent_fullname', 'urgent_status', 'urgent_phonenumber'
     ];
+
+    protected $primaryKey = 'ownerId';
+
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+        'password' => 'hashed',
+    ];
+
     public function getDataPribadiAttribute()
     {
         return [
@@ -64,19 +61,7 @@ class User extends Authenticatable implements MustVerifyEmail
             'urgent_phonenumber' => $this->urgent_phonenumber
         ];
     }
-    protected $primaryKey = 'ownerId';
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
-    protected function casts(): array
-    {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-        ];
-    }
+
     public function getKeyName()
     {
         return 'ownerId';

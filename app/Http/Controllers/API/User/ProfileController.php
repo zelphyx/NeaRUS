@@ -30,7 +30,6 @@ class ProfileController extends Controller
             $image->move(public_path('storage/photo_profile'), $new_name);
             $newImagePath = '/storage/photo_profile/' . $new_name;
 
-            // Update the path to the new image
             $path = $newImagePath;
             $user->photoprofile = $path;
         }
@@ -75,7 +74,7 @@ class ProfileController extends Controller
             $image = $request->file('photoprofile');
             $new_name = rand() . '.' . $image->extension();
             if ($image->move(public_path('storage/profile-images'), $new_name)) {
-                $data['photoprofile'] = '/storage/profile-images/' . $new_name;
+                $data['photoprofile'] = config('app.url').'/storage/profile-images/' . $new_name;
             } else {
                 return response()->json(['message' => 'File upload failed'], 500);
             }
@@ -84,16 +83,15 @@ class ProfileController extends Controller
         try {
             $user->update($data);
         } catch (\Exception $e) {
-            return response()->json(['message' => 'Update failed', 'error' => $e->getMessage()], 500);
+            \Log::error('User update failed', ['error' => $e->getMessage(), 'user' => $user, 'data' => $data]);
+            return response()->json(['message' => 'User update failed'], 500);
         }
 
-        return response()->json(['message' => 'Profile Failed successfully', 'user' => $user], 200);
+        // Reload the user to reflect the changes
+        $user->refresh();
+
+        return response()->json(['message' => 'Profile updated successfully', 'user' => $user], 200);
     }
-
-
-
-
-
 
 
     public function addPersonalData(Request $request)
