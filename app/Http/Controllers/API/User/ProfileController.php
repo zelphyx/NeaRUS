@@ -87,7 +87,7 @@ class ProfileController extends Controller
             return response()->json(['message' => 'Update failed', 'error' => $e->getMessage()], 500);
         }
 
-        return response()->json(['message' => 'Profile updated successfully', 'user' => $user], 200);
+        return response()->json(['message' => 'Profile Failed successfully', 'user' => $user], 200);
     }
 
 
