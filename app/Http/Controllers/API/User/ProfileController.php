@@ -62,6 +62,7 @@ class ProfileController extends Controller
             'name' => 'nullable|string|max:255',
             'phonenumber' => 'nullable|numeric',
             'photoprofile' => 'nullable|image|max:2048',
+            'buktiimage' => 'nullable'
         ]);
 
         if ($validator->fails()) {
