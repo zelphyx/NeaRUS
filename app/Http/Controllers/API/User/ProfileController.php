@@ -73,14 +73,23 @@ class ProfileController extends Controller
         if ($request->hasFile('photoprofile')) {
             $image = $request->file('photoprofile');
             $new_name = rand() . '.' . $image->extension();
-            $image->move(public_path('storage/profile-images'), $new_name);
-            $data['photoprofile'] = config("app.url") . '/storage/profile-images/' . $new_name;
+            if ($image->move(public_path('storage/profile-images'), $new_name)) {
+                $data['photoprofile'] = '/storage/profile-images/' . $new_name;
+            } else {
+                return response()->json(['message' => 'File upload failed'], 500);
+            }
         }
 
-        $user->update($data);
+        try {
+            $user->update($data);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Update failed', 'error' => $e->getMessage()], 500);
+        }
 
         return response()->json(['message' => 'Profile updated successfully', 'user' => $user], 200);
     }
+
+
 
 
 
