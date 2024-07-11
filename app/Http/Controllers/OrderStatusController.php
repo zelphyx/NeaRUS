@@ -25,6 +25,7 @@ class OrderStatusController extends Controller
             ),
             'customer_details' => array(
                 'name' => $request->name,
+                'detail' => $request->detail,
                 'phone' => $request->phonenumber,
                 'duration' => $request->duration,
             ),
