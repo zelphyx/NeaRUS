@@ -11,6 +11,7 @@ class Order extends Model
     protected $table = 'order_status';
     protected $fillable = [
         'name',
+        'ownerId',
         'phonenumber',
         'detail',
         'duration',
