@@ -40,7 +40,7 @@ class OrderStatusController extends Controller
         $serverkey = config('midtrans.server_key');
         $hashed = hash('sha512',$request->order_id.$request->status_code.$request->gross_amount.$serverkey);
         if($hashed == $request->signature_key){
-            if ($request->transaction_status == 'capture'){
+            if ($request->transaction_status == 'capture' || $request->transaction_status == 'settlement'){
                 $order = Order::find($request->order_id);
                 $order->update(['status' => 'Paid']);
             }
