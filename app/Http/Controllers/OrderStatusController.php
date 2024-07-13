@@ -10,13 +10,9 @@ class OrderStatusController extends Controller
     public function beforecheckout(Request $request){
         $request->request->add(['status' => 'Unpaid']);
         $order = Order::create($request->all());
-        // Set your Merchant Server Key
         \Midtrans\Config::$serverKey = config('midtrans.server_key');
-        // Set to Development/Sandbox Environment (default). Set to true for Production Environment (accept real transaction).
         \Midtrans\Config::$isProduction = true;
-        // Set sanitization on (default)
         \Midtrans\Config::$isSanitized = true;
-        // Set 3DS transaction for credit card to true
         \Midtrans\Config::$is3ds = true;
         $params = array(
             'transaction_details' => array(
@@ -38,5 +34,16 @@ class OrderStatusController extends Controller
             'message' => 'Barang Berhasil Dicheckout',
             'snapToken' => $snapToken,
         ]);
+    }
+
+    public function callback(Request $request){
+        $serverkey = config('midtrans.server_key');
+        $hashed = hash('sha512',$request->order_id.$request->status_code.$request->gross_amount.$serverkey);
+        if($hashed == $request->signature_key){
+            if ($request->transaction_status == 'capture'){
+                $order = Order::find($request->order_id);
+                $order->update(['status' => 'Paid']);
+            }
+        }
     }
 }

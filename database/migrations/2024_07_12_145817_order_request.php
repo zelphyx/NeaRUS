@@ -17,6 +17,7 @@ return new class extends Migration
             $table->text('phonenumber');
             $table->foreignId('ownerId');
             $table->text('detail');
+            $table->date('duration');
             $table->bigInteger('price');
             $table->enum('status', ['Unpaid', 'Paid']);
             $table->timestamps();

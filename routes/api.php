@@ -36,6 +36,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
 //Payment
 Route::post('checkout',[\App\Http\Controllers\OrderStatusController::class,'beforecheckout']);
+Route::post('midtrans-callback',[\App\Http\Controllers\OrderStatusController::class,'callback']);
 
 
 //Product
