@@ -9,7 +9,9 @@ class OrderStatusController extends Controller
 {
     public function beforecheckout(Request $request)
     {
-        $request->request->add(['status' => 'Unpaid']);
+        $uniqueTransactionRef = $this->generateUniqueTransactionRef();
+        $request->request->add(['status' => 'Unpaid','refnumber' => $uniqueTransactionRef]);
+
         $order = Order::create($request->all());
 
         \Midtrans\Config::$serverKey = config('midtrans.server_key');
