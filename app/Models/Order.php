@@ -17,6 +17,7 @@ class Order extends Model
         'duration',
         'price',
         'status',
+        'refnumber',
     ];
     protected $hidden = [
         'created_at',

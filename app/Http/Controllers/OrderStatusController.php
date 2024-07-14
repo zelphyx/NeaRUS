@@ -7,18 +7,23 @@ use Illuminate\Http\Request;
 
 class OrderStatusController extends Controller
 {
-    public function beforecheckout(Request $request){
+    public function beforecheckout(Request $request)
+    {
         $request->request->add(['status' => 'Unpaid']);
         $order = Order::create($request->all());
+
         \Midtrans\Config::$serverKey = config('midtrans.server_key');
         \Midtrans\Config::$isProduction = true;
         \Midtrans\Config::$isSanitized = true;
         \Midtrans\Config::$is3ds = true;
+
+        $uniqueTransactionRef = $this->generateUniqueTransactionRef();
+
         $params = array(
             'transaction_details' => array(
                 'order_id' => $order->id,
                 'gross_amount' => $order->price,
-                'transaction_ref' => rand(),
+                'refnumber' => $uniqueTransactionRef,
             ),
             'customer_details' => array(
                 'name' => $request->name,
@@ -27,8 +32,8 @@ class OrderStatusController extends Controller
                 'phone' => $request->phonenumber,
                 'duration' => $request->duration,
             ),
-
         );
+
         $snapToken = \Midtrans\Snap::getSnapToken($params);
         return response()->json([
             'success' => true,
@@ -37,16 +42,28 @@ class OrderStatusController extends Controller
         ]);
     }
 
-    public function callback(Request $request){
+    private function generateUniqueTransactionRef()
+    {
+        do {
+            $transactionRef = random_int(1000000000, 9999999999);
+        } while (Order::where('refnumber', $transactionRef)->exists());
+
+        return $transactionRef;
+    }
+
+    public function callback(Request $request)
+    {
         $serverkey = config('midtrans.server_key');
-        $hashed = hash('sha512',$request->order_id.$request->status_code.$request->gross_amount.$serverkey);
-        if($hashed == $request->signature_key){
-            if ($request->transaction_status == 'capture' || $request->transaction_status == 'settlement'){
+        $hashed = hash('sha512', $request->order_id . $request->status_code . $request->gross_amount . $serverkey);
+
+        if ($hashed == $request->signature_key) {
+            if ($request->transaction_status == 'capture' || $request->transaction_status == 'settlement') {
                 $order = Order::find($request->order_id);
                 $order->update(['status' => 'Paid']);
+
                 return response()->json([
                     'success' => true,
-                    'order_id' => $order->order_id,
+                    'refnumber' => $order->refnumber,
                     'payment_time' => $request->transaction_time,
                     'payment_method' => $request->payment_type,
                 ]);
