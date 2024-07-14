@@ -18,6 +18,7 @@ class OrderStatusController extends Controller
             'transaction_details' => array(
                 'order_id' => $order->id,
                 'gross_amount' => $order->price,
+                'transaction_ref' => rand(),
             ),
             'customer_details' => array(
                 'name' => $request->name,
