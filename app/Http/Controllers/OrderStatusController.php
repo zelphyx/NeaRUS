@@ -45,7 +45,7 @@ class OrderStatusController extends Controller
                 $order->update(['status' => 'Paid']);
                 return response()->json([
                     'success' => true,
-                    'transaction_id' => $order->transaction_id,
+                    'order_id' => $order->order_id,
                     'payment_time' => $request->transaction_time,
                     'payment_method' => $request->payment_type,
                 ]);
