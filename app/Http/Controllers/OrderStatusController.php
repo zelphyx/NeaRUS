@@ -43,6 +43,12 @@ class OrderStatusController extends Controller
             if ($request->transaction_status == 'capture' || $request->transaction_status == 'settlement'){
                 $order = Order::find($request->order_id);
                 $order->update(['status' => 'Paid']);
+                return response()->json([
+                    'success' => true,
+                    'transaction_id' => $order->transaction_id,
+                    'payment_time' => $request->transaction_time,
+                    'payment_method' => $request->payment_type,
+                ]);
             }
         }
     }
