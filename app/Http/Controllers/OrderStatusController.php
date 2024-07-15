@@ -81,11 +81,26 @@ class OrderStatusController extends Controller
         $ownerId = auth()->user()->ownerId;
 
         $orders = Order::where('ownerId', $ownerId)
+            ->where('status', 'Paid')
             ->get();
 
         return response()->json([
             'success' => true,
             'orders' => $orders,
+        ]);
+    }
+    public function getPaidBuyerCount(Request $request)
+    {
+        $ownerId = auth()->user()->ownerId;
+
+        $uniqueBuyerCount = Order::where('ownerId', $ownerId)
+            ->where('status', 'Paid')
+            ->distinct('phonenumber')
+            ->count('phonenumber');
+
+        return response()->json([
+            'success' => true,
+            'uniqueBuyerCount' => $uniqueBuyerCount,
         ]);
     }
 }
