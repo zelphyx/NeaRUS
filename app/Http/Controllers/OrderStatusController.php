@@ -81,7 +81,6 @@ class OrderStatusController extends Controller
         $ownerId = auth()->user()->ownerId;
 
         $orders = Order::where('ownerId', $ownerId)
-            ->where('status', 'Paid')
             ->get();
 
         return response()->json([
