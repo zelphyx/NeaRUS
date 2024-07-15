@@ -38,7 +38,7 @@ Route::middleware('auth:sanctum')->group(function () {
 Route::post('checkout',[\App\Http\Controllers\OrderStatusController::class,'beforecheckout']);
 Route::post('midtrans-callback',[\App\Http\Controllers\OrderStatusController::class,'callback']);
 Route::middleware('auth:sanctum')->get('/orders/paid', [\App\Http\Controllers\OrderStatusController::class, 'getpaidbuyer']);
-Route::middleware('auth')->get('/orders/count', [\App\Http\Controllers\OrderStatusController::class, 'getPaidBuyerCount']);
+Route::middleware('auth:sanctum')->get('/orders/count', [\App\Http\Controllers\OrderStatusController::class, 'getPaidBuyerCount']);
 
 
 //Product
