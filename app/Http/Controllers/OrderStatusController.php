@@ -72,5 +72,21 @@ class OrderStatusController extends Controller
                 ]);
             }
         }
+        return response()->json([
+            'success' => true
+        ]);
+    }
+
+    public function getpaidbuyer(Request $request){
+        $ownerId = auth()->user()->ownerId;
+
+        $orders = Order::where('ownerId', $ownerId)
+            ->where('status', 'Paid')
+            ->get();
+
+        return response()->json([
+            'success' => true,
+            'orders' => $orders,
+        ]);
     }
 }
