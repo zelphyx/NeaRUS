@@ -8,6 +8,17 @@ use BotMan\BotMan\Messages\Incoming\Answer;
 
 class BotController extends Controller
 {
+
+    public function handlechat(Request $request){
+        $message = $request->input('message');
+
+        // Misalnya ini adalah response dari chatbot
+        $response = "Ini adalah respon dari chatbot untuk pesan: " . $message;
+
+        return response()->json([
+            'message' => $response
+        ]);
+    }
     public function handle()
     {
         $botman = app("botman");

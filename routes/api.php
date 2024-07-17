@@ -24,6 +24,7 @@ Route::controller(\App\Http\Controllers\API\User\AuthOwnerController::class)->gr
 });
 
 Route::get('/user',[\App\Http\Controllers\API\User\AuthUserController::class,'index']);
+Route::post('/bot',[\App\Http\Controllers\BotController::class,'handlechat']);
 
 //Profile
 Route::middleware('auth:sanctum')->group(function () {
