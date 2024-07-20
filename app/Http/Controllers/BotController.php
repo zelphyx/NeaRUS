@@ -12,8 +12,23 @@ class BotController extends Controller
     public function handlechat(Request $request){
         $message = $request->input('message');
 
-        // Misalnya ini adalah response dari chatbot
-        $response = "Ini adalah respon dari chatbot untuk pesan: " . $message;
+        switch ($message) {
+            case 'Apa itu website nearus':
+                $response = "a";
+                break;
+            case 'Bagaimana cara melakukan pemesanan kos di nearus':
+                $response = "i";
+                break;
+            case 'Bagaimana sistem refund di nearus':
+                $response = "u";
+                break;
+            case 'Tentang nearus finance':
+                $response = "e";
+                break;
+            default:
+                $response = "Maaf Kami Tidak Mengerti Tentang Pertanyaan Anda, Silahkan Tanyakan Kepada Admin Kami" . $message;
+                break;
+        }
 
         return response()->json([
             'message' => $response
