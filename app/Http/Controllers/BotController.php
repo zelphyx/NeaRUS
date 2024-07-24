@@ -13,16 +13,16 @@ class BotController extends Controller
         $message = $request->input('message');
 
         switch ($message) {
-            case 'Apa itu website nearus':
+            case 'apa itu website nearus':
                 $response = "a";
                 break;
-            case 'Bagaimana cara melakukan pemesanan kos di nearus':
+            case 'bagaimana cara melakukan pemesanan kos di nearus':
                 $response = "i";
                 break;
-            case 'Bagaimana sistem refund di nearus':
+            case 'bagaimana sistem refund di nearus':
                 $response = "u";
                 break;
-            case 'Tentang nearus finance':
+            case 'tentang nearus finance':
                 $response = "e";
                 break;
             default:
