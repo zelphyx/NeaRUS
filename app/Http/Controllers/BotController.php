@@ -25,6 +25,9 @@ class BotController extends Controller
             case 'tentang nearus finance':
                 $response = "e";
                 break;
+            case 'Hubungi admin':
+                $response = "Untuk mengetahui info lebih lanjut anda bisa menghubungi admin nearus http://wa.me/6281328282288";
+                break;
             default:
                 $response = "Maaf Kami Tidak Mengerti Tentang Pertanyaan Anda, Silahkan Tanyakan Kepada Admin Kami" . $message;
                 break;
