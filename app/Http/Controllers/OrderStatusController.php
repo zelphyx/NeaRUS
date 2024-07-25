@@ -13,9 +13,8 @@ class OrderStatusController extends Controller
         $request->request->add(['status' => 'Unpaid','refnumber' => $uniqueTransactionRef]);
 
         $order = Order::create($request->all());
-
         \Midtrans\Config::$serverKey = config('midtrans.server_key');
-        \Midtrans\Config::$isProduction = true;
+        \Midtrans\Config::$isProduction = false;
         \Midtrans\Config::$isSanitized = true;
         \Midtrans\Config::$is3ds = true;
 
