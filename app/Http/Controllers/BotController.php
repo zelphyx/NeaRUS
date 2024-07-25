@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use BotMan\BotMan\BotMan;
 use BotMan\BotMan\Messages\Incoming\Answer;
+use Illuminate\Support\Facades\Redirect;
 
 class BotController extends Controller
 {
@@ -26,7 +27,7 @@ class BotController extends Controller
                 $response = "e";
                 break;
             case 'Hubungi admin':
-                $response = "Untuk mengetahui info lebih lanjut anda bisa menghubungi admin nearus http://wa.me/6281328282288";
+                $response = Redirect::to('https://wa.me/6281380895499');
                 break;
             default:
                 $response = "Maaf Kami Tidak Mengerti Tentang Pertanyaan Anda, Silahkan Tanyakan Kepada Admin Kami" . $message;
