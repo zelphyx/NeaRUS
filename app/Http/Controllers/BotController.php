@@ -27,8 +27,10 @@ class BotController extends Controller
                 $response = "e";
                 break;
             case 'hubungi admin':
-                $response = redirect()->away('https://wa.me/6281380895499');
-                break;
+                return response()->json([
+                    'message' => 'Redirecting to admin',
+                    'redirect_url' => 'https://wa.me/6281380895499'
+                ]);
             default:
                 $response = "Maaf Kami Tidak Mengerti Tentang Pertanyaan Anda, Silahkan Tanyakan Kepada Admin Kami" . $message;
                 break;
