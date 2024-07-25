@@ -26,8 +26,8 @@ class BotController extends Controller
             case 'tentang nearus finance':
                 $response = "e";
                 break;
-            case 'Hubungi admin':
-                $response = Redirect::to('https://wa.me/6281380895499');
+            case 'hubungi admin':
+                $response = redirect()->away('https://wa.me/6281380895499');
                 break;
             default:
                 $response = "Maaf Kami Tidak Mengerti Tentang Pertanyaan Anda, Silahkan Tanyakan Kepada Admin Kami" . $message;
