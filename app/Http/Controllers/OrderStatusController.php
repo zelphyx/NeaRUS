@@ -104,15 +104,10 @@ class OrderStatusController extends Controller
         ]);
     }
 
-    public function passingowner(Request $request)
-    {
+    public function passingowner(Request $request){
         $ownerId = auth()->user()->ownerId;
-
         $passdata = Order::where('ownerId', $ownerId)
             ->where('status', 'Paid')
-            ->whereHas('user', function($query) {
-                $query->where('websiterole', 'Owner');
-            })
             ->get();
 
         return response()->json([
@@ -120,15 +115,13 @@ class OrderStatusController extends Controller
             'data' => $passdata
         ]);
     }
-
     public function passingbuyer(Request $request)
     {
-        $ownerId = auth()->user()->ownerId;
+        $userName = auth()->user()->name;
 
-        $passdata = Order::where('ownerId', $ownerId)
-            ->where('status', 'Paid')
-            ->whereHas('user', function($query) {
-                $query->where('websiterole', 'User');
+        $passdata = Order::where('status', 'Paid')
+            ->whereHas('users', function($query) use ($userName) {
+                $query->where('name', $userName);
             })
             ->get();
 
