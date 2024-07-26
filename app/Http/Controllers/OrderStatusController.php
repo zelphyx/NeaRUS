@@ -107,7 +107,7 @@ class OrderStatusController extends Controller
     public function passingowner(Request $request){
         $ownerId = auth()->user()->ownerId;
         $passdata = Order::where('ownerId',$ownerId)
-                    ->where('websiterole','Owner')
+//                    ->where('websiterole','Owner')
                     ->where('status','Paid');
 
         return response()->json([
@@ -118,7 +118,7 @@ class OrderStatusController extends Controller
     public function passingbuyer(Request $request){
         $ownerId = auth()->user()->ownerId;
         $passdata = Order::where('ownerId',$ownerId)
-            ->where('websiterole','User')
+//            ->where('websiterole','User')
             ->where('status','Paid');
 
         return response()->json([
