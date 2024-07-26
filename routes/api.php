@@ -40,6 +40,8 @@ Route::post('checkout',[\App\Http\Controllers\OrderStatusController::class,'befo
 Route::post('midtrans-callback',[\App\Http\Controllers\OrderStatusController::class,'callback']);
 Route::middleware('auth:sanctum')->get('/orders/paid', [\App\Http\Controllers\OrderStatusController::class, 'getpaidbuyer']);
 Route::middleware('auth:sanctum')->get('/orders/count', [\App\Http\Controllers\OrderStatusController::class, 'getPaidBuyerCount']);
+Route::middleware('auth:sanctum')->get('/orders/user', [\App\Http\Controllers\OrderStatusController::class, 'passingbuyer']);
+Route::middleware('auth:sanctum')->get('/orders/owner', [\App\Http\Controllers\OrderStatusController::class, 'passingowner']);
 
 
 //Product

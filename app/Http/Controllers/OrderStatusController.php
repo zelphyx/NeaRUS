@@ -59,7 +59,7 @@ class OrderStatusController extends Controller
         $hashed = hash('sha512', $request->order_id . $request->status_code . $request->gross_amount . $serverkey);
 
         if ($hashed == $request->signature_key) {
-            if ($request->transaction_status == 'capture' || $request->transaction_status == 'settlement') {
+            if ($request->transaction_status == 'capture' || $request->transaction_status == 'settlement' || $request->transaction_status == 'complete') {
                 $order = Order::find($request->order_id);
                 $order->update(['status' => 'Paid']);
 
@@ -101,6 +101,29 @@ class OrderStatusController extends Controller
             'success' => true,
             'uniqueBuyerCount' => $uniqueBuyerCount,
             'userregistered' => $ownerId,
+        ]);
+    }
+
+    public function passingowner(Request $request){
+        $ownerId = auth()->user()->ownerId;
+        $passdata = Order::where('ownerId',$ownerId)
+                    ->where('websiterole','Owner')
+                    ->where('status','Paid');
+
+        return response()->json([
+            'success' => true,
+            'data' => $passdata
+            ]);
+    }
+    public function passingbuyer(Request $request){
+        $ownerId = auth()->user()->ownerId;
+        $passdata = Order::where('ownerId',$ownerId)
+            ->where('websiterole','User')
+            ->where('status','Paid');
+
+        return response()->json([
+            'success' => true,
+            'data' => $passdata
         ]);
     }
 }
