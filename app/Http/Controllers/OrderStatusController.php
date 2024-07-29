@@ -105,6 +105,21 @@ class OrderStatusController extends Controller
         ]);
     }
 
+    public function getbalance(Request $request)
+    {
+        $ownerId = auth()->user()->ownerId;
+
+        $balance = Order::where('ownerId', $ownerId)
+            ->where('status', 'Paid')
+            ->sum('price');
+
+        return response()->json([
+            'success' => true,
+            'uniqueBuyerCount' => $balance,
+            'userregistered' => $ownerId,
+        ]);
+    }
+
     public function passingowner(Request $request){
         $ownerId = auth()->user()->ownerId;
         $passdata = Order::where('ownerId', $ownerId)
@@ -116,8 +131,7 @@ class OrderStatusController extends Controller
             'data' => $passdata
         ]);
     }
-    public function passingbuyer(Request $request)
-    {
+    public function passingbuyer(Request $request){
         $userName = auth()->user()->name;
 
         $passdata = Order::where('status', 'Paid')
