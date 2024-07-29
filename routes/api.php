@@ -42,6 +42,7 @@ Route::middleware('auth:sanctum')->get('/orders/paid', [\App\Http\Controllers\Or
 Route::middleware('auth:sanctum')->get('/orders/count', [\App\Http\Controllers\OrderStatusController::class, 'getPaidBuyerCount']);
 Route::middleware('auth:sanctum')->get('/orders/user', [\App\Http\Controllers\OrderStatusController::class, 'passingbuyer']);
 Route::middleware('auth:sanctum')->get('/orders/owner', [\App\Http\Controllers\OrderStatusController::class, 'passingowner']);
+Route::middleware('auth:sanctum')->get('/orders/balance', [\App\Http\Controllers\OrderStatusController::class, 'getbalance']);
 
 
 //Product
