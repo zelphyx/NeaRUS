@@ -30,6 +30,7 @@ Route::post('/bot',[\App\Http\Controllers\BotController::class,'handlechat']);
 Route::middleware('auth:sanctum')->group(function () {
     Route::controller(\App\Http\Controllers\API\User\ProfileController::class)->group(function () {
         Route::post('profile/update', 'updateProfile');
+        Route::get('profile', 'currentprofile');
         Route::post('profile/reset-password','profileresetpass');
         Route::post('profile/add-personal-data','addPersonalData');
     });
