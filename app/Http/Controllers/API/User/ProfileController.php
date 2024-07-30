@@ -158,4 +158,14 @@ class ProfileController extends Controller
 
         return response()->json(['message' => 'Password has been updated successfully']);
     }
+
+    public function currentprofile(Request $request) {
+        $user = Auth::user();
+
+        if (!$user) {
+            return response()->json(['message' => 'User not authenticated'], 401);
+        }
+
+        return response()->json(['user' => $user], 200);
+    }
 }
