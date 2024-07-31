@@ -9,6 +9,7 @@
 </head>
 <body>
 <div id="app">
+
     @include('Chatify::layouts.app')
 </div>
 </body>
