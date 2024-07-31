@@ -18,6 +18,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'websiterole' => \App\Http\Middleware\OwnerMiddleware::class,
             'adminmiddleware' => \App\Http\Middleware\AdminMiddleware::class,
             'ChatifyMessenger' => Chatify\Facades\ChatifyMessenger::class,
+            'Chatify' => Chatify\Facades\ChatifyMessenger::class,
 
         ]);
     })

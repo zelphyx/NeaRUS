@@ -7,7 +7,7 @@
         sounds: {!! json_encode(config('chatify.sounds')) !!},
         allowedImages: {!! json_encode(config('chatify.attachments.allowed_images')) !!},
         allowedFiles: {!! json_encode(config('chatify.attachments.allowed_files')) !!},
-        maxUploadSize: {{ Chatify::getMaxUploadSize() }},
+        maxUploadSize: {{ \Chatify\Facades\ChatifyMessenger::class::getMaxUploadSize() }},
         pusher: {!! json_encode(config('chatify.pusher')) !!},
         pusherAuthEndpoint: '{{route("pusher.auth")}}'
     };
