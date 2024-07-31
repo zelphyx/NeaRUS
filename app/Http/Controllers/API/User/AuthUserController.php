@@ -363,6 +363,7 @@ class AuthUserController extends Controller
         if (Auth::attempt($credentials, $remember)) {
             $user = Auth::user();
             $success['name'] = $user->name;
+            $success['ownerId'] = $user->ownerId;
             $success['email'] = $user->email;
             $success['phonenumber'] = $user->phonenumber;
             $token = $user->createToken('user')->plainTextToken;
