@@ -95,7 +95,7 @@ Route::middleware('verified')->group(function () {
 });
 
 Route::middleware('auth:sanctum')->group(function () {
-    require base_path('vendor/munafio/chatify/routes/web.php');
+    require base_path('vendor/munafio/chatify/src/routes/web.php');
 });
 
 Route::get('/email/verify', 'VerificationController@verify')->middleware('verified');
