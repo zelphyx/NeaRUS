@@ -9,7 +9,7 @@
 </head>
 <body>
 <div id="app">
-    @include('Chatify::layouts.app')
+    @include('vendor.Chatify.pages.app')
 </div>
 </body>
 </html>
