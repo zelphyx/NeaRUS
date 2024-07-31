@@ -115,7 +115,7 @@ class OrderStatusController extends Controller
 
         return response()->json([
             'success' => true,
-            'uniqueBuyerCount' => $balance,
+            'Balance Count' => $balance,
             'userregistered' => $ownerId,
         ]);
     }

@@ -5,6 +5,8 @@ use App\Http\Middleware\OwnerMiddleware;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
+use Chatify\Facades\ChatifyMessenger;
+
 
 
 //User
@@ -92,6 +94,9 @@ Route::middleware('verified')->group(function () {
     });
 });
 
+Route::middleware('auth:sanctum')->group(function () {
+    require base_path('vendor/munafio/chatify/routes/web.php');
+});
 
 Route::get('/email/verify', 'VerificationController@verify')->middleware('verified');
 
