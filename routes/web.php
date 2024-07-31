@@ -55,4 +55,7 @@ Route::get('/email/verify', 'VerificationController@verify')->middleware('verifi
 Route::get('/test', function () {
     return view('test');
 });
+Route::middleware('auth')->get('/chat', function () {
+    return view('chatify');
+});
 

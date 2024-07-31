@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api\User;
+namespace App\Http\Controllers\API\User;
 
 use App\Events\ownerrequest;
 use App\Http\Controllers\Controller;

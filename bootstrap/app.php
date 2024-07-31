@@ -16,7 +16,9 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'verified' => \App\Http\Middleware\VerifyEmailMiddleware::class,
             'websiterole' => \App\Http\Middleware\OwnerMiddleware::class,
-            'adminmiddleware' => \App\Http\Middleware\AdminMiddleware::class
+            'adminmiddleware' => \App\Http\Middleware\AdminMiddleware::class,
+            'ChatifyMessenger' => Chatify\Facades\ChatifyMessenger::class,
+
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
