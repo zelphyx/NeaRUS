@@ -12,6 +12,16 @@ use Laravel\Sanctum\HasApiTokens;
 class User extends Authenticatable implements MustVerifyEmail
 {
     use HasFactory, Notifiable, HasApiTokens;
+    public function sentMessages()
+    {
+        return $this->hasMany(Message::class, 'sender_id', 'ownerId');
+    }
+
+
+    public function receivedMessages()
+    {
+        return $this->hasMany(Message::class, 'receiver_id', 'ownerId');
+    }
 
     protected $fillable = [
         'name',

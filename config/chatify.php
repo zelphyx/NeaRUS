@@ -49,7 +49,7 @@ return [
             'port' => env('PUSHER_PORT', 443),
             'scheme' => env('PUSHER_SCHEME', 'https'),
             'encrypted' => true,
-            'useTLS' => env('PUSHER_SCHEME', 'https') === 'https',
+            'useTLS' => true,
         ],
     ],
 
@@ -120,5 +120,9 @@ return [
         'enabled' => true,
         'public_path' => 'sounds/chatify',
         'new_message' => 'new-message-sound.mp3',
-    ]
+    ],
+    'user' => [
+    'model' => \App\Models\User::class,
+    'id' => 'ownerId', // Update this to ownerId
+],
 ];

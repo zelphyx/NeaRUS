@@ -55,7 +55,6 @@ Route::get('/email/verify', 'VerificationController@verify')->middleware('verifi
 Route::get('/test', function () {
     return view('test');
 });
-Route::middleware('auth')->get('/chat', function () {
-    return view('chatify');
+Route::middleware('auth')->group(function () {
+    Route::get('/chatify', [\App\Http\Controllers\vendor\Chatify\MessagesController::class, 'showChatify'])->name('chatify');
 });
-

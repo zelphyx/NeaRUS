@@ -19,8 +19,6 @@ Route::controller(\App\Http\Controllers\API\User\AuthUserController::class)->gro
     Route::get('verify/verify-email/{token}','apiVerifyEmail')->name('api.verify.email');
     Route::post('resend-verification','resendVerification');
 });
-
-
 Route::controller(\App\Http\Controllers\API\User\AuthOwnerController::class)->group(function (){
     Route::post('daftar','daftarowner');
 });
@@ -62,15 +60,13 @@ Route::middleware(['auth:sanctum'])->group(function (){
 
 
 
-
+//rooms and get product
 Route::middleware('auth:sanctum')->group(function () {
     Route::controller(\App\Http\Controllers\API\RoomController::class)->group(function () {
         Route::post('rooms/create','create');
 
     });
 });
-
-
 Route::controller(\App\Http\Controllers\API\RoomController::class)->group(function (){
     Route::get('rooms/get','index');
     Route::get('rooms/{ownerId}','showbyid');
@@ -83,20 +79,25 @@ Route::controller(\App\Http\Controllers\SearchController::class)->group(function
     Route::get('search','search');
 });
 
-
+//verification
 Auth::routes(['verify' => true]);
-
-
 Route::middleware('verified')->group(function () {
     // Routes that require verified email
     Route::get('/', function () {
         return view('welcome');
     });
 });
+Route::get('/email/verify', 'VerificationController@verify')->middleware('verified');
 
-Route::middleware('auth:sanctum')->group(function () {
-    require base_path('vendor/munafio/chatify/src/routes/web.php');
+
+//chat
+Route::middleware(['auth:sanctum'])->group(function (){
+    Route::controller(\App\Http\Controllers\ChatController::class)->group(function (){
+        Route::post('messages','index');
+        Route::get('messages', 'store');
+        Route::get('chat-list', 'chatList');
+
+    });
 });
 
-Route::get('/email/verify', 'VerificationController@verify')->middleware('verified');
 
