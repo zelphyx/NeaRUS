@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Order;
+use App\Models\Room;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -63,6 +64,15 @@ class OrderStatusController extends Controller
             if ($request->transaction_status == 'capture' || $request->transaction_status == 'settlement' || $request->transaction_status == 'complete') {
                 $order = Order::find($request->order_id);
                 $order->update(['status' => 'Paid']);
+                $roomName = explode(' - ', $order->detail)[0];
+                $room = Room::where('ownerId', $order->ownerId)
+                    ->where('name', $roomName)
+                    ->first();
+
+                if ($room) {
+                    $room->availability -= 1;
+                    $room->save();
+                }
 
                 return response()->json([
                     'success' => true,
