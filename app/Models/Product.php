@@ -20,7 +20,8 @@ class Product extends Model
         'category',
         'fasilitas',
         'roomid',
-        'about'
+        'about',
+        'duration',
     ];
 
     protected $hidden = [

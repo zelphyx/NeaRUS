@@ -42,6 +42,7 @@ class ProductController extends Controller
             'fasilitas.*' => 'string',
             'roomid' => 'nullable|array',
             'about' => 'required',
+            'duration' => 'nullable',
         ]);
 
         if ($validatedData->fails()) {
@@ -126,6 +127,7 @@ class ProductController extends Controller
             'fasilitas.*' => 'string',
             'roomid' => 'nullable|array',
             'about' => '',
+            'duration' => '',
         ]);
 
         if ($validatedData->fails()) {

@@ -26,7 +26,8 @@ class ProductResource extends JsonResource
             "price" => $this->price,
             "fasilitas" => explode(",", $this->fasilitas),
             "roomid" => $this->roomid,
-            "about" => $this->about
+            "about" => $this->about,
+            "duration" => $this->duration
 
         ];
     }
