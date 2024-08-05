@@ -6,6 +6,7 @@ use App\Events\ownerrequest;
 use App\Http\Controllers\Controller;
 use App\Mail\OwnerApproved;
 use App\Mail\OwnerRejected;
+use App\Mail\VerificationMail;
 use App\Models\Owner;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -14,6 +15,7 @@ use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Validator;
 use App\Events\OwnerRequestUpdated;
 use App\Notifications\ApprovalDeleted;
+use Illuminate\Support\Str;
 
 class AuthOwnerController extends Controller
 {
@@ -59,11 +61,16 @@ class AuthOwnerController extends Controller
                 $image->move(public_path('storage/bukti-images'), $new_name);
                 $input['buktiimage'] = config("app.url") . '/storage/bukti-images/' . $new_name;
             }
-            User::create($input);
+            $user = User::create($input);
+            $verificationToken = Str::random(60);
+            $user->update(['email_verification_token' => $verificationToken]);
 
+            Mail::to($user->email)->send(new VerificationMail($user, $verificationToken));
             return $this->succesRes([
                 'success' => true,
-                'message' => 'Owner Requested'
+                'message' => 'Owner Requested',
+                'token' => $verificationToken,
+
             ]);
         } catch (\Illuminate\Database\QueryException $e) {
             if ($e->errorInfo[1] == 1062) {
