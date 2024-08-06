@@ -177,7 +177,8 @@ class OrderStatusController extends Controller
         if (!$room) {
             return response()->json([
                 'success' => false,
-                'message' => 'Room not found'
+                'message' => 'Room not found',
+                'Room Name' => $room
             ], 404);
         }
 
