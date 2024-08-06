@@ -366,6 +366,7 @@ class AuthUserController extends Controller
             $success['ownerId'] = $user->ownerId;
             $success['email'] = $user->email;
             $success['phonenumber'] = $user->phonenumber;
+            $success['websiterole'] = $user->websiterole;
             $token = $user->createToken('user')->plainTextToken;
 
             return $this->succesRes([

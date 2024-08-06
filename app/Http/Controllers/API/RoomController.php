@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\RoomResource;
 use App\Models\Room;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 
@@ -121,24 +122,76 @@ class RoomController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Room $room)
+    public function edit($id)
     {
-        //
+        $product = Room::findOrFail($id);
+        return response()->json($product);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Room $room)
+    public function update(Request $request, $id)
     {
-        //
+        $validatedData = Validator::make($request->all(), [
+            'ownerId' => '',
+            'name' => '',
+            'category' => '',
+            'fasilitas' => 'array|min:1',
+            'image' => 'array|nullable',
+            'image.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'price' => '',
+            'time' => '',
+            'availability' => '',
+        ]);
+
+        if ($validatedData->fails()) {
+            return $this->invalidRes($validatedData->getMessageBag());
+        }
+
+        $room = Room::findorFail($id);
+        $input = $request->all();
+        $input['ownerId'] = Auth::id();
+
+        if (!is_array($input['fasilitas'])) {
+            $input['fasilitas'] = [$input['fasilitas']];
+        }
+        $input['fasilitas'] = implode(',', $input['fasilitas']);
+        if ($request->image != null) {
+            $images = [];
+            foreach ($request->image as $image) {
+                $new_name = rand() . '.' . $image->extension();
+                $image->move(public_path('storage/post-images'), $new_name);
+                $newImagePath = '/storage/post-images/' . $new_name;
+                $images[] = $newImagePath;
+            }
+            $input['image'] = implode(',', $images);
+        }
+
+        $room->update($input);
+
+        return $this->succesRes([
+            'success' => true,
+            'message' => 'Room Updated'
+        ]);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Room $room)
+    public function destroy($id)
     {
-        //
+        $product = Room::find($id);
+
+        if (!$product) {
+            return $this->invalidRes('Room not found.');
+        }
+
+        $product->delete();
+
+        return $this->succesRes([
+            'success' => true,
+            'message' => 'Room deleted successfully.'
+        ]);
     }
 }

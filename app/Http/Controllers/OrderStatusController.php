@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use App\Models\Order;
 use App\Models\Room;
 use App\Models\User;
+use Carbon\CarbonInterface;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
@@ -170,38 +171,53 @@ class OrderStatusController extends Controller
         }
 
         $roomName = explode(' - ', $order->detail)[0];
-        $room = Room::where('ownerId', $order->ownerId)
-            ->where('name', $roomName)
+        $room = Room::where('name', $roomName)
+            ->where('ownerId', $order->ownerId)
             ->first();
 
         if (!$room) {
             return response()->json([
                 'success' => false,
                 'message' => 'Room not found',
-                'Room Name' => $order->detail
+                'Room Name' => $room
             ], 404);
         }
 
-        $duration = Carbon::parse($room->duration);
+        $duration = Carbon::now();
+        IF($room->time == "1 bulan"){
+            $duration = Carbon::now()->addMonth();
+        }elseif ($room->time == "3 bulan"){
+            $duration = Carbon::now()->addMonths(3);
+        }elseif ($room->time == "6 bulan"){
+            $duration = Carbon::now()->addMonths(6);
+        }elseif ($room->time == "1 tahun"){
+            $duration = Carbon::now()->addYear();
+        }elseif ($room->time == "2 tahun"){
+            $duration = Carbon::now()->addYears(2);
+        }elseif ($room->time == "3 tahun"){
+            $duration = Carbon::now()->addYears(3);
+        }
         $now = Carbon::now();
         Log::info('Parsed duration: ' . $duration->toDateTimeString());
         Log::info('Current time: ' . $now->toDateTimeString());
 
         if ($now->greaterThan($duration)) {
             Log::warning('The time duration has already passed for order: ' . $orderId);
-
+            Order::destroy($orderId);
             return response()->json([
                 'success' => false,
-                'message' => 'The time duration has already passed'
+                'message' => 'The time duration has already passed,order deleted'
             ]);
         }
 
-        $diffInSeconds = $now->diffInSeconds($duration);
-        Log::info('Remaining time in seconds: ' . $diffInSeconds);
+        $remainingDurationFormatted = $duration->toDateString();
+        $currentTimeFormatted = $now->toDateString();
 
+        Log::info('Remaining time formatted: ' . $remainingDurationFormatted);
         return response()->json([
             'success' => true,
-            'remaining_time' => $diffInSeconds
+            'start' => $currentTimeFormatted,
+            'end' => $remainingDurationFormatted
         ]);
     }
 }
