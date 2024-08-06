@@ -1,11 +1,13 @@
 <?php
 
 namespace App\Http\Controllers;
+use Carbon\Carbon;
 
 use App\Models\Order;
 use App\Models\Room;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class OrderStatusController extends Controller
 {
@@ -153,6 +155,52 @@ class OrderStatusController extends Controller
         return response()->json([
             'success' => true,
             'data' => $passdata
+        ]);
+    }
+
+    public function getRemainingTime($orderId)
+    {
+        $order = Order::find($orderId);
+
+        if (!$order) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Order not found'
+            ], 404);
+        }
+
+        $roomName = explode(' - ', $order->detail)[0];
+        $room = Room::where('ownerId', $order->ownerId)
+            ->where('name', $roomName)
+            ->first();
+
+        if (!$room) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Room not found'
+            ], 404);
+        }
+
+        $duration = Carbon::parse($room->duration);
+        $now = Carbon::now();
+        Log::info('Parsed duration: ' . $duration->toDateTimeString());
+        Log::info('Current time: ' . $now->toDateTimeString());
+
+        if ($now->greaterThan($duration)) {
+            Log::warning('The time duration has already passed for order: ' . $orderId);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'The time duration has already passed'
+            ]);
+        }
+
+        $diffInSeconds = $now->diffInSeconds($duration);
+        Log::info('Remaining time in seconds: ' . $diffInSeconds);
+
+        return response()->json([
+            'success' => true,
+            'remaining_time' => $diffInSeconds
         ]);
     }
 }
