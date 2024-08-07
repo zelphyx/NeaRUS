@@ -90,6 +90,8 @@ class OrderStatusController extends Controller
         ]);
     }
 
+
+
     public function getpaidbuyer(Request $request){
         $ownerId = auth()->user()->ownerId;
 

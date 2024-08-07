@@ -71,6 +71,7 @@ Route::middleware('auth:sanctum')->group(function () {
 Route::controller(\App\Http\Controllers\API\RoomController::class)->group(function (){
     Route::get('rooms/get','index');
     Route::get('rooms/{ownerId}','showbyid');
+    Route::get('rooms/availability/{ownerId}','availability');
     Route::middleware('auth:sanctum')->get('rooms/{id}/edit', 'edit');
     Route::middleware('auth:sanctum')->put('rooms/put/{id}', 'update');
     Route::middleware('auth:sanctum')->delete('rooms/delete/{id}', 'update');

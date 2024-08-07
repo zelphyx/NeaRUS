@@ -85,6 +85,23 @@ class RoomController extends Controller
             'message' => 'Rooms Registered'
         ]);
     }
+    public function availability($ownerId)
+    {
+        $rooms = Room::where('ownerId', $ownerId)->get();
+
+        $roomsAvailability = $rooms->map(function ($room) {
+            return [
+                'roomName' => $room->name,
+                'availability' => $room->availability,
+                'status' => $room->availability > 0 ? 'Tersedia' : 'Habis'
+            ];
+        });
+
+        return response()->json([
+            'success' => true,
+            'availability' => $roomsAvailability
+        ]);
+    }
 
     public function showbyid($ownerId)
     {
