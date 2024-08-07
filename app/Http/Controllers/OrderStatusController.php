@@ -157,7 +157,8 @@ class OrderStatusController extends Controller
 
         return response()->json([
             'success' => true,
-            'data' => $passdata
+            'data' => $passdata,
+            'usn' => $userName
         ]);
     }
 
