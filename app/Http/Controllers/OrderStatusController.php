@@ -150,9 +150,7 @@ class OrderStatusController extends Controller
         $userName = auth()->user()->name;
 
         $passdata = Order::where('status', 'Paid')
-            ->whereHas('user', function($query) use ($userName) {
-                $query->where('name', $userName);
-            })
+            ->where('name', $userName)
             ->get();
 
         return response()->json([
