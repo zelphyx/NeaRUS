@@ -37,7 +37,6 @@ class OrderStatusController extends Controller
                 'detail' => $request->detail,
                 'phone' => $request->phonenumber,
                 'duration' => $request->duration,
-                'image' => $request->image
             ),
         );
 
