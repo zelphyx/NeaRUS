@@ -140,7 +140,7 @@ class ProfileController extends Controller
         $request->validate([
             'email' => 'required|email',
             'current_password' => 'required',
-            'new_password' => 'required|min:8|confirmed',
+            'new_password' => 'required|min:8',
         ]);
 
         $user = User::where('email', $request->email)->first();

@@ -111,9 +111,6 @@ class ProductController extends Controller
         return response()->json($product);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, $kostid)
     {
         $validatedData = Validator::make($request->all(), [
