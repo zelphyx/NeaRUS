@@ -82,6 +82,7 @@ class OrderStatusController extends Controller
                     'refnumber' => $order->refnumber,
                     'payment_time' => $request->transaction_time,
                     'payment_method' => $request->payment_type,
+                    'orderId' => $request->order_id,
                 ]);
             }
         }
