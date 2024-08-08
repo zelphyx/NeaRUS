@@ -23,7 +23,12 @@
             <tr>
                 <th>ID</th>
                 <th>Reference Number</th>
-                <th>Order Details</th>
+                <th>Nama Penyewa</th>
+                <th>No HP</th>
+                <th>Detail</th>
+                <th>Tanggal Sewa</th>
+                <th>Harga</th>
+                <th>Status</th>
             </tr>
             </thead>
             <tbody>
@@ -31,7 +36,13 @@
                 <tr>
                     <td>{{ $order->id }}</td>
                     <td>{{ $order->refnumber }}</td>
-                    <td>{{ $order->order_details }}</td> <!-- Replace 'order_details' with the actual field names in your Order model -->
+                    <td>{{ $order->name }}</td>
+                    <td>{{ $order->phonenumber }}</td>
+                    <td>{{ $order->detail }}</td>
+                    <td>{{ $order->duration }}</td>
+                    <td>{{ $order->price }}</td>
+                    <td>{{ $order->status }}</td>
+
                 </tr>
             @endforeach
             </tbody>
