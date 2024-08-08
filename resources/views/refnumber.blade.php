@@ -76,7 +76,18 @@
                             tbody += '<tr>';
                             tbody += '<td>' + order.id + '</td>';
                             tbody += '<td>' + order.refnumber + '</td>';
-                            tbody += '<td>' + order.order_details + '</td>'; // Adjust based on your actual field names
+                            {{--<td>{{ $order->phonenumber }}</td>--}}
+                            {{--<td>{{ $order->detail }}</td>--}}
+                            {{--<td>{{ $order->duration }}</td>--}}
+                            {{--<td>{{ $order->price }}</td>--}}
+                            {{--<td>{{ $order->status }}</td>--}}
+
+                            tbody += '<td>' + order.name + '</td>'; // Adjust based on your actual field names
+                            tbody += '<td>' + order.phonenumber + '</td>'; // Adjust based on your actual field names
+                            tbody += '<td>' + order.detail + '</td>'; // Adjust based on your actual field names
+                            tbody += '<td>' + order.duration + '</td>'; // Adjust based on your actual field names
+                            tbody += '<td>' + order.price + '</td>'; // Adjust based on your actual field names
+                            tbody += '<td>' + order.status + '</td>'; // Adjust based on your actual field names
                             tbody += '</tr>';
                         });
                         $('tbody').html(tbody);
