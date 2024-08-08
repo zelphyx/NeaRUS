@@ -222,7 +222,7 @@ class AuthUserController extends Controller
     {
         $request->validate([
             'token' => 'required|string',
-            'password' => 'required|string|confirmed|min:8',
+            'password' => 'required|string|min:8',
         ]);
 
         $user = User::where('reset_password_token', $request->token)->first();
