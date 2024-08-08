@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Order;
 use App\Models\Room;
 use Illuminate\Http\Request;
 
@@ -32,6 +33,23 @@ class SearchController extends Controller
         return response()->json([
             'success' => true,
             'data' => $results
+        ]);
+    }
+    public function showrefnumber()
+    {
+        $refnumbers = Order::all(); // Retrieve all orders or limit based on your requirements
+        return view('refnumber', compact('refnumbers'));
+    }
+
+    public function searchrefnumber(Request $request)
+    {
+        $refnumber = $request->input('refnumber');
+
+        $orders = Order::where('refnumber', $refnumber)->get();
+
+        return response()->json([
+            'success' => true,
+            'data' => $orders
         ]);
     }
 }

@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Mail\OwnerApproved;
 use App\Mail\OwnerRejected;
 use App\Mail\VerificationMail;
+use App\Models\Order;
 use App\Models\Owner;
 use App\Models\User;
 use Illuminate\Http\Request;

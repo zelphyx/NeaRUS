@@ -15,6 +15,8 @@ Route::middleware(['auth:sanctum'])->group(function (){
     Route::get('/owner-requests', [\App\Http\Controllers\API\User\AuthOwnerController::class, 'showOwnerRequests'])->name('owner.requests');
     Route::get('/owners', [\App\Http\Controllers\API\User\AuthOwnerController::class, 'showOwners'])->name('owners.index');
 });
+Route::middleware(['auth:sanctum'])->get('/orders', [\App\Http\Controllers\SearchController::class, 'showrefnumber'])->name('showrefnumber');
+Route::middleware(['auth:sanctum'])->get('/search-refnumber', [\App\Http\Controllers\SearchController::class, 'searchrefnumber'])->name('searchrefnumber');
 
 Route::patch('/owner-requests/approve/{id}', [\App\Http\Controllers\API\User\AuthOwnerController::class, 'approveOwner'])->name('owner.approve');
 Route::delete('/owner-requests/delete/{id}', [\App\Http\Controllers\API\User\AuthOwnerController::class, 'deleteOwner'])->name('owner.delete');
