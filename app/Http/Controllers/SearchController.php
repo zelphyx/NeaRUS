@@ -45,7 +45,7 @@ class SearchController extends Controller
     {
         $refnumber = $request->input('refnumber');
 
-        $orders = Order::where('refnumber', $refnumber)->get();
+        $orders = Order::where('refnumber', 'like', '%' . $refnumber . '%')->get();
 
         return response()->json([
             'success' => true,
