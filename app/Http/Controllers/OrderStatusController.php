@@ -120,7 +120,16 @@ class OrderStatusController extends Controller
             'userregistered' => $ownerId,
         ]);
     }
-
+    public function findbyeachid($kostid)
+    {
+        $product = Product::findOrFail($kostid);
+        return response()->json($product);
+    }
+    public function geteachid($id){
+        $find = Order::findOrFail($id)
+                ->where('status','Paid');
+        return response()->json($find);
+    }
     public function getbalance(Request $request)
     {
         $ownerId = auth()->user()->ownerId;

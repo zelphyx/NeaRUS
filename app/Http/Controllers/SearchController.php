@@ -37,7 +37,7 @@ class SearchController extends Controller
     }
     public function showrefnumber()
     {
-        $refnumbers = Order::all(); // Retrieve all orders or limit based on your requirements
+        $refnumbers = Order::all();
         return view('refnumber', compact('refnumbers'));
     }
 

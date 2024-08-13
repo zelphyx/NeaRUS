@@ -110,7 +110,6 @@
     </div>
 </div>
 
-<!-- Include jQuery and Bootstrap JS (optional) -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 
@@ -136,12 +135,12 @@
                             tbody += '<tr>';
                             tbody += '<td>' + order.id + '</td>';
                             tbody += '<td>' + order.refnumber + '</td>';
-                            tbody += '<td>' + order.name + '</td>'; // Adjust based on your actual field names
-                            tbody += '<td>' + order.phonenumber + '</td>'; // Adjust based on your actual field names
-                            tbody += '<td>' + order.detail + '</td>'; // Adjust based on your actual field names
-                            tbody += '<td>' + order.duration + '</td>'; // Adjust based on your actual field names
-                            tbody += '<td>' + order.price + '</td>'; // Adjust based on your actual field names
-                            tbody += '<td>' + order.status + '</td>'; // Adjust based on your actual field names
+                            tbody += '<td>' + order.name + '</td>';
+                            tbody += '<td>' + order.phonenumber + '</td>';
+                            tbody += '<td>' + order.detail + '</td>';
+                            tbody += '<td>' + order.duration + '</td>';
+                            tbody += '<td>' + order.price + '</td>';
+                            tbody += '<td>' + order.status + '</td>';
                             tbody += '</tr>';
                         });
                         $('tbody').html(tbody);
