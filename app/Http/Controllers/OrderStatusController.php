@@ -120,13 +120,9 @@ class OrderStatusController extends Controller
             'userregistered' => $ownerId,
         ]);
     }
-    public function findbyeachid($kostid)
-    {
-        $product = Product::findOrFail($kostid);
-        return response()->json($product);
-    }
-    public function geteachid($id){
-        $find = Order::findOrFail($id)
+
+    public function geteachid($orderId){
+        $find = Order::find($orderId)
                 ->where('status','Paid');
         return response()->json($find);
     }
