@@ -122,7 +122,7 @@ class OrderStatusController extends Controller
     }
 
     public function geteachid($orderId){
-        $find = Order::where('id', $orderId);
+        $find = Order::find($orderId);
         return response()->json($find);
     }
     public function getbalance(Request $request)
