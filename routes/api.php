@@ -44,7 +44,7 @@ Route::middleware('auth:sanctum')->get('/orders/count', [\App\Http\Controllers\O
 Route::middleware('auth:sanctum')->get('/orders/user', [\App\Http\Controllers\OrderStatusController::class, 'passingbuyer']);
 Route::middleware('auth:sanctum')->get('/orders/owner', [\App\Http\Controllers\OrderStatusController::class, 'passingowner']);
 Route::middleware('auth:sanctum')->get('/orders/balance', [\App\Http\Controllers\OrderStatusController::class, 'getbalance']);
-Route::middleware('auth:sanctum')->get('/orders/detail/{id}', [\App\Http\Controllers\OrderStatusController::class, 'geteachid']);
+Route::get('/orders/detail/{id}', [\App\Http\Controllers\OrderStatusController::class, 'geteachid']);
 Route::get('/orders/remaining-time/{orderId}', [\App\Http\Controllers\OrderStatusController::class, 'getRemainingTime']);
 
 
