@@ -122,7 +122,7 @@ class OrderStatusController extends Controller
     }
 
     public function geteachid($orderId){
-        $find = Order::where('ownerId', $orderId)
+        $find = Order::where('id', $orderId)
             ->where('status', 'Paid');
         return response()->json($find);
     }
