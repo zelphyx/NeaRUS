@@ -125,6 +125,10 @@ class OrderStatusController extends Controller
         $find = Order::find($orderId);
         return response()->json($find);
     }
+    public function getownereachid($orderId){
+        $find = User::find($orderId);
+        return response()->json($find);
+    }
     public function getbalance(Request $request)
     {
         $ownerId = auth()->user()->ownerId;
