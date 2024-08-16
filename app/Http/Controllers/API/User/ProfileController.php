@@ -66,7 +66,7 @@ class ProfileController extends Controller
             $image = $request->file('photoprofile');
             $newName = time() . '.' . $image->getClientOriginalExtension();
             $image->move(public_path('storage/photo_profile'), $newName);
-            $newImagePath = 'storage/photo_profile/' . $newName;
+            $newImagePath = config('app.url'). 'storage/photo_profile/' . $newName;
 
             $user->photoprofile = $newImagePath;
 
