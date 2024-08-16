@@ -48,7 +48,41 @@ class ProfileController extends Controller
             ], 500);
         }
     }
+    public function updatepp(Request $request)
+    {
+        $request->validate([
+            'photoprofile' => 'required|image|max:2048',
+        ]);
 
+        $user = Auth::user();
+
+        if (!$user) {
+            return response()->json(['message' => 'User not authenticated'], 401);
+        }
+
+        if ($request->hasFile('photoprofile')) {
+            $oldProfilePict = $user->photoprofile;
+
+            $image = $request->file('photoprofile');
+            $newName = time() . '.' . $image->getClientOriginalExtension();
+            $image->move(public_path('storage/photo_profile'), $newName);
+            $newImagePath = 'storage/photo_profile/' . $newName;
+
+            $user->photoprofile = $newImagePath;
+
+            if ($user->save()) {
+                if ($oldProfilePict && Storage::exists(public_path($oldProfilePict))) {
+                    Storage::delete(public_path($oldProfilePict));
+                }
+
+                return response()->json(['message' => 'Profile photo updated successfully', 'user' => $user], 200);
+            } else {
+                return response()->json(['message' => 'Error occurred while updating profile photo'], 500);
+            }
+        } else {
+            return response()->json(['message' => 'No profile photo uploaded'], 400);
+        }
+    }
     public function updateProfile(Request $request)
     {
         $user = Auth::user();

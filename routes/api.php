@@ -33,6 +33,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('profile', 'currentprofile');
         Route::post('profile/reset-password','profileresetpass');
         Route::post('profile/add-personal-data','addPersonalData');
+        Route::post('profile/upload-photo','updatepp');
     });
 });
 
