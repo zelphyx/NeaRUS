@@ -45,7 +45,8 @@ class OrderStatusController extends Controller
             'success' => true,
             'message' => 'Barang Berhasil Dicheckout',
             'snapToken' => $snapToken,
-            'refnumber' => $uniqueTransactionRef
+            'refnumber' => $uniqueTransactionRef,
+            'disorder' => $order
         ]);
     }
 
