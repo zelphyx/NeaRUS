@@ -18,7 +18,9 @@ class Order extends Model
         'price',
         'status',
         'refnumber',
-        'image'
+        'image',
+        'location',
+        'fasilitas'
     ];
     protected $hidden = [
         'created_at',
