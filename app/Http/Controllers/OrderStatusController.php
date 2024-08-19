@@ -24,14 +24,7 @@ class OrderStatusController extends Controller
         \Midtrans\Config::$is3ds = true;
 
         $uniqueTransactionRef = $this->generateUniqueTransactionRef();
-        $roomName = explode(' - ', $order->detail)[0];
-        $room = Room::where('ownerId', $order->ownerId)
-            ->where('name', $roomName)
-            ->first();
-        if ($room) {
-            $room->availability -= 1;
-            $room->save();
-        }
+
         $params = array(
             'transaction_details' => array(
                 'order_id' => $order->id,
@@ -79,7 +72,6 @@ class OrderStatusController extends Controller
                 $room = Room::where('ownerId', $order->ownerId)
                     ->where('name', $roomName)
                     ->first();
-
                 if ($room) {
                     $room->availability -= 1;
                     $room->save();
