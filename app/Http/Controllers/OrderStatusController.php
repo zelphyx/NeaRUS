@@ -51,16 +51,6 @@ class OrderStatusController extends Controller
             'roomname' => $roomName
         ]);
     }
-
-    private function generateUniqueTransactionRef()
-    {
-        do {
-            $transactionRef = random_int(1000000000, 9999999999);
-        } while (Order::where('refnumber', $transactionRef)->exists());
-
-        return $transactionRef;
-    }
-
     public function callback(Request $request)
     {
         $serverkey = config('midtrans.server_key');
@@ -94,8 +84,14 @@ class OrderStatusController extends Controller
 
         ]);
     }
+    private function generateUniqueTransactionRef()
+    {
+        do {
+            $transactionRef = random_int(1000000000, 9999999999);
+        } while (Order::where('refnumber', $transactionRef)->exists());
 
-
+        return $transactionRef;
+    }
 
     public function getpaidbuyer(Request $request){
         $ownerId = auth()->user()->ownerId;
