@@ -72,9 +72,8 @@ class OrderStatusController extends Controller
                 $room = Room::where('ownerId', $order->ownerId)
                     ->where('name', $roomName)
                     ->first();
-
                 if ($room) {
-                    $room->availability -= 1;
+                    $room->availability--;
                     $room->save();
                 }
 
