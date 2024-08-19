@@ -9,7 +9,7 @@ class Room extends Model
 {
     use HasFactory;
     protected $table = 'rooms';
-    protected $primaryKey = 'kostid';
+    protected $primaryKey = 'roomid';
 
     public function products()
     {
