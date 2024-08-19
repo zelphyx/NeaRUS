@@ -22,6 +22,7 @@ class OrderStatusController extends Controller
         \Midtrans\Config::$isProduction = false;
         \Midtrans\Config::$isSanitized = true;
         \Midtrans\Config::$is3ds = true;
+        $roomName = explode(' - ', $order->detail)[0];
 
         $uniqueTransactionRef = $this->generateUniqueTransactionRef();
 
@@ -46,7 +47,8 @@ class OrderStatusController extends Controller
             'message' => 'Barang Berhasil Dicheckout',
             'snapToken' => $snapToken,
             'refnumber' => $uniqueTransactionRef,
-            'disorder' => $order
+            'disorder' => $order,
+            'roomname' => $roomName
         ]);
     }
 
@@ -69,8 +71,8 @@ class OrderStatusController extends Controller
                 $order = Order::find($request->order_id);
                 $order->update(['status' => 'Paid']);
                 $roomName = explode(' - ', $order->detail)[0];
-                $room = Room::where('ownerId', $order->ownerId)
-                    ->where('name', $roomName)
+                $room = Room::where('name', $roomName)
+                    ->where('ownerId', $order->ownerId)
                     ->first();
                 if ($room) {
                     $room->availability--;
@@ -83,9 +85,6 @@ class OrderStatusController extends Controller
                     'payment_time' => $request->transaction_time,
                     'payment_method' => $request->payment_type,
                     'orderId' => $request->order_id,
-                    'rooms' => $room,
-                    'rooms_available' => $room->availability,
-                    'roomname' => $roomName
 
                 ]);
             }
