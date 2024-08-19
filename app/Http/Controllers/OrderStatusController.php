@@ -32,6 +32,12 @@ class OrderStatusController extends Controller
             $room->availability -= 1;
             $room->save();
         }
+        if (!$room) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Room not found.',
+            ]);
+                }
         $params = array(
             'transaction_details' => array(
                 'order_id' => $order->id,
