@@ -85,7 +85,8 @@ class OrderStatusController extends Controller
                     'payment_method' => $request->payment_type,
                     'orderId' => $request->order_id,
                     'rooms' => $room,
-                    'rooms_available' => $room->availability
+                    'rooms_available' => $room->availability,
+                    'roomname' => $roomName
 
                 ]);
             }
