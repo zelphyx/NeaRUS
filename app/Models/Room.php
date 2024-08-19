@@ -9,11 +9,14 @@ class Room extends Model
 {
     use HasFactory;
     protected $table = 'rooms';
+    protected $primaryKey = 'kostid';
+
     public function products()
     {
         return $this->belongsToMany(Product::class, 'product_room', 'roomid', 'kostid');
     }
     protected $fillable = [
+
         'ownerId',
         'name',
         'category',
