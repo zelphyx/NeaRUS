@@ -22,7 +22,6 @@ class OrderStatusController extends Controller
         \Midtrans\Config::$isProduction = false;
         \Midtrans\Config::$isSanitized = true;
         \Midtrans\Config::$is3ds = true;
-        $roomName = explode(' - ', $order->detail)[0];
 
         $uniqueTransactionRef = $this->generateUniqueTransactionRef();
 
@@ -47,10 +46,19 @@ class OrderStatusController extends Controller
             'message' => 'Barang Berhasil Dicheckout',
             'snapToken' => $snapToken,
             'refnumber' => $uniqueTransactionRef,
-            'disorder' => $order,
-            'roomname' => $roomName
+            'disorder' => $order
         ]);
     }
+
+    private function generateUniqueTransactionRef()
+    {
+        do {
+            $transactionRef = random_int(1000000000, 9999999999);
+        } while (Order::where('refnumber', $transactionRef)->exists());
+
+        return $transactionRef;
+    }
+
     public function callback(Request $request)
     {
         $serverkey = config('midtrans.server_key');
@@ -61,11 +69,12 @@ class OrderStatusController extends Controller
                 $order = Order::find($request->order_id);
                 $order->update(['status' => 'Paid']);
                 $roomName = explode(' - ', $order->detail)[0];
-                $room = Room::where('name', $roomName)
-                    ->where('ownerId', $order->ownerId)
+                $room = Room::where('ownerId', $order->ownerId)
+                    ->where('name', $roomName)
                     ->first();
+
                 if ($room) {
-                    $room->availability--;
+                    $room->availability -= 1;
                     $room->save();
                 }
 
@@ -75,23 +84,15 @@ class OrderStatusController extends Controller
                     'payment_time' => $request->transaction_time,
                     'payment_method' => $request->payment_type,
                     'orderId' => $request->order_id,
-
                 ]);
             }
         }
         return response()->json([
-            'success' => true,
-
+            'success' => true
         ]);
     }
-    private function generateUniqueTransactionRef()
-    {
-        do {
-            $transactionRef = random_int(1000000000, 9999999999);
-        } while (Order::where('refnumber', $transactionRef)->exists());
 
-        return $transactionRef;
-    }
+
 
     public function getpaidbuyer(Request $request){
         $ownerId = auth()->user()->ownerId;
