@@ -67,61 +67,73 @@ class OrderStatusController extends Controller
         if ($hashed == $request->signature_key) {
             if ($request->transaction_status == 'capture' || $request->transaction_status == 'settlement' || $request->transaction_status == 'complete') {
                 $order = Order::find($request->order_id);
-                $order->update(['status' => 'Paid']);
-                $roomName = explode(' - ', $order->detail)[0];
-                $room = Room::where('ownerId', $order->ownerId)
-                    ->where('name', $roomName)
-                    ->first();
-                if ($room) {
-                    $room->availability -= 1;
-                    $room->save();
+
+                if ($order->status === 'Paid') {
+                    $this->extendSewa($order);
+
+                    return response()->json([
+                        'success' => true,
+                        'message' => 'Order already paid and rental extended',
+                        'refnumber' => $order->refnumber,
+                        'payment_time' => $request->transaction_time,
+                        'payment_method' => $request->payment_type,
+                        'orderId' => $request->order_id,
+                    ]);
+                } else {
+                    $order->update(['status' => 'Paid']);
+                    $roomName = explode(' - ', $order->detail)[0];
+                    $room = Room::where('ownerId', $order->ownerId)
+                        ->where('name', $roomName)
+                        ->first();
+                    if ($room) {
+                        $room->availability -= 1;
+                        $room->save();
+                    }
+
+                    $duration = Carbon::now();
+                    if($room->time == "1 bulan"){
+                        $duration = Carbon::now()->addMonth();
+                    } elseif ($room->time == "3 bulan"){
+                        $duration = Carbon::now()->addMonths(3);
+                    } elseif ($room->time == "6 bulan"){
+                        $duration = Carbon::now()->addMonths(6);
+                    } elseif ($room->time == "1 tahun"){
+                        $duration = Carbon::now()->addYear();
+                    } elseif ($room->time == "2 tahun"){
+                        $duration = Carbon::now()->addYears(2);
+                    } elseif ($room->time == "3 tahun"){
+                        $duration = Carbon::now()->addYears(3);
+                    }
+                    $order->update(['duration' => $duration]);
+
+                    return response()->json([
+                        'success' => true,
+                        'refnumber' => $order->refnumber,
+                        'payment_time' => $request->transaction_time,
+                        'payment_method' => $request->payment_type,
+                        'orderId' => $request->order_id,
+                    ]);
                 }
-                $duration = Carbon::now();
-                if($room->time == "1 bulan"){
-                    $duration = Carbon::now()->addMonth();
-                }elseif ($room->time == "3 bulan"){
-                    $duration = Carbon::now()->addMonths(3);
-                }elseif ($room->time == "6 bulan"){
-                    $duration = Carbon::now()->addMonths(6);
-                }elseif ($room->time == "1 tahun"){
-                    $duration = Carbon::now()->addYear();
-                }elseif ($room->time == "2 tahun"){
-                    $duration = Carbon::now()->addYears(2);
-                }elseif ($room->time == "3 tahun"){
-                    $duration = Carbon::now()->addYears(3);
-                }
-                $order->update(['duration' => $duration]);
-                return response()->json([
-                    'success' => true,
-                    'refnumber' => $order->refnumber,
-                    'payment_time' => $request->transaction_time,
-                    'payment_method' => $request->payment_type,
-                    'orderId' => $request->order_id,
-                ]);
             }
         }
+
         return response()->json([
-            'success' => true
+            'success' => false,
+            'message' => 'Invalid signature or status',
         ]);
     }
 
-    public function extendsewa(Request $request,$orderId){
-
-        $order = Order::find($orderId);
-        if (!$order) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Order not found'
-            ], 404);
-        }
+    public function extendSewa($order)
+    {
         $roomName = explode(' - ', $order->detail)[0];
         $room = Room::where('name', $roomName)
             ->where('ownerId', $order->ownerId)
             ->first();
-        $currentEndDate = Carbon::parse($order->duration);
-        $roomduration = $room->time;
 
-        switch ($roomduration) {
+        $currentEndDate = Carbon::parse($order->duration);
+        $roomDuration = $room->time;
+
+        switch ($roomDuration) {
             case '1 bulan':
                 $newEndDate = $currentEndDate->addMonth();
                 break;
@@ -140,7 +152,6 @@ class OrderStatusController extends Controller
             case '3 tahun':
                 $newEndDate = $currentEndDate->addYears(3);
                 break;
-
             default:
                 return response()->json([
                     'success' => false,
@@ -149,15 +160,26 @@ class OrderStatusController extends Controller
         }
 
         $order->duration = $newEndDate;
-
-        return response()->json([
-            'room name' => $roomName,
-            'name' => $currentEndDate,
-            'roomduration' => $roomduration,
-            'new end' => $newEndDate
-        ]);
+        $order->save();
     }
 
+
+    public function checkAndDeleteExpiredOrders()
+    {
+        $orders = Order::where('status', 'Paid')->get();
+
+        foreach ($orders as $order) {
+            if (Carbon::now()->greaterThan(Carbon::parse($order->duration))) {
+                Log::info('Deleting expired order with ID: ' . $order->id);
+                $order->delete();
+            }
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Expired orders have been deleted',
+        ]);
+    }
     public function getpaidbuyer(Request $request){
         $ownerId = auth()->user()->ownerId;
 
@@ -234,65 +256,5 @@ class OrderStatusController extends Controller
         ]);
     }
 
-//    public function getRemainingTime($orderId)
-//    {
-//        $order = Order::find($orderId);
-//
-//        if (!$order) {
-//            return response()->json([
-//                'success' => false,
-//                'message' => 'Order not found'
-//            ], 404);
-//        }
-//
-//        $roomName = explode(' - ', $order->detail)[0];
-//        $room = Room::where('name', $roomName)
-//            ->where('ownerId', $order->ownerId)
-//            ->first();
-//
-//        if (!$room) {
-//            return response()->json([
-//                'success' => false,
-//                'message' => 'Room not found',
-//                'Room Name' => $room
-//            ], 404);
-//        }
-//
-//        $duration = Carbon::now();
-//        if($room->time == "1 bulan"){
-//            $duration = Carbon::now()->addMonth();
-//        }elseif ($room->time == "3 bulan"){
-//            $duration = Carbon::now()->addMonths(3);
-//        }elseif ($room->time == "6 bulan"){
-//            $duration = Carbon::now()->addMonths(6);
-//        }elseif ($room->time == "1 tahun"){
-//            $duration = Carbon::now()->addYear();
-//        }elseif ($room->time == "2 tahun"){
-//            $duration = Carbon::now()->addYears(2);
-//        }elseif ($room->time == "3 tahun"){
-//            $duration = Carbon::now()->addYears(3);
-//        }
-//        $now = Carbon::now();
-//        Log::info('Parsed duration: ' . $duration->toDateTimeString());
-//        Log::info('Current time: ' . $now->toDateTimeString());
-//
-//        if ($now->greaterThan($duration)) {
-//            Log::warning('The time duration has already passed for order: ' . $orderId);
-//            Order::destroy($orderId);
-//            return response()->json([
-//                'success' => false,
-//                'message' => 'The time duration has already passed,order deleted'
-//            ]);
-//        }
-//
-//        $remainingDurationFormatted = $duration->toDateString();
-//        $currentTimeFormatted = $now->toDateString();
-//
-//        Log::info('Remaining time formatted: ' . $remainingDurationFormatted);
-//        return response()->json([
-//            'success' => true,
-//            'start' => $currentTimeFormatted,
-//            'end' => $remainingDurationFormatted
-//        ]);
-//    }
+
 }
