@@ -69,7 +69,7 @@ class OrderStatusController extends Controller
                 $order = Order::find($request->order_id);
 
                 if ($order->status === 'Paid') {
-                    $duration = $order->duration;
+                    $duration = Carbon::parse($order->duration);;
                     $roomName = explode(' - ', $order->detail)[0];
                     $room = Room::where('ownerId', $order->ownerId)
                         ->where('name', $roomName)
@@ -158,7 +158,7 @@ class OrderStatusController extends Controller
         \Midtrans\Config::$is3ds = true;
 
         // Generate a transaction order ID
-        $transactionOrderId = $order->id . '-' . time();
+        $transactionOrderId = $order->id;
         // Create transaction details
         $transactionDetails = [
             'order_id' => $transactionOrderId,
