@@ -124,51 +124,60 @@ class OrderStatusController extends Controller
         }
     }
 
-    public function extendSewa($order)
+    public function extendOrder(Request $request, $orderId)
     {
-        $roomName = explode(' - ', $order->detail)[0];
-        $room = Room::where('name', $roomName)
-            ->where('ownerId', $order->ownerId)
-            ->first();
+        $order = Order::find($orderId);
 
-        $currentEndDate = Carbon::parse($order->duration);
-        $roomDuration = $room->time;
-
-        switch ($roomDuration) {
-            case '1 bulan':
-                $newEndDate = $currentEndDate->addMonth();
-                break;
-            case '3 bulan':
-                $newEndDate = $currentEndDate->addMonths(3);
-                break;
-            case '6 bulan':
-                $newEndDate = $currentEndDate->addMonths(6);
-                break;
-            case '1 tahun':
-                $newEndDate = $currentEndDate->addYear();
-                break;
-            case '2 tahun':
-                $newEndDate = $currentEndDate->addYears(2);
-                break;
-            case '3 tahun':
-                $newEndDate = $currentEndDate->addYears(3);
-                break;
-            default:
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Invalid duration',
-                ], 400);
+        if (!$order) {
+            return response()->json(['error' => 'Order not found'], 404);
         }
 
-        $order->duration = $newEndDate;
-        $order->save();
+        // Set Midtrans configuration
+        \Midtrans\Config::$serverKey = config('midtrans.server_key');
+        \Midtrans\Config::$isProduction = false;
+        \Midtrans\Config::$isSanitized = true;
+        \Midtrans\Config::$is3ds = true;
 
-        return response()->json([
-            'success' => true,
+        // Generate a transaction order ID
 
-        ]);
+        // Create transaction details
+        $transactionDetails = [
+            'order_id' => $order->id,
+            'gross_amount' => $order->price, // Set this based on the extension price
+        ];
+
+        // Create customer details
+        $customerDetails = [
+            'first_name' => $order->name,
+            'phone' => $order->phonenumber,
+        ];
+
+        // Create item details
+        $itemDetails = [
+            [
+                'id' => $order->id,
+                'price' => $order->price,
+                'quantity' => 1,
+                'name' => "Perpanjangan Sewa untuk " . $order->detail,
+            ],
+        ];
+
+        // Create the transaction payload
+        $transactionPayload = [
+            'transaction_details' => $transactionDetails,
+            'customer_details' => $customerDetails,
+            'item_details' => $itemDetails,
+        ];
+
+        try {
+            // Get Snap token
+            $snapToken = \Midtrans\Snap::getSnapToken($transactionPayload);
+
+            return response()->json(['snapToken' => $snapToken]);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
     }
-
 
     public function checkAndDeleteExpiredOrders()
     {
