@@ -66,7 +66,9 @@ class OrderStatusController extends Controller
 
         if ($hashed == $request->signature_key) {
             if ($request->transaction_status == 'capture' || $request->transaction_status == 'settlement' || $request->transaction_status == 'complete') {
-                $order = Order::find($request->order_id);
+                $orderIdParts = explode(' - ', $request->order_id);
+                $orderIds = $orderIdParts[0];
+                $order = Order::find($orderIds);
 
                 if ($order->status === 'Paid') {
                     $duration = Carbon::parse($order->duration);;
@@ -158,7 +160,7 @@ class OrderStatusController extends Controller
         \Midtrans\Config::$is3ds = true;
 
         // Generate a transaction order ID
-        $transactionOrderId = $order->id;
+        $transactionOrderId = $order->id . ' - ' . time();
         // Create transaction details
         $transactionDetails = [
             'order_id' => $transactionOrderId,
