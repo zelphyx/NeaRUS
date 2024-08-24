@@ -47,7 +47,7 @@ Route::middleware('auth:sanctum')->get('/orders/owner', [\App\Http\Controllers\O
 Route::middleware('auth:sanctum')->get('/orders/balance', [\App\Http\Controllers\OrderStatusController::class, 'getbalance']);
 Route::get('/orders/detail/{id}', [\App\Http\Controllers\OrderStatusController::class, 'geteachid']);
 Route::get('/owner/{id}', [\App\Http\Controllers\OrderStatusController::class, 'getownereachid']);
-Route::post('/orders/extend/{orderId}', [\App\Http\Controllers\OrderStatusController::class, 'extendsewa']);
+Route::post('/orders/extend/{orderId}', [\App\Http\Controllers\OrderStatusController::class, 'extendOrder']);
 
 
 //Product
