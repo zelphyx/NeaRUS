@@ -139,10 +139,10 @@ class OrderStatusController extends Controller
         \Midtrans\Config::$is3ds = true;
 
         // Generate a transaction order ID
-
+        $transactionOrderId = $order->id . '-' . time();
         // Create transaction details
         $transactionDetails = [
-            'order_id' => $order->id,
+            'order_id' => $transactionOrderId,
             'gross_amount' => $order->price, // Set this based on the extension price
         ];
 
