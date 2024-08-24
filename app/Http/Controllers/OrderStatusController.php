@@ -68,18 +68,36 @@ class OrderStatusController extends Controller
             if ($request->transaction_status == 'capture' || $request->transaction_status == 'settlement' || $request->transaction_status == 'complete') {
                 $order = Order::find($request->order_id);
 
-//                if ($order->status === 'Paid') {
-//                    $this->extendSewa($order);
-//
-//                    return response()->json([
-//                        'success' => true,
-//                        'message' => 'Order already paid and rental extended',
-//                        'refnumber' => $order->refnumber,
-//                        'payment_time' => $request->transaction_time,
-//                        'payment_method' => $request->payment_type,
-//                        'orderId' => $request->order_id,
-//                    ]);
-//                } else {
+                if ($order->status === 'Paid') {
+                    $duration = $order->duration;
+                    $roomName = explode(' - ', $order->detail)[0];
+                    $room = Room::where('ownerId', $order->ownerId)
+                        ->where('name', $roomName)
+                        ->first();
+                    if ($room->time == "1 bulan") {
+                        $duration->addMonth();
+                    } elseif ($room->time == "3 bulan") {
+                        $duration->addMonths(3);
+                    } elseif ($room->time == "6 bulan") {
+                        $duration->addMonths(6);
+                    } elseif ($room->time == "1 tahun") {
+                        $duration->addYear();
+                    } elseif ($room->time == "2 tahun") {
+                        $duration->addYears(2);
+                    } elseif ($room->time == "3 tahun") {
+                        $duration->addYears(3);
+                    }
+                    $order->update(['duration' => $duration]);
+
+                    return response()->json([
+                        'success' => true,
+                        'message' => 'Order already paid and rental extended',
+                        'refnumber' => $order->refnumber,
+                        'payment_time' => $request->transaction_time,
+                        'payment_method' => $request->payment_type,
+                        'orderId' => $request->order_id,
+                    ]);
+                } else {
                 $order->update(['status' => 'Paid']);
                 $roomName = explode(' - ', $order->detail)[0];
                 $room = Room::where('ownerId', $order->ownerId)
@@ -113,8 +131,8 @@ class OrderStatusController extends Controller
                     'payment_method' => $request->payment_type,
                     'orderId' => $request->order_id,
                 ]);
-//                }
-//            }
+               }
+            }
             }
 
             return response()->json([
@@ -122,7 +140,8 @@ class OrderStatusController extends Controller
                 'message' => 'Invalid signature or status',
             ]);
         }
-    }
+
+
 
     public function extendOrder(Request $request, $orderId)
     {
@@ -161,7 +180,14 @@ class OrderStatusController extends Controller
                 'name' => "Perpanjangan Sewa untuk " . $order->detail,
             ],
         ];
-
+        $roomName = explode(' - ', $order->detail)[0];
+        $room = Room::where('ownerId', $order->ownerId)
+            ->where('name', $roomName)
+            ->first();
+        if ($room) {
+            $room->availability -= 1;
+            $room->save();
+        }
         // Create the transaction payload
         $transactionPayload = [
             'transaction_details' => $transactionDetails,
@@ -173,7 +199,7 @@ class OrderStatusController extends Controller
             // Get Snap token
             $snapToken = \Midtrans\Snap::getSnapToken($transactionPayload);
 
-            return response()->json(['snapToken' => $snapToken]);
+            return response()->json(['snapToken' => $snapToken, 'room' => $room]);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }
