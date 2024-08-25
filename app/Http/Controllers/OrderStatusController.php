@@ -49,6 +49,30 @@ class OrderStatusController extends Controller
             'disorder' => $order
         ]);
     }
+    public function getPaidBuyerCountByMonth(Request $request)
+    {
+        $ownerId = auth()->user()->ownerId;
+
+        $month = $request->input('month', Carbon::now()->month);
+        $year = $request->input('year', Carbon::now()->year);
+
+        $startDate = Carbon::createFromDate($year, $month, 1)->startOfMonth();
+        $endDate = Carbon::createFromDate($year, $month, 1)->endOfMonth();
+
+        $uniqueBuyerCount = Order::where('ownerId', $ownerId)
+            ->where('status', 'Paid')
+            ->whereBetween('updated_at', [$startDate, $endDate])
+            ->distinct('phonenumber')
+            ->count('phonenumber');
+
+        return response()->json([
+            'success' => true,
+            'uniqueBuyerCount' => $uniqueBuyerCount,
+            'month' => $startDate->format('F'), // Nama bulan (January, February)
+            'year' => $year,
+            'userregistered' => $ownerId,
+        ]);
+    }
 
     private function generateUniqueTransactionRef()
     {
@@ -153,27 +177,20 @@ class OrderStatusController extends Controller
             return response()->json(['error' => 'Order not found'], 404);
         }
 
-        // Set Midtrans configuration
         \Midtrans\Config::$serverKey = config('midtrans.server_key');
         \Midtrans\Config::$isProduction = false;
         \Midtrans\Config::$isSanitized = true;
         \Midtrans\Config::$is3ds = true;
 
-        // Generate a transaction order ID
         $transactionOrderId = $order->id . ' - ' . time();
-        // Create transaction details
         $transactionDetails = [
             'order_id' => $transactionOrderId,
-            'gross_amount' => $order->price, // Set this based on the extension price
+            'gross_amount' => $order->price,
         ];
-
-        // Create customer details
         $customerDetails = [
             'first_name' => $order->name,
             'phone' => $order->phonenumber,
         ];
-
-        // Create item details
         $itemDetails = [
             [
                 'id' => $order->id,
@@ -190,7 +207,6 @@ class OrderStatusController extends Controller
             $room->availability -= 1;
             $room->save();
         }
-        // Create the transaction payload
         $transactionPayload = [
             'transaction_details' => $transactionDetails,
             'customer_details' => $customerDetails,
@@ -198,7 +214,6 @@ class OrderStatusController extends Controller
         ];
 
         try {
-            // Get Snap token
             $snapToken = \Midtrans\Snap::getSnapToken($transactionPayload);
 
             return response()->json(['snapToken' => $snapToken, 'room' => $room]);
