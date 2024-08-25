@@ -15,16 +15,16 @@ class BotController extends Controller
 
         switch ($message) {
             case 'apa itu website nearus':
-                $response = "a";
+                $response = "Website NeaRUS adalah sebuah website yang digunakan untuk menyewa kamar kost, management kost, serta informasi tentang kost di sekitar SMK Raden Umar Said";
                 break;
             case 'bagaimana cara melakukan pemesanan kos di nearus':
-                $response = "i";
+                $response = "Cara melakukan pemesanan kost yaitu dengan langsung memilih dan memesan kamar melalui detail dari masing-masing kost yang diinginkan";
                 break;
-            case 'bagaimana sistem refund di nearus':
-                $response = "u";
+            case 'bagaimana sistem perpanjangan sewa di nearus':
+                $response = "Sistem perpanjangan di NeaRUS yaitu sistem untuk menambah jangka waktu sewa dari penyewa kost ";
                 break;
             case 'tentang nearus finance':
-                $response = "e";
+                $response = "NeaRus Finance adalah tempat untuk mengontrol kost yang telah disewa";
                 break;
             case 'hubungi admin':
                 return response()->json([
