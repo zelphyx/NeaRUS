@@ -48,6 +48,7 @@ Route::middleware('auth:sanctum')->get('/orders/balance', [\App\Http\Controllers
 Route::get('/orders/detail/{id}', [\App\Http\Controllers\OrderStatusController::class, 'geteachid']);
 Route::get('/owner/{id}', [\App\Http\Controllers\OrderStatusController::class, 'getownereachid']);
 Route::post('/orders/extend/{orderId}', [\App\Http\Controllers\OrderStatusController::class, 'extendOrder']);
+Route::middleware('auth:sanctum')->get('/orders/paid-buyer-count-by-month', [\App\Http\Controllers\OrderStatusController::class, 'getPaidBuyerCountByMonth']);
 
 
 //Product
