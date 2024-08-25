@@ -1,5 +1,3 @@
-<!-- resources/views/password_reset.blade.php -->
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -21,7 +19,7 @@
 
 <body class="bg-reset-password flex items-center justify-center min-h-screen">
 <div class="w-full max-w-4xl bg-white rounded-lg shadow-lg border border-blue-600 p-8 relative">
-    <div class="absolute top-4 left-4">
+    <div class="absolute top-4 left-6">
         <img src="{{ asset('images/nearus.png') }}" alt="Logo" class="w-40" />
     </div>
     <div class="border-t-4 border-blue-400 mt-8 mb-8"></div>
