@@ -28,13 +28,13 @@
             margin-bottom: 20px;
         }
         p {
-            color: #ffffff;
+            color: #555555;
             font-size: 16px;
             line-height: 1.5;
             margin-bottom: 20px;
         }
         a {
-            color: #ffffff;
+            color: #ffffff; /* Make the text color white */
             background-color: #007bff;
             padding: 10px 20px;
             text-decoration: none;
