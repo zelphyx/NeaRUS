@@ -229,6 +229,14 @@ class OrderStatusController extends Controller
         foreach ($orders as $order) {
             if (Carbon::now()->greaterThan(Carbon::parse($order->duration))) {
                 Log::info('Deleting expired order with ID: ' . $order->id);
+                $roomName = explode(' - ', $order->detail)[0];
+                $room = Room::where('ownerId', $order->ownerId)
+                    ->where('name',$roomName)
+                    ->first();
+                if($room){
+                    $room->availability += 1;
+                    $room->save();
+                }
                 $order->delete();
             }
         }
