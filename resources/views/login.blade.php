@@ -34,6 +34,9 @@
             transform: translateY(-50%);
             cursor: pointer;
         }
+        button:focus {
+            outline: none;
+        }
     </style>
 </head>
 <body class="full-screen-bg flex items-center justify-center min-h-screen p-4">
@@ -64,7 +67,7 @@
             </button>
         </div>
 
-        <button type="submit" class="w-full py-3 bg-gradient-to-r from-sky-300 to-blue-500 text-white text-base md:text-lg font-bold rounded-md shadow-md transition-transform duration-300 hover:scale-105">
+        <button type="submit" class="w-full py-3 bg-gradient-to-r from-sky-300 to-blue-500 text-white text-base md:text-lg font-bold rounded-md shadow-md transition-transform duration-300 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-50">
             Login
         </button>
     </form>
