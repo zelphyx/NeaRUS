@@ -188,13 +188,6 @@
             </button>
         </div>
     </div>
-
-    <div class="mb-6">
-        <a href="{{ route('logout') }}" class="flex gap-3 items-center rounded-lg pl-6 py-2 cursor-pointer transition text-neutral-600 font-medium hover:bg-[#F5F5F5] hover:text-[#2D2D2D]">
-            <i class="fas fa-door-open w-5 h-5 text-neutral-500"></i>
-            <span>Logout</span>
-        </a>
-    </div>
 </aside>
 
 <div class="content p-6">
