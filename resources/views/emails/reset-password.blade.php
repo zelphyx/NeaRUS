@@ -28,7 +28,7 @@
             margin-bottom: 20px;
         }
         p {
-            color: #555555;
+            color: #ffffff;
             font-size: 16px;
             line-height: 1.5;
             margin-bottom: 20px;
