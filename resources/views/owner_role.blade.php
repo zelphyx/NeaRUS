@@ -182,6 +182,10 @@
                 <i class="fas fa-users w-5 h-5 text-neutral-500"></i>
                 <span>List Of Owners</span>
             </button>
+            <button onclick="window.location.href='/orders'" class="flex gap-3 items-center rounded-lg px-6 py-3 cursor-pointer transition text-neutral-600 font-medium hover:bg-[#e2e8f0] hover:text-[#1a202c] focus:outline-none focus:ring-2 focus:ring-[#cbd5e0]">
+                <i class="fas fa-calendar-check w-5 h-5 text-neutral-500"></i>
+                <span>Booking Data</span>
+            </button>
         </div>
     </div>
 </aside>
