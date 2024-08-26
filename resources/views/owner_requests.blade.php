@@ -162,7 +162,6 @@
             box-shadow: 0 0 0 2px #cbd5e0;
         }
     </style>
-    @vite('resources/css/app.css')
 </head>
 <body>
 <aside class="sidebar">
