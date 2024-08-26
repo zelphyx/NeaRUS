@@ -133,19 +133,19 @@ class OrderStatusController extends Controller
                     $room->availability -= 1;
                     $room->save();
                 }
-
+                $times = strtolower($room->time);
                 $duration = Carbon::now();
-                if ($room->time == "1 bulan") {
+                if ($times == "1 bulan") {
                     $duration = Carbon::now()->addMonth();
-                } elseif ($room->time == "3 bulan") {
+                } elseif ($times == "3 bulan") {
                     $duration = Carbon::now()->addMonths(3);
-                } elseif ($room->time == "6 bulan") {
+                } elseif ($times == "6 bulan") {
                     $duration = Carbon::now()->addMonths(6);
-                } elseif ($room->time == "1 tahun") {
+                } elseif ($times == "1 tahun") {
                     $duration = Carbon::now()->addYear();
-                } elseif ($room->time == "2 tahun") {
+                } elseif ($times == "2 tahun") {
                     $duration = Carbon::now()->addYears(2);
-                } elseif ($room->time == "3 tahun") {
+                } elseif ($times == "3 tahun") {
                     $duration = Carbon::now()->addYears(3);
                 }
                 $order->update(['duration' => $duration]);

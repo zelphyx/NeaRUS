@@ -52,6 +52,7 @@ class RoomController extends Controller
 
         $validatedData = $request->validate([
             'ownerId' => 'required',
+            'kostid' => 'required',
             'name' => 'required',
             'category' => 'required',
             'fasilitas' => 'required|array|min:1',

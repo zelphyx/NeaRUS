@@ -18,6 +18,7 @@ class Room extends Model
     protected $fillable = [
 
         'ownerId',
+        'kostid',
         'name',
         'category',
         'fasilitas',
