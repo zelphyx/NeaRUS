@@ -15,7 +15,7 @@
             background: url('{{ asset('images/bg-loginPage.png') }}') center/cover no-repeat;
         }
 
-        /* Modal styles */
+        /* Transition classes for modal */
         .modal {
             opacity: 0;
             transform: scale(0.9);
@@ -28,15 +28,6 @@
         .modal-hide {
             opacity: 0;
             transform: scale(0.9);
-        }
-        .modal-overlay {
-            transition: opacity 0.3s ease;
-        }
-        .modal-overlay-show {
-            opacity: 1;
-        }
-        .modal-overlay-hide {
-            opacity: 0;
         }
     </style>
 </head>
@@ -70,8 +61,8 @@
 </div>
 
 <!-- Modal for Error Messages -->
-<div id="error-modal" class="fixed inset-0 flex items-center justify-center modal-overlay modal-overlay-hide">
-    <div class="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full modal modal-hide">
+<div id="error-modal" class="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center hidden">
+    <div class="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full modal">
         <h2 id="modal-title" class="text-xl font-bold mb-4">Error</h2>
         <p id="modal-message" class="text-lg mb-4">Error message goes here.</p>
         <button id="modal-close-btn" class="bg-blue-500 text-white py-2 px-4 rounded-md">Close</button>
@@ -84,22 +75,6 @@
     const modalMessage = document.getElementById('modal-message');
     const modalCloseBtn = document.getElementById('modal-close-btn');
     const modalContent = errorModal.querySelector('div');
-
-    function showModal(title, message) {
-        modalTitle.textContent = title;
-        modalMessage.textContent = message;
-        errorModal.classList.remove('modal-overlay-hide');
-        errorModal.classList.add('modal-overlay-show');
-        modalContent.classList.remove('modal-hide');
-        modalContent.classList.add('modal-show');
-    }
-
-    function hideModal() {
-        modalContent.classList.remove('modal-show');
-        modalContent.classList.add('modal-hide');
-        errorModal.classList.remove('modal-overlay-show');
-        errorModal.classList.add('modal-overlay-hide');
-    }
 
     document.getElementById('submit-btn').addEventListener('click', function(event) {
         const password = document.getElementById('password').value;
@@ -116,26 +91,31 @@
 
         if (password !== confirmPassword) {
             event.preventDefault(); // Prevent form submission
-            showModal("Password Mismatch", "Kata sandi yang Anda masukkan tidak sesuai. Silakan coba lagi.");
+            modalTitle.textContent = "Password Mismatch";
+            modalMessage.textContent = "Kata sandi yang Anda masukkan tidak sesuai. Silakan coba lagi.";
+            errorModal.classList.remove('hidden');
+            modalContent.classList.add('modal-show');
+            modalContent.classList.remove('modal-hide');
             document.getElementById('password').value = '';
             document.getElementById('confirm_password').value = '';
         } else if (!isValidPassword(password)) {
             event.preventDefault(); // Prevent form submission
-            showModal("Invalid Password", "Kata sandi tidak valid. Kata sandi harus memiliki panjang minimal 8 karakter, termasuk huruf besar, huruf kecil, angka, dan karakter khusus.");
+            modalTitle.textContent = "Invalid Password";
+            modalMessage.textContent = "Kata sandi tidak valid. Kata sandi harus memiliki panjang minimal 8 karakter, termasuk huruf besar, huruf kecil, angka, dan karakter khusus.";
+            errorModal.classList.remove('hidden');
+            modalContent.classList.add('modal-show');
+            modalContent.classList.remove('modal-hide');
             document.getElementById('password').value = '';
             document.getElementById('confirm_password').value = '';
         }
     });
 
     modalCloseBtn.addEventListener('click', function() {
-        hideModal();
-    });
-
-    // Close modal on overlay click
-    errorModal.addEventListener('click', function(event) {
-        if (event.target === errorModal) {
-            hideModal();
-        }
+        modalContent.classList.add('modal-hide');
+        setTimeout(() => {
+            errorModal.classList.add('hidden');
+            modalContent.classList.remove('modal-hide');
+        }, 300); // Duration of the fade-out animation
     });
 </script>
 </body>
