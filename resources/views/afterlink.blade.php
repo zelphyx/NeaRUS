@@ -128,7 +128,7 @@
         </p>
         <p class="text-black text-sm font-light font-montserrat leading-none bottom-text">
             Anda bisa menutup email ini setelah anda selesai melakukan verifikasi email
-        </p> <a href="http://localhost:5173/login">
+        </p> <a href="https://nearus.id/login">
             <button>
                 Login
             </button>
