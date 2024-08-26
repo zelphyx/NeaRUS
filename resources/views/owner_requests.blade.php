@@ -235,7 +235,7 @@
                         <td class="px-6 py-4 text-sm">
                             <form id="approveForm{{ $user->ownerId }}" action="{{ route('owner.approve', $user->ownerId) }}" method="POST" style="display:inline-block;" onsubmit="return confirm('Are you sure you want to approve this owner?');">
                                 @csrf
-                                @method('POST')
+                                @method('PATCH')
                                 <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-300">Approve</button>
                             </form>
                             <form id="deleteForm{{ $user->ownerId }}" action="{{ route('owner.delete', $user->ownerId) }}" method="POST" style="display:inline-block;" onsubmit="return confirm('Are you sure you want to delete this owner?');">
