@@ -14,6 +14,26 @@
         .bg-reset-password {
             background: url('{{ asset('images/bg-loginPage.png') }}') center/cover no-repeat;
         }
+
+        /* Transition classes for modal */
+        .modal-enter {
+            opacity: 0;
+            transform: scale(0.9);
+        }
+        .modal-enter-active {
+            opacity: 1;
+            transform: scale(1);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+        .modal-exit {
+            opacity: 1;
+            transform: scale(1);
+        }
+        .modal-exit-active {
+            opacity: 0;
+            transform: scale(0.9);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
     </style>
 </head>
 
@@ -46,8 +66,8 @@
 </div>
 
 <!-- Modal for Error Messages -->
-<div id="error-modal" class="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center hidden">
-    <div class="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full">
+<div id="error-modal" class="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center hidden modal-enter">
+    <div class="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full modal-enter-active">
         <h2 id="modal-title" class="text-xl font-bold mb-4">Error</h2>
         <p id="modal-message" class="text-lg mb-4">Error message goes here.</p>
         <button id="modal-close-btn" class="bg-blue-500 text-white py-2 px-4 rounded-md">Close</button>
@@ -78,6 +98,7 @@
             modalTitle.textContent = "Password Mismatch";
             modalMessage.textContent = "Kata sandi yang Anda masukkan tidak sesuai. Silakan coba lagi.";
             errorModal.classList.remove('hidden');
+            errorModal.classList.add('modal-enter-active');
             document.getElementById('password').value = '';
             document.getElementById('confirm_password').value = '';
         } else if (!isValidPassword(password)) {
@@ -85,13 +106,18 @@
             modalTitle.textContent = "Invalid Password";
             modalMessage.textContent = "Kata sandi tidak valid. Kata sandi harus memiliki panjang minimal 8 karakter, termasuk huruf besar, huruf kecil, angka, dan karakter khusus.";
             errorModal.classList.remove('hidden');
+            errorModal.classList.add('modal-enter-active');
             document.getElementById('password').value = '';
             document.getElementById('confirm_password').value = '';
         }
     });
 
     modalCloseBtn.addEventListener('click', function() {
-        errorModal.classList.add('hidden');
+        errorModal.classList.add('modal-exit');
+        setTimeout(() => {
+            errorModal.classList.add('hidden');
+            errorModal.classList.remove('modal-exit');
+        }, 300); // Duration of the fade-out animation
     });
 </script>
 </body>
