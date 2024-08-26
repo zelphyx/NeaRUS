@@ -43,6 +43,17 @@
     </form>
 </div>
 
+<!-- Modal Structure -->
+<div id="confirmation-modal" class="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 hidden">
+    <div class="bg-white rounded-lg shadow-lg w-1/3 p-6">
+        <h2 class="text-xl font-semibold mb-4">Peringatan</h2>
+        <p id="modal-message" class="mb-6">Kata sandi yang Anda masukkan tidak sesuai. Silakan coba lagi.</p>
+        <div class="flex justify-end">
+            <button id="modal-close-btn" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">Tutup</button>
+        </div>
+    </div>
+</div>
+
 <script>
     document.getElementById('reset-password-form').addEventListener('submit', function(event) {
         event.preventDefault(); // Prevent the default form submission
@@ -52,7 +63,7 @@
         const confirmPassword = document.getElementById('confirm_password').value;
 
         if (password !== confirmPassword) {
-            alert("Kata sandi yang Anda masukkan tidak sesuai. Silakan coba lagi.");
+            document.getElementById('confirmation-modal').classList.remove('hidden');
             return;
         }
 
@@ -60,6 +71,10 @@
 
         // Redirect to the completion page if successful
         window.location.href = "{{ url('/complete') }}";
+    });
+
+    document.getElementById('modal-close-btn').addEventListener('click', function() {
+        document.getElementById('confirmation-modal').classList.add('hidden');
     });
 </script>
 </body>
