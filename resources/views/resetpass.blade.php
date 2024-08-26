@@ -25,7 +25,7 @@
     <div class="border-t-4 border-blue-400 mt-8 mb-8"></div>
     <h1 class="text-2xl font-bold text-black mb-6">Silahkan Masukkan Kata Sandi Baru Anda</h1>
 
-    <form method="POST" action="{{ url('/reset-password') }}">
+    <form method="POST" action="{{ url('/api/reset') }}">
         @csrf
         <input type="hidden" name="token" value="{{ $token }}">
 

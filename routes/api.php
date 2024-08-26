@@ -18,6 +18,7 @@ Route::controller(\App\Http\Controllers\API\User\AuthUserController::class)->gro
     Route::get('/verify-email/{token}','verifyEmail')->name('verify.email');
     Route::get('verify/verify-email/{token}','apiVerifyEmail')->name('api.verify.email');
     Route::post('resend-verification','resendVerification');
+    Route::post('reset','reset');
 });
 Route::controller(\App\Http\Controllers\API\User\AuthOwnerController::class)->group(function (){
     Route::post('daftar','daftarowner');
