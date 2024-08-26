@@ -15,7 +15,7 @@
             background: url('{{ asset('images/bg-loginPage.png') }}') center/cover no-repeat;
         }
 
-        /* Transition classes for modal */
+        /* Modal styles */
         .modal {
             opacity: 0;
             transform: scale(0.9);
@@ -29,6 +29,39 @@
             opacity: 0;
             transform: scale(0.9);
         }
+        .modal-overlay {
+            transition: opacity 0.3s ease;
+        }
+        .modal-overlay-show {
+            opacity: 1;
+        }
+        .modal-overlay-hide {
+            opacity: 0;
+        }
+
+        /* Loading Animation */
+        .loading-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            display: none;
+        }
+        .loading-spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-left: 4px solid #3498db;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
     </style>
 </head>
 
@@ -40,7 +73,7 @@
     <div class="border-t-4 border-blue-400 mt-8 mb-8"></div>
     <h1 class="text-2xl font-bold text-black mb-6">Silahkan Masukkan Kata Sandi Baru Anda</h1>
 
-    <form method="POST" action="{{ url('/api/reset') }}">
+    <form id="reset-password-form" method="POST" action="{{ url('/api/reset') }}">
         @csrf
         <input type="hidden" name="token" value="{{ $token }}">
 
@@ -61,12 +94,17 @@
 </div>
 
 <!-- Modal for Error Messages -->
-<div id="error-modal" class="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center hidden">
-    <div class="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full modal">
+<div id="error-modal" class="fixed inset-0 flex items-center justify-center modal-overlay modal-overlay-hide">
+    <div class="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full modal modal-hide">
         <h2 id="modal-title" class="text-xl font-bold mb-4">Error</h2>
         <p id="modal-message" class="text-lg mb-4">Error message goes here.</p>
         <button id="modal-close-btn" class="bg-blue-500 text-white py-2 px-4 rounded-md">Close</button>
     </div>
+</div>
+
+<!-- Loading Overlay -->
+<div id="loading-overlay" class="loading-overlay">
+    <div class="loading-spinner"></div>
 </div>
 
 <script>
@@ -75,8 +113,26 @@
     const modalMessage = document.getElementById('modal-message');
     const modalCloseBtn = document.getElementById('modal-close-btn');
     const modalContent = errorModal.querySelector('div');
+    const loadingOverlay = document.getElementById('loading-overlay');
 
-    document.getElementById('submit-btn').addEventListener('click', function(event) {
+    function showModal(title, message) {
+        modalTitle.textContent = title;
+        modalMessage.textContent = message;
+        errorModal.classList.remove('modal-overlay-hide');
+        errorModal.classList.add('modal-overlay-show');
+        modalContent.classList.remove('modal-hide');
+        modalContent.classList.add('modal-show');
+    }
+
+    function hideModal() {
+        modalContent.classList.remove('modal-show');
+        modalContent.classList.add('modal-hide');
+        errorModal.classList.remove('modal-overlay-show');
+        errorModal.classList.add('modal-overlay-hide');
+    }
+
+    document.getElementById('reset-password-form').addEventListener('submit', function(event) {
+        event.preventDefault();
         const password = document.getElementById('password').value;
         const confirmPassword = document.getElementById('confirm_password').value;
 
@@ -90,32 +146,30 @@
         };
 
         if (password !== confirmPassword) {
-            event.preventDefault(); // Prevent form submission
-            modalTitle.textContent = "Password Mismatch";
-            modalMessage.textContent = "Kata sandi yang Anda masukkan tidak sesuai. Silakan coba lagi.";
-            errorModal.classList.remove('hidden');
-            modalContent.classList.add('modal-show');
-            modalContent.classList.remove('modal-hide');
+            showModal("Password Mismatch", "Kata sandi yang Anda masukkan tidak sesuai. Silakan coba lagi.");
             document.getElementById('password').value = '';
             document.getElementById('confirm_password').value = '';
         } else if (!isValidPassword(password)) {
-            event.preventDefault(); // Prevent form submission
-            modalTitle.textContent = "Invalid Password";
-            modalMessage.textContent = "Kata sandi tidak valid. Kata sandi harus memiliki panjang minimal 8 karakter, termasuk huruf besar, huruf kecil, angka, dan karakter khusus.";
-            errorModal.classList.remove('hidden');
-            modalContent.classList.add('modal-show');
-            modalContent.classList.remove('modal-hide');
+            showModal("Invalid Password", "Kata sandi tidak valid. Kata sandi harus memiliki panjang minimal 8 karakter, termasuk huruf besar, huruf kecil, angka, dan karakter khusus.");
             document.getElementById('password').value = '';
             document.getElementById('confirm_password').value = '';
+        } else {
+            loadingOverlay.style.display = 'flex';
+            setTimeout(() => {
+                window.location.href = '{{ url('/complete') }}';
+            }, 4000);
         }
     });
 
     modalCloseBtn.addEventListener('click', function() {
-        modalContent.classList.add('modal-hide');
-        setTimeout(() => {
-            errorModal.classList.add('hidden');
-            modalContent.classList.remove('modal-hide');
-        }, 300); // Duration of the fade-out animation
+        hideModal();
+    });
+
+    // Close modal on overlay click
+    errorModal.addEventListener('click', function(event) {
+        if (event.target === errorModal) {
+            hideModal();
+        }
     });
 </script>
 </body>
