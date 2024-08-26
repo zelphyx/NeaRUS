@@ -99,7 +99,7 @@ class AuthOwnerController extends Controller
             $user = User::findOrFail($id);
             $user->websiterole = 'Owner';
             $user->email_verified_at = now();
-            $user->email_verifcation_token = null;
+            $user->update(['email_verification_token' => null]);
             $user->update(['image' => null]);
 
             $user->save();
