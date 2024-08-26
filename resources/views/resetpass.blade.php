@@ -6,40 +6,15 @@
     <title>Password Reset</title>
     @vite('resources/css/app.css')
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Font Awesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
     <style>
-        /* External or global CSS for background */
+        /* Background image style */
         .bg-reset-password {
             background: url('{{ asset('images/bg-loginPage.png') }}') center/cover no-repeat;
         }
 
-        /* Modal styles */
-        .modal {
-            opacity: 0;
-            transform: scale(0.9);
-            transition: opacity 0.3s ease, transform 0.3s ease;
-        }
-        .modal-show {
-            opacity: 1;
-            transform: scale(1);
-        }
-        .modal-hide {
-            opacity: 0;
-            transform: scale(0.9);
-        }
-        .modal-overlay {
-            transition: opacity 0.3s ease;
-        }
-        .modal-overlay-show {
-            opacity: 1;
-        }
-        .modal-overlay-hide {
-            opacity: 0;
-        }
-
-        /* Loading Animation */
+        /* Loading animation */
         .loading-overlay {
             position: fixed;
             inset: 0;
@@ -93,6 +68,11 @@
     </form>
 </div>
 
+<!-- Loading overlay -->
+<div id="loading-overlay" class="loading-overlay">
+    <div class="loading-spinner"></div>
+</div>
+
 <!-- Modal for Error Messages -->
 <div id="error-modal" class="fixed inset-0 flex items-center justify-center modal-overlay modal-overlay-hide">
     <div class="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full modal modal-hide">
@@ -102,18 +82,51 @@
     </div>
 </div>
 
-<!-- Loading Overlay -->
-<div id="loading-overlay" class="loading-overlay">
-    <div class="loading-spinner"></div>
-</div>
-
 <script>
+    document.getElementById('reset-password-form').addEventListener('submit', function(event) {
+        event.preventDefault(); // Prevent the default form submission
+        const form = event.target;
+
+        const password = document.getElementById('password').value;
+        const confirmPassword = document.getElementById('confirm_password').value;
+
+        const isValidPassword = (pwd) => {
+            const minLength = 8;
+            const hasUpperCase = /[A-Z]/.test(pwd);
+            const hasLowerCase = /[a-z]/.test(pwd);
+            const hasNumbers = /[0-9]/.test(pwd);
+            const hasSpecialChars = /[!@#$%^&*(),.?":{}|<>]/.test(pwd);
+            return pwd.length >= minLength && hasUpperCase && hasLowerCase && hasNumbers && hasSpecialChars;
+        };
+
+        if (password !== confirmPassword) {
+            showModal("Password Mismatch", "Kata sandi yang Anda masukkan tidak sesuai. Silakan coba lagi.");
+            return;
+        } else if (!isValidPassword(password)) {
+            showModal("Invalid Password", "Kata sandi tidak valid. Kata sandi harus memiliki panjang minimal 8 karakter, termasuk huruf besar, huruf kecil, angka, dan karakter khusus.");
+            return;
+        }
+
+        // Show loading spinner
+        document.getElementById('loading-overlay').style.display = 'flex';
+
+        // Simulate form submission and redirection
+        setTimeout(() => {
+            form.submit(); // Submit the form
+
+            // Redirect to the completion page after a short delay
+            setTimeout(() => {
+                window.location.href = "{{ url('/complete') }}";
+            }, 1000); // Adjust the delay as needed
+
+        }, 1000); // Simulate network delay
+    });
+
     const errorModal = document.getElementById('error-modal');
     const modalTitle = document.getElementById('modal-title');
     const modalMessage = document.getElementById('modal-message');
     const modalCloseBtn = document.getElementById('modal-close-btn');
     const modalContent = errorModal.querySelector('div');
-    const loadingOverlay = document.getElementById('loading-overlay');
 
     function showModal(title, message) {
         modalTitle.textContent = title;
@@ -130,40 +143,6 @@
         errorModal.classList.remove('modal-overlay-show');
         errorModal.classList.add('modal-overlay-hide');
     }
-
-    document.getElementById('reset-password-form').addEventListener('submit', function(event) {
-        event.preventDefault();
-        const password = document.getElementById('password').value;
-        const confirmPassword = document.getElementById('confirm_password').value;
-
-        const isValidPassword = (pwd) => {
-            const minLength = 8;
-            const hasUpperCase = /[A-Z]/.test(pwd);
-            const hasLowerCase = /[a-z]/.test(pwd);
-            const hasNumbers = /[0-9]/.test(pwd);
-            const hasSpecialChars = /[!@#$%^&*(),.?":{}|<>]/.test(pwd);
-            return pwd.length >= minLength && hasUpperCase && hasLowerCase && hasNumbers && hasSpecialChars;
-        };
-
-        if (password !== confirmPassword) {
-            showModal("Password Mismatch", "Kata sandi yang Anda masukkan tidak sesuai. Silakan coba lagi.");
-            document.getElementById('password').value = '';
-            document.getElementById('confirm_password').value = '';
-        } else if (!isValidPassword(password)) {
-            showModal("Invalid Password", "Kata sandi tidak valid. Kata sandi harus memiliki panjang minimal 8 karakter, termasuk huruf besar, huruf kecil, angka, dan karakter khusus.");
-            document.getElementById('password').value = '';
-            document.getElementById('confirm_password').value = '';
-        } else {
-            // Show loading overlay
-            loadingOverlay.style.display = 'flex';
-
-            // Simulate API call delay (replace with actual form submission)
-            setTimeout(() => {
-                // After successful form submission, redirect to the success page
-                window.location.href = '{{ url('/complete-reset') }}';
-            }, 2000); // 2 seconds delay for demonstration
-        }
-    });
 
     modalCloseBtn.addEventListener('click', function() {
         hideModal();
