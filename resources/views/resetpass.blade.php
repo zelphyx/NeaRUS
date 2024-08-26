@@ -37,7 +37,6 @@
         <div class="mb-6 relative">
             <label for="confirm_password" class="block text-neutral-500 text-xl font-medium mb-2">Konfirmasi Kata Sandi</label>
             <input id="confirm_password" name="confirm_password" type="password" class="w-full text-black text-opacity-80 text-lg font-semibold border-b border-black outline-none py-2 px-3" placeholder="Konfirmasi Masukkan Kata Sandi Baru Anda" />
-            <span id="error-message" class="absolute text-red-500 text-sm font-medium hidden">Kata sandi yang anda masukkan harus sesuai</span>
         </div>
 
         <button type="submit" id="submit-btn" class="w-full bg-gradient-to-r from-sky-300 to-blue-500 text-white text-xl font-bold py-3 px-6 rounded-md shadow transition-transform transform hover:scale-105">
@@ -46,11 +45,24 @@
     </form>
 </div>
 
+<!-- Modal for Error Messages -->
+<div id="error-modal" class="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center hidden">
+    <div class="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full">
+        <h2 id="modal-title" class="text-xl font-bold mb-4">Error</h2>
+        <p id="modal-message" class="text-lg mb-4">Error message goes here.</p>
+        <button id="modal-close-btn" class="bg-blue-500 text-white py-2 px-4 rounded-md">Close</button>
+    </div>
+</div>
+
 <script>
+    const errorModal = document.getElementById('error-modal');
+    const modalTitle = document.getElementById('modal-title');
+    const modalMessage = document.getElementById('modal-message');
+    const modalCloseBtn = document.getElementById('modal-close-btn');
+
     document.getElementById('submit-btn').addEventListener('click', function(event) {
         const password = document.getElementById('password').value;
         const confirmPassword = document.getElementById('confirm_password').value;
-        const errorMessage = document.getElementById('error-message');
 
         const isValidPassword = (pwd) => {
             const minLength = 8;
@@ -63,22 +75,23 @@
 
         if (password !== confirmPassword) {
             event.preventDefault(); // Prevent form submission
-            alert("Kata sandi yang Anda masukkan tidak sesuai. Silakan coba lagi.");
-            errorMessage.textContent = "Kata sandi yang anda masukkan harus sesuai";
-            errorMessage.classList.remove('hidden');
+            modalTitle.textContent = "Password Mismatch";
+            modalMessage.textContent = "Kata sandi yang Anda masukkan tidak sesuai. Silakan coba lagi.";
+            errorModal.classList.remove('hidden');
             document.getElementById('password').value = '';
             document.getElementById('confirm_password').value = '';
         } else if (!isValidPassword(password)) {
             event.preventDefault(); // Prevent form submission
-            alert("Kata sandi tidak valid. Kata sandi harus memiliki panjang minimal 8 karakter, termasuk huruf besar, huruf kecil, angka, dan karakter khusus.");
-            errorMessage.textContent = "Kata sandi tidak valid. Kata sandi harus memiliki panjang minimal 8 karakter, termasuk huruf besar, huruf kecil, angka, dan karakter khusus.";
-            errorMessage.classList.remove('hidden');
+            modalTitle.textContent = "Invalid Password";
+            modalMessage.textContent = "Kata sandi tidak valid. Kata sandi harus memiliki panjang minimal 8 karakter, termasuk huruf besar, huruf kecil, angka, dan karakter khusus.";
+            errorModal.classList.remove('hidden');
             document.getElementById('password').value = '';
             document.getElementById('confirm_password').value = '';
-        } else {
-            errorMessage.classList.add('hidden');
-            // Form will be submitted if valid
         }
+    });
+
+    modalCloseBtn.addEventListener('click', function() {
+        errorModal.classList.add('hidden');
     });
 </script>
 </body>
