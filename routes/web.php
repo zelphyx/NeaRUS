@@ -33,6 +33,9 @@ Route::middleware('verified')->group(function () {
 
 
 });
+Route::get('/complete', function () {
+    return view('completeresetpass');
+});
 Route::get('/', function () {
     return view('welcome');
 });
