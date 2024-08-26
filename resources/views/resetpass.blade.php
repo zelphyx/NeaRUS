@@ -13,30 +13,6 @@
         .bg-reset-password {
             background: url('{{ asset('images/bg-loginPage.png') }}') center/cover no-repeat;
         }
-
-        /* Loading animation */
-        .loading-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.5);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            display: none;
-        }
-        .loading-spinner {
-            border: 4px solid rgba(0, 0, 0, 0.1);
-            border-left: 4px solid #3498db;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-        }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
     </style>
 </head>
 
@@ -68,20 +44,6 @@
     </form>
 </div>
 
-<!-- Loading overlay -->
-<div id="loading-overlay" class="loading-overlay">
-    <div class="loading-spinner"></div>
-</div>
-
-<!-- Modal for Error Messages -->
-<div id="error-modal" class="fixed inset-0 flex items-center justify-center modal-overlay modal-overlay-hide">
-    <div class="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full modal modal-hide">
-        <h2 id="modal-title" class="text-xl font-bold mb-4">Error</h2>
-        <p id="modal-message" class="text-lg mb-4">Error message goes here.</p>
-        <button id="modal-close-btn" class="bg-blue-500 text-white py-2 px-4 rounded-md">Close</button>
-    </div>
-</div>
-
 <script>
     document.getElementById('reset-password-form').addEventListener('submit', function(event) {
         event.preventDefault(); // Prevent the default form submission
@@ -90,69 +52,15 @@
         const password = document.getElementById('password').value;
         const confirmPassword = document.getElementById('confirm_password').value;
 
-        const isValidPassword = (pwd) => {
-            const minLength = 8;
-            const hasUpperCase = /[A-Z]/.test(pwd);
-            const hasLowerCase = /[a-z]/.test(pwd);
-            const hasNumbers = /[0-9]/.test(pwd);
-            const hasSpecialChars = /[!@#$%^&*(),.?":{}|<>]/.test(pwd);
-            return pwd.length >= minLength && hasUpperCase && hasLowerCase && hasNumbers && hasSpecialChars;
-        };
-
         if (password !== confirmPassword) {
-            showModal("Password Mismatch", "Kata sandi yang Anda masukkan tidak sesuai. Silakan coba lagi.");
-            return;
-        } else if (!isValidPassword(password)) {
-            showModal("Invalid Password", "Kata sandi tidak valid. Kata sandi harus memiliki panjang minimal 8 karakter, termasuk huruf besar, huruf kecil, angka, dan karakter khusus.");
+            alert("Kata sandi yang Anda masukkan tidak sesuai. Silakan coba lagi.");
             return;
         }
 
-        // Show loading spinner
-        document.getElementById('loading-overlay').style.display = 'flex';
+        form.submit(); // Submit the form
 
-        // Simulate form submission and redirection
-        setTimeout(() => {
-            form.submit(); // Submit the form
-
-            // Redirect to the completion page after a short delay
-            setTimeout(() => {
-                window.location.href = "{{ url('/complete') }}";
-            }, 1000); // Adjust the delay as needed
-
-        }, 1000); // Simulate network delay
-    });
-
-    const errorModal = document.getElementById('error-modal');
-    const modalTitle = document.getElementById('modal-title');
-    const modalMessage = document.getElementById('modal-message');
-    const modalCloseBtn = document.getElementById('modal-close-btn');
-    const modalContent = errorModal.querySelector('div');
-
-    function showModal(title, message) {
-        modalTitle.textContent = title;
-        modalMessage.textContent = message;
-        errorModal.classList.remove('modal-overlay-hide');
-        errorModal.classList.add('modal-overlay-show');
-        modalContent.classList.remove('modal-hide');
-        modalContent.classList.add('modal-show');
-    }
-
-    function hideModal() {
-        modalContent.classList.remove('modal-show');
-        modalContent.classList.add('modal-hide');
-        errorModal.classList.remove('modal-overlay-show');
-        errorModal.classList.add('modal-overlay-hide');
-    }
-
-    modalCloseBtn.addEventListener('click', function() {
-        hideModal();
-    });
-
-    // Close modal on overlay click
-    errorModal.addEventListener('click', function(event) {
-        if (event.target === errorModal) {
-            hideModal();
-        }
+        // Redirect to the completion page if successful
+        window.location.href = "{{ url('/complete') }}";
     });
 </script>
 </body>
