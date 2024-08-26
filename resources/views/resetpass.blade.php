@@ -38,6 +38,30 @@
         .modal-overlay-hide {
             opacity: 0;
         }
+
+        /* Loading Animation */
+        .loading-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            display: none;
+        }
+        .loading-spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-left: 4px solid #3498db;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
     </style>
 </head>
 
@@ -49,7 +73,7 @@
     <div class="border-t-4 border-blue-400 mt-8 mb-8"></div>
     <h1 class="text-2xl font-bold text-black mb-6">Silahkan Masukkan Kata Sandi Baru Anda</h1>
 
-    <form method="POST" action="{{ url('/api/reset') }}">
+    <form id="reset-password-form" method="POST" action="{{ url('/api/reset') }}">
         @csrf
         <input type="hidden" name="token" value="{{ $token }}">
 
@@ -78,12 +102,18 @@
     </div>
 </div>
 
+<!-- Loading Overlay -->
+<div id="loading-overlay" class="loading-overlay">
+    <div class="loading-spinner"></div>
+</div>
+
 <script>
     const errorModal = document.getElementById('error-modal');
     const modalTitle = document.getElementById('modal-title');
     const modalMessage = document.getElementById('modal-message');
     const modalCloseBtn = document.getElementById('modal-close-btn');
     const modalContent = errorModal.querySelector('div');
+    const loadingOverlay = document.getElementById('loading-overlay');
 
     function showModal(title, message) {
         modalTitle.textContent = title;
@@ -101,7 +131,8 @@
         errorModal.classList.add('modal-overlay-hide');
     }
 
-    document.getElementById('submit-btn').addEventListener('click', function(event) {
+    document.getElementById('reset-password-form').addEventListener('submit', function(event) {
+        event.preventDefault();
         const password = document.getElementById('password').value;
         const confirmPassword = document.getElementById('confirm_password').value;
 
@@ -115,15 +146,18 @@
         };
 
         if (password !== confirmPassword) {
-            event.preventDefault(); // Prevent form submission
             showModal("Password Mismatch", "Kata sandi yang Anda masukkan tidak sesuai. Silakan coba lagi.");
             document.getElementById('password').value = '';
             document.getElementById('confirm_password').value = '';
         } else if (!isValidPassword(password)) {
-            event.preventDefault(); // Prevent form submission
             showModal("Invalid Password", "Kata sandi tidak valid. Kata sandi harus memiliki panjang minimal 8 karakter, termasuk huruf besar, huruf kecil, angka, dan karakter khusus.");
             document.getElementById('password').value = '';
             document.getElementById('confirm_password').value = '';
+        } else {
+            loadingOverlay.style.display = 'flex';
+            setTimeout(() => {
+                window.location.href = '{{ url('/complete') }}';
+            }, 4000);
         }
     });
 
