@@ -237,7 +237,7 @@ class AuthUserController extends Controller
 
 
 
-        return url('/complete');
+        return view('completeresetpass');
     }
 
 
