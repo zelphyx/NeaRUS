@@ -237,10 +237,7 @@ class AuthUserController extends Controller
 
 
 
-        return response()->json([
-            'success' => true,
-            'message' => 'ppassword already changed'
-        ]);
+        return url('/complete');
     }
 
 
