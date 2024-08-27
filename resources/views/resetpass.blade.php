@@ -69,8 +69,6 @@
 
         form.submit(); // Submit the form
 
-        // Redirect to the completion page if successful
-        window.location.href = "{{ url('/complete') }}";
     });
 
     document.getElementById('modal-close-btn').addEventListener('click', function() {
