@@ -16,7 +16,10 @@ Route::middleware(['auth:sanctum'])->group(function (){
     Route::get('/owners', [\App\Http\Controllers\API\User\AuthOwnerController::class, 'showOwners'])->name('owners.index');
 });
 Route::middleware(['auth:sanctum'])->get('/orders', [\App\Http\Controllers\SearchController::class, 'showrefnumber'])->name('showrefnumber');
+Route::middleware(['auth:sanctum'])->get('/pencairan', [\App\Http\Controllers\SearchController::class, 'getAllPencairan'])->name('showpencairan');
 Route::post('/search-refnumber', [\App\Http\Controllers\SearchController::class, 'searchrefnumber'])->name('searchrefnumber');
+Route::post('/search-pencairan', [\App\Http\Controllers\SearchController::class, 'searchPencairanByName'])->name('searchpencairan');
+Route::delete('/pencairan/approve/{id}', [\App\Http\Controllers\OrderStatusController::class, 'getandapprove'])->name('approve.cair');
 
 Route::patch('/owner-requests/approve/{id}', [\App\Http\Controllers\API\User\AuthOwnerController::class, 'approveOwner'])->name('owner.approve');
 Route::delete('/owner-requests/delete/{id}', [\App\Http\Controllers\API\User\AuthOwnerController::class, 'deleteOwner'])->name('owner.delete');

@@ -1,7 +1,9 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Orders</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Pencairan</title>
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <!-- Bootstrap CSS -->
@@ -32,13 +34,6 @@
             flex-direction: column;
             justify-content: space-between;
         }
-        .sidebar-image {
-            width: 80%;
-            margin-bottom: 20px;
-            margin-left: auto;
-            margin-right: auto;
-            display: block;
-        }
         .sidebar ul {
             list-style: none;
             padding: 0;
@@ -57,7 +52,7 @@
             border-radius: 8px;
             transition: background-color 0.3s, color 0.3s;
         }
-        .sidebar ul li a svg, .sidebar ul li a i {
+        .sidebar ul li a i {
             margin-right: 10px;
             font-size: 1.25rem;
         }
@@ -75,13 +70,8 @@
             left: 250px;
             z-index: 1000;
         }
-        .header h1 {
-            margin: 0;
-            font-size: 1.5rem;
-            color: #2d3748;
-        }
         .content {
-            margin-top: 80px; /* Add margin to account for header height */
+            margin-top: 80px;
             padding: 20px;
             width: calc(100% - 250px);
             margin-left: 250px;
@@ -93,7 +83,7 @@
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             border-radius: 8px;
             padding: 20px;
-            height: calc(100vh - 80px); /* Full height minus header */
+            height: calc(100vh - 80px);
             box-sizing: border-box;
         }
         @media (max-width: 768px) {
@@ -116,49 +106,6 @@
         }
         .table th, .table td {
             vertical-align: middle;
-        }
-        .sidebar-logo-bottom {
-            margin-top: 20px;
-            text-align: center;
-        }
-        .sidebar-logo-bottom img {
-            width: 60%;
-        }
-        .logout-button {
-            padding: 10px 15px;
-            color: #2d3748;
-            text-decoration: none;
-            font-weight: 500;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            transition: background-color 0.3s, color 0.3s;
-        }
-        .logout-button i {
-            margin-right: 10px;
-            font-size: 1.25rem;
-        }
-        .logout-button:hover {
-            background-color: #e2e8f0;
-            color: #1a202c;
-        }
-        button {
-            background: none;
-            border: none;
-            font-size: 1rem;
-            color: inherit;
-            display: flex;
-            align-items: center;
-        }
-
-        button:hover {
-            background-color: #e2e8f0;
-            color: #1a202c;
-        }
-
-        button:focus {
-            outline: none;
-            box-shadow: 0 0 0 2px #cbd5e0;
         }
     </style>
 </head>
@@ -192,54 +139,50 @@
 
 <div class="container content">
     <header class="header">
-        <h1 class="h3">Orders</h1>
+        <h1 class="h3">Data Pencairan</h1>
     </header>
-
 
     <form id="searchForm" class="mb-3">
         <div class="mb-3">
-            <label for="refnumber" class="form-label text-lg">Reference Number</label>
+            <label for="name" class="form-label text-lg">Nama</label>
             <input type="text" class="form-control text-lg py-3 px-4 rounded-lg border border-gray-300 shadow-sm focus:ring-primary-500 focus:border-primary-500"
-                   id="refnumber" name="refnumber" placeholder="Enter Reference Number">
+                   id="name" name="name" placeholder="Enter Name">
         </div>
         <button type="submit" class="btn btn-primary bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg text-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
             Search
         </button>
     </form>
 
-
-    <div id="ordersTable" class="mt-4 overflow-x-auto">
+    <div id="pencairanTable" class="mt-4 overflow-x-auto">
         <table class="min-w-full divide-y divide-blue-200 bg-white shadow-lg rounded-lg border border-blue-300">
             <thead class="bg-blue-500 text-white">
             <tr>
                 <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider">ID</th>
-                <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider">Reference Number</th>
-                <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider">Nama Penyewa</th>
+                <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider">Nama</th>
                 <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider">No HP</th>
-                <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider">Detail</th>
-                <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider">Tanggal Sewa</th>
-                <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider">Harga</th>
-                <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider">Status</th>
+                <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider">Jumlah (Rp.)</th>
+                <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider">Aksi</th>
             </tr>
             </thead>
             <tbody class="bg-white divide-y divide-blue-200">
-            @foreach($refnumbers as $order)
+            @foreach($pencairan as $item)
                 <tr class="border-b border-blue-200">
-                    <td class="px-6 py-4 text-sm font-medium text-gray-900">{{ $order->id }}</td>
-                    <td class="px-6 py-4 text-sm text-gray-700">{{ $order->refnumber }}</td>
-                    <td class="px-6 py-4 text-sm text-gray-700">{{ $order->name }}</td>
-                    <td class="px-6 py-4 text-sm text-gray-700">{{ $order->phonenumber }}</td>
-                    <td class="px-6 py-4 text-sm text-gray-700">{{ $order->detail }}</td>
-                    <td class="px-6 py-4 text-sm text-gray-700">{{ $order->duration }}</td>
-                    <td class="px-6 py-4 text-sm font-medium text-gray-900">{{ $order->price }}</td>
-                    <td class="px-6 py-4 text-sm text-gray-700">{{ $order->status }}</td>
+                    <td class="px-6 py-4 text-sm font-medium text-gray-900">{{ $item->id }}</td>
+                    <td class="px-6 py-4 text-sm text-gray-700">{{ $item->name }}</td>
+                    <td class="px-6 py-4 text-sm text-gray-700">{{ $item->phonenumber }}</td>
+                    <td class="px-6 py-4 text-sm text-gray-700">{{ $item->amount }}</td>
+                    <td class="px-6 py-4 text-sm text-gray-700">
+                        <form action="{{ route('approve.cair', $item->id) }}" method="POST" style="display: inline;">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-success">Approve</button>
+                        </form>
+                    </td>
                 </tr>
             @endforeach
             </tbody>
         </table>
     </div>
-
-</div>
 </div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -250,32 +193,29 @@
         $('#searchForm').on('submit', function(e){
             e.preventDefault();
 
-            var refnumber = $('#refnumber').val();
+            var name = $('#name').val();
 
             $.ajax({
-                url: '{{ route('searchrefnumber') }}',
+                url: '{{ route('searchpencairan') }}',
                 method: 'POST',
                 data: {
-                    refnumber: refnumber,
+                    name: name,
                     _token: '{{ csrf_token() }}'
                 },
                 success: function(response) {
                     if(response.success) {
-                        var orders = response.data;
+                        var pencairan = response.data;
                         var tbody = '';
-                        orders.forEach(function(order) {
+                        pencairan.forEach(function(item) {
                             tbody += '<tr>';
-                            tbody += '<td>' + order.id + '</td>';
-                            tbody += '<td>' + order.refnumber + '</td>';
-                            tbody += '<td>' + order.name + '</td>';
-                            tbody += '<td>' + order.phonenumber + '</td>';
-                            tbody += '<td>' + order.detail + '</td>';
-                            tbody += '<td>' + order.duration + '</td>';
-                            tbody += '<td>' + order.price + '</td>';
-                            tbody += '<td>' + order.status + '</td>';
+                            tbody += '<td>' + item.id + '</td>';
+                            tbody += '<td>' + item.name + '</td>';
+                            tbody += '<td>' + item.phonenumber + '</td>';
+                            tbody += '<td>' + item.amount + '</td>';
+                            tbody += '<td><a href="/pencairan/approve/' + item.id + '" class="btn btn-success">Approve</a></td>';
                             tbody += '</tr>';
                         });
-                        $('tbody').html(tbody);
+                        $('#pencairanTable tbody').html(tbody);
                     }
                 }
             });

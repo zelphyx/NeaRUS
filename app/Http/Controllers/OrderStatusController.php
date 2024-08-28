@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\Models\Pencairan;
 use Carbon\Carbon;
 
 use App\Models\Order;
@@ -19,7 +20,7 @@ class OrderStatusController extends Controller
 
         $order = Order::create($request->all());
         \Midtrans\Config::$serverKey = config('midtrans.server_key');
-        \Midtrans\Config::$isProduction = true;
+        \Midtrans\Config::$isProduction = false;
         \Midtrans\Config::$isSanitized = true;
         \Midtrans\Config::$is3ds = true;
 
@@ -178,7 +179,7 @@ class OrderStatusController extends Controller
         }
 
         \Midtrans\Config::$serverKey = config('midtrans.server_key');
-        \Midtrans\Config::$isProduction = true;
+        \Midtrans\Config::$isProduction = false;
         \Midtrans\Config::$isSanitized = true;
         \Midtrans\Config::$is3ds = true;
 
@@ -321,6 +322,50 @@ class OrderStatusController extends Controller
             'usn' => $userName
         ]);
     }
+
+    public function requestpencairan(Request $request){
+        $ownerId = auth()->user()->ownerId;
+        $name = auth()->user()->name;
+        $phonenumber = auth()->user()->phonenumber;
+        $input = $request->all();
+        $input ['ownerId'] = $ownerId;
+        $input ['name'] = $name;
+        $input ['phonenumber'] = $phonenumber;
+        $queue = Pencairan::create($input);
+        return response()->json([
+            'success' => true,
+            'message' => 'Request Pencairan Dana Telah Dikirim Ke Admin Kami',
+            'requested' => $queue
+        ]);
+    }
+
+    public function getandapprove($id)
+    {
+        try {
+            $pencairan = Pencairan::findOrFail($id);
+            $withdrawalAmount = $pencairan->amount;
+            $ownerId = $pencairan->ownerId;
+
+            $currentBalance = Order::where('ownerId', $ownerId)
+                ->where('status', 'Paid')
+                ->sum('price');
+            if ($currentBalance >= $withdrawalAmount) {
+                Order::where('ownerId', $ownerId)
+                    ->where('status', 'Paid')
+                    ->limit(1)
+                    ->decrement('price', $withdrawalAmount);
+                $pencairan->delete();
+
+                return redirect()->route('showpencairan')->with('success', 'Approved successfully.');
+            } else {
+                return redirect()->route('showpencairan')->with('error', 'Insufficient balance.');
+            }
+
+        } catch (\Exception $e) {
+            return redirect()->route('showpencairan')->with('error', 'Failed to approve request.');
+        }
+    }
+
 
 
 }

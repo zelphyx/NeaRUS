@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Order;
+use App\Models\Pencairan;
 use App\Models\Room;
 use Illuminate\Http\Request;
 
@@ -50,6 +51,23 @@ class SearchController extends Controller
         return response()->json([
             'success' => true,
             'data' => $orders
+        ]);
+    }
+    public function getAllPencairan(Request $request) {
+        $pencairan = Pencairan::all();
+
+        return view('listpencairan', compact('pencairan'));
+    }
+
+    public function searchPencairanByName(Request $request) {
+        $name = $request->input('name');
+
+        $pencairan = Pencairan::where('name', 'LIKE', '%' . $name . '%')->get();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Hasil pencarian berdasarkan nama',
+            'data' => $pencairan
         ]);
     }
 }

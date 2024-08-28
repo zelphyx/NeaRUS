@@ -11,8 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('order_status', function (Blueprint $table) {
-            $table->foreignId('kostid')->after('ownerId')->nullable();
+        Schema::create('request_disbursement', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('ownerId');
+            $table->string('name');
+            $table->string('phonenumber');
+            $table->integer('amount');
+            $table->timestamps();
+
         });
     }
 
@@ -21,9 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('order_status', function (Blueprint $table) {
-            $table->dropColumn('kostid');
-        });
+
     }
 };
-
