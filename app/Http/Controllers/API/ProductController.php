@@ -26,6 +26,17 @@ class ProductController extends Controller
         ]);
     }
 
+    public function byid(){
+        $ownerid = auth()->user()->ownerId;
+        $properties = Product::where('ownerId',$ownerid)->get();
+        return  response()->json([
+            "message" => "success get all product by owner Id",
+                "data" => $properties,
+            "ownerid" => $ownerid,
+            "datadata" => ProductResource::collection($properties)
+        ]);
+    }
+
     /**
      * Show the form for creating a new resource.
      */

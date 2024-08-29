@@ -46,6 +46,7 @@ Route::middleware('auth:sanctum')->get('/orders/count', [\App\Http\Controllers\O
 Route::middleware('auth:sanctum')->get('/orders/user', [\App\Http\Controllers\OrderStatusController::class, 'passingbuyer']);
 Route::middleware('auth:sanctum')->get('/orders/owner', [\App\Http\Controllers\OrderStatusController::class, 'passingowner']);
 Route::middleware('auth:sanctum')->get('/orders/balance', [\App\Http\Controllers\OrderStatusController::class, 'getbalance']);
+Route::middleware('auth:sanctum')->get('/orders/paidbyid', [\App\Http\Controllers\OrderStatusController::class, 'getpaidbuyerbyid']);
 Route::get('/orders/detail/{id}', [\App\Http\Controllers\OrderStatusController::class, 'geteachid']);
 Route::get('/owner/{id}', [\App\Http\Controllers\OrderStatusController::class, 'getownereachid']);
 Route::post('/orders/extend/{orderId}', [\App\Http\Controllers\OrderStatusController::class, 'extendOrder']);
@@ -60,6 +61,7 @@ Route::middleware(['auth:sanctum'])->group(function (){
         Route::get('product/{id}/edit', 'edit');
         Route::put('product/put/{id}', 'update');
         Route::delete('product/delete/{id}','destroy');
+        Route::get('product/ownerid','byid');
     });
 });
 
