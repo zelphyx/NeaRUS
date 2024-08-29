@@ -359,10 +359,15 @@ class AuthUserController extends Controller
 
         $credentials = $request->only('email', 'password');
         $remember = $request->has('remember');
-
         if (Auth::attempt($credentials, $remember)) {
             $user = Auth::user();
-            $success['name'] = $user->name;
+            if($user->email_verified_at != null){
+                return $this->invalidRes([
+                    'message' => 'Email Not Verified'
+                ]);
+            }
+
+                $success['name'] = $user->name;
             $success['ownerId'] = $user->ownerId;
             $success['email'] = $user->email;
             $success['phonenumber'] = $user->phonenumber;
