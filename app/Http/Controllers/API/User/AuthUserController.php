@@ -361,7 +361,8 @@ class AuthUserController extends Controller
         $remember = $request->has('remember');
         if (Auth::attempt($credentials, $remember)) {
             $user = Auth::user();
-            if($user->email_verified_at != null){
+            if($user->email_verified_at === null){
+                Auth::logout();
                 return $this->invalidRes([
                     'message' => 'Email Not Verified'
                 ]);
