@@ -121,6 +121,25 @@ class RoomController extends Controller
             ], 404);
         }
     }
+
+    public function showbyownerid()
+    {
+        $ownerId = auth()->user()->ownerId;
+        $rooms = Room::where('ownerId', $ownerId)->get();
+
+        if (!$rooms->isEmpty()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Rooms found',
+                'data' => RoomResource::collection($rooms)
+            ]);
+        } else {
+            return response()->json([
+                'success' => false,
+                'message' => 'No rooms found for the specified ownerId'
+            ], 404);
+        }
+    }
     /**
      * Store a newly created resource in storage.
      */
