@@ -363,7 +363,7 @@ class AuthUserController extends Controller
             $user = Auth::user();
             if($user->email_verified_at === null){
                 Auth::logout();
-                return $this->invalidRes([
+                return $this->UnathorizeRes([
                     'message' => 'Email Not Verified'
                 ]);
             }
