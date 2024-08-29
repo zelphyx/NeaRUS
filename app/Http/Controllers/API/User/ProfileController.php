@@ -170,7 +170,8 @@ class ProfileController extends Controller
     }
 
 
-    public function profileresetpass(Request $request){
+    public function profileresetpass(Request $request)
+    {
         $request->validate([
             'email' => 'required|email',
             'current_password' => 'required',
@@ -187,11 +188,16 @@ class ProfileController extends Controller
             return response()->json(['message' => 'Current password is incorrect'], 403);
         }
 
+        if (Hash::check($request->new_password, $user->password)) {
+            return response()->json(['message' => 'New password cannot be the same as the current password'], 400);
+        }
+
         $user->password = Hash::make($request->new_password);
         $user->save();
 
-        return response()->json(['message' => 'Password has been updated successfully']);
+        return response()->json(['message' => 'Password has been updated successfully'], 200);
     }
+
 
     public function currentprofile(Request $request) {
         $user = Auth::user();

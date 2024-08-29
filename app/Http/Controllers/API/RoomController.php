@@ -124,7 +124,16 @@ class RoomController extends Controller
 
     public function showbyownerid()
     {
-        $ownerId = auth()->user()->ownerId;
+        $user = auth()->user();
+
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'message' => 'User is not authenticated'
+            ], 401);
+        }
+
+        $ownerId = $user->ownerId;
         $rooms = Room::where('ownerId', $ownerId)->get();
 
         if (!$rooms->isEmpty()) {
@@ -140,6 +149,7 @@ class RoomController extends Controller
             ], 404);
         }
     }
+
     /**
      * Store a newly created resource in storage.
      */
