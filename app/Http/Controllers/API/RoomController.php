@@ -121,6 +121,23 @@ class RoomController extends Controller
             ], 404);
         }
     }
+    public function showbykostid($kostid)
+    {
+        $rooms = Room::where('kostid', $kostid)->get();
+
+        if (!$rooms->isEmpty()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Rooms found',
+                'data' => RoomResource::collection($rooms)
+            ]);
+        } else {
+            return response()->json([
+                'success' => false,
+                'message' => 'No rooms found for the specified ownerId'
+            ], 404);
+        }
+    }
 
     public function showbyownerid()
     {
