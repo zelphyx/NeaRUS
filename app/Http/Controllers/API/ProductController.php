@@ -69,7 +69,6 @@ class ProductController extends Controller
 
         $input['fasilitas'] = implode(',', $input['fasilitas']);
 
-        dd($validatedData);
 
         if ($request->image != null) {
             $images = [];
