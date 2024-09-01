@@ -124,23 +124,6 @@ class ProductController extends Controller
 
     public function update(Request $request, $kostid)
     {
-        $validatedData = Validator::make($request->all(), [
-            'image' => 'array|nullable',
-            'productname' => 'unique:products,productname,' . $kostid . ',kostid',
-            'location' => '',
-            'linklocation' => '',
-            'category' => '',
-            'price' => 'nullable',
-            'fasilitas' => 'min:1',
-            'fasilitas.*' => 'string',
-            'roomid' => 'nullable|array',
-            'about' => '',
-            'duration' => '',
-        ]);
-
-        if ($validatedData->fails()) {
-            return $this->invalidRes($validatedData->getMessageBag());
-        }
 
         $product = Product::findOrFail($kostid);
 
