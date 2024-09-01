@@ -12,6 +12,7 @@ class Product extends Model
     protected $primaryKey = 'kostid';
 
     protected $fillable = [
+        'price',
         'image',
         'productname',
         'ownerId',

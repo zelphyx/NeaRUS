@@ -42,33 +42,18 @@ class ProductController extends Controller
      */
     public function create(Request $request)
     {
-        $validatedData = Validator::make($request->all(), [
-            'image' => 'array|nullable',
-            'productname' => 'required|unique:products,productname',
-            'location' => 'required',
-            'linklocation' => 'required',
-            'category' => 'required',
-            'price' => 'required|integer',
-            'fasilitas' => 'required|min:1',
-            'fasilitas.*' => 'string',
-            'roomid' => 'nullable|array',
-            'about' => 'required',
-            'duration' => 'nullable',
-        ]);
-
-        if ($validatedData->fails()) {
-            return $this->invalidRes($validatedData->getMessageBag());
-        }
 
         $input = $request->all();
         $input['ownerId'] = Auth::id();
-        $input['price'] = intval($input['price']);
-        if (!is_array($input['fasilitas'])) {
+        if (!empty($input['price'])) {
+            $input['price'] = intval($input['price']);
+        } else {
+            $input['price'] = 0; // Atau Anda bisa set default value lainnya jika diperlukan
+        }        if (!is_array($input['fasilitas'])) {
             $input['fasilitas'] = [$input['fasilitas']];
         }
 
         $input['fasilitas'] = implode(',', $input['fasilitas']);
-
 
         if ($request->image != null) {
             $images = [];
