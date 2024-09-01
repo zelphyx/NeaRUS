@@ -137,8 +137,6 @@ class ProductController extends Controller
             $input['fasilitas'] = implode(',', $input['fasilitas']);
         }
 
-        $input['fasilitas'] = implode(',', $input['fasilitas']);
-
         if ($request->image != null) {
             $images = [];
             foreach ($request->image as $image) {
