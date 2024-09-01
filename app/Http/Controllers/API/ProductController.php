@@ -48,7 +48,7 @@ class ProductController extends Controller
             'location' => 'required',
             'linklocation' => 'required',
             'category' => 'required',
-            'price' => 'nullable',
+            'price' => 'nullable|numeric',
             'fasilitas' => 'required|min:1',
             'fasilitas.*' => 'string',
             'roomid' => 'nullable|array',
