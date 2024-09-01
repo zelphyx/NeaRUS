@@ -130,8 +130,11 @@ class ProductController extends Controller
         $input = $request->all();
         $input['ownerId'] = Auth::id();
 
-        if (!is_array($input['fasilitas'])) {
-            $input['fasilitas'] = [$input['fasilitas']];
+        if (isset($input['fasilitas'])) {
+            if (!is_array($input['fasilitas'])) {
+                $input['fasilitas'] = [$input['fasilitas']];
+            }
+            $input['fasilitas'] = implode(',', $input['fasilitas']);
         }
 
         $input['fasilitas'] = implode(',', $input['fasilitas']);
