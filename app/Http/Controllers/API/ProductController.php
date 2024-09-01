@@ -62,12 +62,14 @@ class ProductController extends Controller
 
         $input = $request->all();
         $input['ownerId'] = Auth::id();
-
+        $input['price'] = intval($input['price']);
         if (!is_array($input['fasilitas'])) {
             $input['fasilitas'] = [$input['fasilitas']];
         }
 
         $input['fasilitas'] = implode(',', $input['fasilitas']);
+
+        dd($validatedData);
 
         if ($request->image != null) {
             $images = [];
@@ -136,7 +138,7 @@ class ProductController extends Controller
             }
             $input['fasilitas'] = implode(',', $input['fasilitas']);
         }
-
+        $input['price'] = intval($input['price']);
         if ($request->image != null) {
             $images = [];
             foreach ($request->image as $image) {

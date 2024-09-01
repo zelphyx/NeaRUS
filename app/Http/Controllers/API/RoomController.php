@@ -77,7 +77,7 @@ class RoomController extends Controller
         } else {
             $validatedData['image'] = null;
         }
-
+        $validatedData['price'] = intval($validatedData['price']);
         Room::create($validatedData);
 
 
@@ -215,6 +215,7 @@ class RoomController extends Controller
 
         $room = Room::findorFail($id);
         $input = $request->all();
+        $input['price'] = intval($input['price']);
         $input['ownerId'] = Auth::id();
 
         if (!is_array($input['fasilitas'])) {
