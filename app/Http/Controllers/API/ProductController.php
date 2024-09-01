@@ -49,6 +49,7 @@ class ProductController extends Controller
             $input['price'] = intval($input['price']);
         } else {
             $input['price'] = 0; // Atau Anda bisa set default value lainnya jika diperlukan
+
         }        if (!is_array($input['fasilitas'])) {
             $input['fasilitas'] = [$input['fasilitas']];
         }
@@ -122,7 +123,9 @@ class ProductController extends Controller
             }
             $input['fasilitas'] = implode(',', $input['fasilitas']);
         }
-        $input['price'] = intval($input['price']);
+        if (isset($input['price'])) {
+            $input['price'] = intval($input['price']);
+        }
         if ($request->image != null) {
             $images = [];
             foreach ($request->image as $image) {
