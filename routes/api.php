@@ -81,9 +81,9 @@ Route::controller(\App\Http\Controllers\API\RoomController::class)->group(functi
     Route::get('rooms/{ownerId}','showbyid');
     Route::get('rooms/get/kost/{kostid}','showbykostid');
     Route::get('rooms/availability/{ownerId}','availability');
-    Route::middleware('auth:sanctum')->get('rooms/{id}/edit', 'edit');
+    Route::middleware('auth:sanctum')->get('roo ms/{id}/edit', 'edit');
     Route::middleware('auth:sanctum')->put('rooms/put/{id}', 'update');
-    Route::middleware('auth:sanctum')->delete('rooms/delete/{id}', 'update');
+    Route::middleware('auth:sanctum')->delete('rooms/delete/{id}', 'destroy');
 });
 Route::controller(\App\Http\Controllers\API\ProductController::class)->group(function (){
     Route::get('product','index');
