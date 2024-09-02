@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\Mail\PeringatanJatuhTempo;
 use App\Models\Pencairan;
 use Carbon\Carbon;
 
@@ -10,6 +11,7 @@ use App\Models\User;
 use Carbon\CarbonInterface;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 
 class OrderStatusController extends Controller
 {
@@ -362,9 +364,14 @@ class OrderStatusController extends Controller
         }
     }
 
-    public function alerttempo(Request $request){
-
-
+    public function alerttempo(){
+        $orders = Order::where('status','Paid')
+            ->where('duration', '<=', Carbon::now()->addDays(7))
+            ->where('duration', '>=', Carbon::now())
+            ->get();
+        foreach ($orders as $order) {
+            Mail::to($order->email)->send(new PeringatanJatuhTempo($order));
+        }
         return response()->json([
             'success' => true,
             'message' => "peringatan jatuh tempo telah dikirim",
