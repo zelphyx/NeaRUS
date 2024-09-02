@@ -14,7 +14,9 @@ class Pencairan extends Model
         'ownerId',
         'name',
         'phonenumber',
-        'amount'
+        'amount',
+        'norekening',
+        'targettransfer'
     ];
     protected $hidden = [
         'created_at',

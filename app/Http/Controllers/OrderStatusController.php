@@ -324,22 +324,53 @@ class OrderStatusController extends Controller
         ]);
     }
 
-    public function requestpencairan(Request $request){
+    public function requestpencairan(Request $request)
+    {
         $ownerId = auth()->user()->ownerId;
         $name = auth()->user()->name;
         $phonenumber = auth()->user()->phonenumber;
-        $input = $request->all();
-        $input ['ownerId'] = $ownerId;
-        $input ['name'] = $name;
-        $input ['phonenumber'] = $phonenumber;
-        $queue = Pencairan::create($input);
-        return response()->json([
-            'success' => true,
-            'message' => 'Request Pencairan Dana Telah Dikirim Ke Admin Kami',
-            'requested' => $queue
-        ]);
+
+        $reqamount = $request->input('amount');
+
+        $currentBalance = Order::where('ownerId', $ownerId)
+            ->where('status', 'Paid')
+            ->sum('price');
+
+        if ($currentBalance >= $reqamount) {
+            Order::where('ownerId', $ownerId)
+                ->where('status', 'Paid')
+                ->limit(1)
+                ->decrement('price', $reqamount);
+
+            $input = $request->all();
+            $input['ownerId'] = $ownerId;
+            $input['name'] = $name;
+            $input['phonenumber'] = $phonenumber;
+            $queue = Pencairan::create($input);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Request Pencairan Dana Telah Dikirim Ke Admin Kami',
+                'requested' => $queue,
+                'balance' => $currentBalance
+            ]);
+        } else {
+            return response()->json([
+                'success' => false,
+                'message' => 'Saldo tidak mencukupi untuk melakukan penarikan',
+            ], 400);
+        }
     }
 
+    public function alerttempo(Request $request){
+
+
+        return response()->json([
+            'success' => true,
+            'message' => "peringatan jatuh tempo telah dikirim",
+
+        ]);
+    }
     public function getandapprove($id)
     {
         try {
