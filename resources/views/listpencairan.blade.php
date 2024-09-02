@@ -161,6 +161,8 @@
                 <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider">Nama</th>
                 <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider">No HP</th>
                 <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider">Jumlah (Rp.)</th>
+                <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider">No. Rekening</th>
+                <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider">Metode Pembayaran</th>
                 <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider">Aksi</th>
             </tr>
             </thead>
@@ -171,6 +173,8 @@
                     <td class="px-6 py-4 text-sm text-gray-700">{{ $item->name }}</td>
                     <td class="px-6 py-4 text-sm text-gray-700">{{ $item->phonenumber }}</td>
                     <td class="px-6 py-4 text-sm text-gray-700">{{ $item->amount }}</td>
+                    <td class="px-6 py-4 text-sm text-gray-700">{{ $item->norekening }}</td>
+                    <td class="px-6 py-4 text-sm text-gray-700">{{ $item->targettransfer }}</td>
                     <td class="px-6 py-4 text-sm text-gray-700">
                         <form action="{{ route('approve.cair', $item->id) }}" method="POST" style="display: inline;">
                             @csrf
