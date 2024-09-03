@@ -189,57 +189,37 @@ class OrderStatusController extends Controller
 
     public function extendOrder(Request $request, $orderId)
     {
+        // Temukan order berdasarkan ID
         $order = Order::find($orderId);
 
         if (!$order) {
             return response()->json(['error' => 'Order not found'], 404);
         }
 
-        \Midtrans\Config::$serverKey = config('midtrans.server_key');
-        \Midtrans\Config::$isProduction = false;
-        \Midtrans\Config::$isSanitized = true;
-        \Midtrans\Config::$is3ds = true;
-
-        $transactionOrderId = $order->id . ' - ' . time();
-        $transactionDetails = [
-            'order_id' => $transactionOrderId,
-            'gross_amount' => $order->price * $request->quantity,
-        ];
-        $customerDetails = [
-            'first_name' => $order->name,
-            'phone' => $order->phonenumber,
-        ];
-        $itemDetails = [
-            [
-                'id' => $order->id,
-                'price' => $order->price,
-                'quantity' => $request->quantity,
-                'name' => "Perpanjangan Sewa untuk " . $order->detail,
-            ],
-        ];
+        // Ambil room yang terkait dengan order
         $roomName = explode(' - ', $order->detail)[0];
         $room = Room::where('ownerId', $order->ownerId)
             ->where('name', $roomName)
             ->first();
-        if ($room) {
-            $room->save();
+
+        if (!$room) {
+            return response()->json(['error' => 'Room not found'], 404);
         }
 
+        // Hitung total bulan berdasarkan quantity dan room time
         $totalMonths = $this->calculateTotalMonths($room->time, $request->quantity);
 
-        $transactionPayload = [
-            'transaction_details' => $transactionDetails,
-            'customer_details' => $customerDetails,
-            'item_details' => $itemDetails,
-        ];
+        // Perbarui durasi sewa
+        $duration = Carbon::parse($order->duration);
+        $duration->addMonths($totalMonths);
+        $order->update(['duration' => $duration, 'quantity' => $request->quantity]);
 
-        try {
-            $snapToken = \Midtrans\Snap::getSnapToken($transactionPayload);
-
-            return response()->json(['snapToken' => $snapToken, 'room' => $room, 'totalMonths' => $totalMonths]);
-        } catch (\Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 500);
-        }
+        return response()->json([
+            'success' => true,
+            'message' => 'Sewa diperpanjang',
+            'new_duration' => $duration->toDateString(),
+            'orderId' => $order->id,
+        ]);
     }
 
     public function checkAndDeleteExpiredOrders()
