@@ -189,7 +189,6 @@ class OrderStatusController extends Controller
 
     public function extendOrder(Request $request, $orderId)
     {
-        // Temukan order berdasarkan ID
         $order = Order::find($orderId);
 
         if (!$order) {
@@ -217,7 +216,6 @@ class OrderStatusController extends Controller
                 'name' => "Perpanjangan Sewa untuk " . $order->detail,
             ],
         ];
-        // Ambil room yang terkait dengan order
         $roomName = explode(' - ', $order->detail)[0];
         $room = Room::where('ownerId', $order->ownerId)
             ->where('name', $roomName)
@@ -227,7 +225,6 @@ class OrderStatusController extends Controller
             return response()->json(['error' => 'Room not found'], 404);
         }
 
-        // Hitung total bulan berdasarkan quantity dan room time
         $totalMonths = $this->calculateTotalMonths($room->time, $request->quantity);
 
         $transactionPayload = [
@@ -236,7 +233,6 @@ class OrderStatusController extends Controller
             'item_details' => $itemDetails,
         ];
 
-        // Perbarui durasi sewa
         $duration = Carbon::parse($order->duration);
         $duration->addMonths($totalMonths);
         $order->update(['duration' => $duration, 'quantity' => $request->quantity]);
