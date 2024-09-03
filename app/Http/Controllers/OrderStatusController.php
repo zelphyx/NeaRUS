@@ -103,7 +103,9 @@ class OrderStatusController extends Controller
                     $room = Room::where('ownerId', $order->ownerId)
                         ->where('name', $roomName)
                         ->first();
-
+                    if ($room) {
+                        $room->save();
+                    }
                     $totalMonths = $this->calculateTotalMonths($room->time, $order->quantity);
                     $duration->addMonths($totalMonths);
 
@@ -117,7 +119,7 @@ class OrderStatusController extends Controller
                         'payment_method' => $request->payment_type,
                         'orderId' => $request->order_id,
                     ]);
-                } else {
+                } else if ($order->status === 'Unpaid') {
                     $order->update(['status' => 'Paid']);
                     $roomName = explode(' - ', $order->detail)[0];
                     $room = Room::where('ownerId', $order->ownerId)
@@ -127,8 +129,7 @@ class OrderStatusController extends Controller
                         $room->availability -= 1;
                         $room->save();
                     }
-
-                    $totalMonths = $this->calculateTotalMonths($room->time, $order->quantity);
+                    $totalMonths = $this->calculateTotalMonths($room->time, 1);
                     $duration = Carbon::now()->addMonths($totalMonths);
                     $order->update(['duration' => $duration]);
 
