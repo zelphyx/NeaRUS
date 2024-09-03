@@ -98,17 +98,24 @@ class OrderStatusController extends Controller
                 $order = Order::find($orderIds);
 
                 if ($order->status === 'Paid') {
-                    $duration = Carbon::parse($order->duration);
+                    $duration = Carbon::parse($order->duration);;
                     $roomName = explode(' - ', $order->detail)[0];
                     $room = Room::where('ownerId', $order->ownerId)
                         ->where('name', $roomName)
                         ->first();
-                    if ($room) {
-                        $room->save();
+                    if ($room->time == "1 bulan") {
+                        $duration->addMonth();
+                    } elseif ($room->time == "3 bulan") {
+                        $duration->addMonths(3);
+                    } elseif ($room->time == "6 bulan") {
+                        $duration->addMonths(6);
+                    } elseif ($room->time == "1 tahun") {
+                        $duration->addYear();
+                    } elseif ($room->time == "2 tahun") {
+                        $duration->addYears(2);
+                    } elseif ($room->time == "3 tahun") {
+                        $duration->addYears(3);
                     }
-                    $totalMonths = $this->calculateTotalMonths($room->time, $order->quantity);
-                    $duration->addMonths($totalMonths);
-
                     $order->update(['duration' => $duration]);
 
                     return response()->json([
@@ -119,63 +126,52 @@ class OrderStatusController extends Controller
                         'payment_method' => $request->payment_type,
                         'orderId' => $request->order_id,
                     ]);
-                } else if ($order->status === 'Unpaid') {
-                    $order->update(['status' => 'Paid']);
-                    $roomName = explode(' - ', $order->detail)[0];
-                    $room = Room::where('ownerId', $order->ownerId)
-                        ->where('name', $roomName)
-                        ->first();
-                    if ($room) {
-                        $room->availability -= 1;
-                        $room->save();
-                    }
-                    $totalMonths = $this->calculateTotalMonths($room->time, 1);
-                    $duration = Carbon::now()->addMonths($totalMonths);
-                    $order->update(['duration' => $duration]);
-
-                    return response()->json([
-                        'success' => true,
-                        'refnumber' => $order->refnumber,
-                        'payment_time' => $request->transaction_time,
-                        'payment_method' => $request->payment_type,
-                        'orderId' => $request->order_id,
-                    ]);
+                } else {
+                $order->update(['status' => 'Paid']);
+                $roomName = explode(' - ', $order->detail)[0];
+                $room = Room::where('ownerId', $order->ownerId)
+                    ->where('name', $roomName)
+                    ->first();
+                if ($room) {
+                    $room->availability -= 1;
+                    $room->save();
                 }
+                $times = strtolower($room->time);
+                $duration = Carbon::now();
+                if ($times == "1 bulan") {
+                    $duration = Carbon::now()->addMonth();
+                } elseif ($times == "3 bulan") {
+                    $duration = Carbon::now()->addMonths(3);
+                } elseif ($times == "6 bulan") {
+                    $duration = Carbon::now()->addMonths(6);
+                } elseif ($times == "1 tahun") {
+                    $duration = Carbon::now()->addYear();
+                } elseif ($times == "2 tahun") {
+                    $duration = Carbon::now()->addYears(2);
+                } elseif ($times == "3 tahun") {
+                    $duration = Carbon::now()->addYears(3);
+                }
+                $order->update(['duration' => $duration]);
+
+                return response()->json([
+                    'success' => true,
+                    'refnumber' => $order->refnumber,
+                    'payment_time' => $request->transaction_time,
+                    'payment_method' => $request->payment_type,
+                    'orderId' => $request->order_id,
+                ]);
+               }
             }
+            }
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Invalid signature or status',
+            ]);
         }
 
-        return response()->json([
-            'success' => false,
-            'message' => 'Invalid signature or status',
-        ]);
-    }
 
 
-    private function calculateTotalMonths($timePeriod, $quantity)
-    {
-        $totalMonths = 0;
-        switch (strtolower($timePeriod)) {
-            case "1 bulan":
-                $totalMonths = 1 * $quantity;
-                break;
-            case "3 bulan":
-                $totalMonths = 3 * $quantity;
-                break;
-            case "6 bulan":
-                $totalMonths = 6 * $quantity;
-                break;
-            case "1 tahun":
-                $totalMonths = 12 * $quantity;
-                break;
-            case "2 tahun":
-                $totalMonths = 24 * $quantity;
-                break;
-            case "3 tahun":
-                $totalMonths = 36 * $quantity;
-                break;
-        }
-        return $totalMonths;
-    }
     public function extendOrder(Request $request, $orderId)
     {
         $order = Order::find($orderId);
@@ -192,7 +188,7 @@ class OrderStatusController extends Controller
         $transactionOrderId = $order->id . ' - ' . time();
         $transactionDetails = [
             'order_id' => $transactionOrderId,
-            'gross_amount' => $order->price * $request->quantity,
+            'gross_amount' => $order->price,
         ];
         $customerDetails = [
             'first_name' => $order->name,
@@ -202,7 +198,7 @@ class OrderStatusController extends Controller
             [
                 'id' => $order->id,
                 'price' => $order->price,
-                'quantity' => $request->quantity,
+                'quantity' => 1,
                 'name' => "Perpanjangan Sewa untuk " . $order->detail,
             ],
         ];
@@ -211,11 +207,9 @@ class OrderStatusController extends Controller
             ->where('name', $roomName)
             ->first();
         if ($room) {
+            $room->availability -= 1;
             $room->save();
         }
-
-        $totalMonths = $this->calculateTotalMonths($room->time, $request->quantity);
-
         $transactionPayload = [
             'transaction_details' => $transactionDetails,
             'customer_details' => $customerDetails,
@@ -225,13 +219,7 @@ class OrderStatusController extends Controller
         try {
             $snapToken = \Midtrans\Snap::getSnapToken($transactionPayload);
 
-            return response()->json([
-                'snapToken' => $snapToken,
-                'room' => $room,
-                'totalMonths' => $totalMonths,
-                'time'=>$room->time,
-                'order'=>$order
-            ]);
+            return response()->json(['snapToken' => $snapToken, 'room' => $room]);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }
