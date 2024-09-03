@@ -25,7 +25,8 @@ class Room extends Model
         'image',
         'price',
         'time',
-        'availability'
+        'availability',
+        'totalkamar'
     ];
 
     protected $hidden = [
