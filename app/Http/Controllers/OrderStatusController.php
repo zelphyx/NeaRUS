@@ -224,7 +224,7 @@ class OrderStatusController extends Controller
         try {
             $snapToken = \Midtrans\Snap::getSnapToken($transactionPayload);
 
-            return response()->json(['snapToken' => $snapToken, 'room' => $room, 'totalMonths' => $totalMonths]);
+            return response()->json(['snapToken' => $snapToken, 'room' => $room, 'totalMonths' => $totalMonths, 'time'=>$room->time]);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }
