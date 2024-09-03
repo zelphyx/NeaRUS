@@ -78,6 +78,7 @@ class RoomController extends Controller
             $validatedData['image'] = null;
         }
         $validatedData['price'] = intval($validatedData['price']);
+        $validatedData['totalkamar'] = $validatedData['availability'];
         Room::create($validatedData);
 
 
