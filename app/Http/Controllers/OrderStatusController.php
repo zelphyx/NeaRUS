@@ -133,7 +133,7 @@ class OrderStatusController extends Controller
                     ->where('name', $roomName)
                     ->first();
                 if ($room) {
-                    $room->availability -= -1;
+                    $room->availability -= 1;
                     $room->save();
                 }
                 $times = strtolower($room->time);
