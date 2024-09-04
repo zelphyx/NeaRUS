@@ -19,7 +19,7 @@ class OrderStatusController extends Controller
     public function beforecheckout(Request $request)
     {
         $uniqueTransactionRef = $this->generateUniqueTransactionRef();
-        $request->request->add(['status' => 'Unpaid','refnumber' => $uniqueTransactionRef]);
+        $request->request->add(['status' => 'Unpaid', 'refnumber' => $uniqueTransactionRef]);
 
         $order = Order::create($request->all());
         \Midtrans\Config::$serverKey = config('midtrans.server_key');
@@ -27,12 +27,10 @@ class OrderStatusController extends Controller
         \Midtrans\Config::$isSanitized = true;
         \Midtrans\Config::$is3ds = true;
 
-        $uniqueTransactionRef = $this->generateUniqueTransactionRef();
-
         $params = array(
             'transaction_details' => array(
                 'order_id' => $order->id,
-                'gross_amount' => $order->price,
+                'gross_amount' => $order->price * $request->quantity,
                 'refnumber' => $uniqueTransactionRef,
             ),
             'customer_details' => array(
@@ -42,9 +40,27 @@ class OrderStatusController extends Controller
                 'phone' => $request->phonenumber,
                 'duration' => $request->duration,
             ),
+            'item_details' => [
+                [
+                    'id' => $order->id,
+                    'price' => $order->price,
+                    'quantity' => $request->quantity,
+                    'name' => "Sewa untuk {$order->detail}",
+                ]
+            ],
         );
-
         $snapToken = \Midtrans\Snap::getSnapToken($params);
+        $roomName = explode(' - ', $order->detail)[0];
+        $room = Room::where('ownerId', $order->ownerId)
+            ->where('name', $roomName)
+            ->first();
+
+        if ($room) {
+            $totalMonths = $this->calculateTotalMonths($room->time, $request->quantity);
+            $duration = Carbon::now()->addMonths($totalMonths);
+            $order->update(['duration' => $duration]);
+        }
+
         return response()->json([
             'success' => true,
             'message' => 'Barang Berhasil Dicheckout',
@@ -53,6 +69,7 @@ class OrderStatusController extends Controller
             'disorder' => $order
         ]);
     }
+
     public function getPaidBuyerCountByMonth(Request $request)
     {
         $ownerId = auth()->user()->ownerId;
