@@ -30,7 +30,7 @@ class OrderStatusController extends Controller
         $params = array(
             'transaction_details' => array(
                 'order_id' => $order->id,
-                'gross_amount' => $order->price * $request->quantity,
+                'gross_amount' => $order->price,
                 'refnumber' => $uniqueTransactionRef,
             ),
             'customer_details' => array(
@@ -89,7 +89,7 @@ class OrderStatusController extends Controller
         return response()->json([
             'success' => true,
             'uniqueBuyerCount' => $uniqueBuyerCount,
-            'month' => $startDate->format('F'), // Nama bulan (January, February)
+            'month' => $startDate->format('F'),
             'year' => $year,
             'userregistered' => $ownerId,
         ]);
