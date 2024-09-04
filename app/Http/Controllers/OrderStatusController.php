@@ -147,6 +147,7 @@ class OrderStatusController extends Controller
 
                     $order->update([
                         'status' => 'Paid',
+                        'price' => $order->price
                     ]);
 
                     if ($room) {
