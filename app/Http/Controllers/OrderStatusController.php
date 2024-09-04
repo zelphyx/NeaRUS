@@ -43,7 +43,7 @@ class OrderStatusController extends Controller
             'item_details' => [
                 [
                     'id' => $order->id,
-                    'price' => $order->price * $request->quantity,
+                    'price' => $order->price,
                     'quantity' => $request->quantity,
                     'name' => "Sewa untuk {$order->detail}",
                 ]
