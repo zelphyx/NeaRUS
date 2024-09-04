@@ -406,25 +406,10 @@ class OrderStatusController extends Controller
     {
         try {
             $pencairan = Pencairan::findOrFail($id);
-            $withdrawalAmount = $pencairan->amount;
-            $ownerId = $pencairan->ownerId;
             $email = $pencairan->user->email;
-
-            $currentBalance = Order::where('ownerId', $ownerId)
-                ->where('status', 'Paid')
-                ->sum('price');
-            if ($currentBalance >= $withdrawalAmount) {
-                Order::where('ownerId', $ownerId)
-                    ->where('status', 'Paid')
-                    ->limit(1)
-                    ->decrement('price', $withdrawalAmount);
-                $pencairan->delete();
-                Mail::to($email)->send(new PencairanCompleted());
-                return redirect()->route('showpencairan')->with('success', 'Approved successfully.');
-            } else {
-                return redirect()->route('showpencairan')->with('error', 'Insufficient balance.');
-            }
-
+            $pencairan->delete();
+            Mail::to($email)->send(new PencairanCompleted());
+            return redirect()->route('showpencairan')->with('success', 'Approved successfully.');
         } catch (\Exception $e) {
             return redirect()->route('showpencairan')->with('error', 'Failed to approve request.');
         }
