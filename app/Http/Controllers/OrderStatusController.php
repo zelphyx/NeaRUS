@@ -110,22 +110,27 @@ class OrderStatusController extends Controller
         $hashed = hash('sha512', $request->order_id . $request->status_code . $request->gross_amount . $serverkey);
 
         if ($hashed == $request->signature_key) {
-            if ($request->transaction_status == 'capture' || $request->transaction_status == 'settlement' || $request->transaction_status == 'complete') {
+            if (in_array($request->transaction_status, ['capture', 'settlement', 'complete'])) {
                 $orderIdParts = explode(' - ', $request->order_id);
                 $orderIds = $orderIdParts[0];
                 $order = Order::find($orderIds);
 
+                if (!$order) {
+                    return response()->json(['success' => false, 'message' => 'Order not found'], 404);
+                }
+
+                $roomName = explode(' - ', $order->detail)[0];
+                $room = Room::where('ownerId', $order->ownerId)
+                    ->where('name', $roomName)
+                    ->first();
+
+                $totalMonths = $this->calculateTotalMonths($room->time, $order->quantity);
+
                 if ($order->status === 'Paid') {
-                    $duration = Carbon::parse($order->duration);
-                    $roomName = explode(' - ', $order->detail)[0];
-                    $room = Room::where('ownerId', $order->ownerId)
-                        ->where('name', $roomName)
-                        ->first();
+                    $existingDuration = Carbon::parse($order->duration);
+                    $newDuration = $existingDuration->addMonths($totalMonths);
 
-                    $totalMonths = $this->calculateTotalMonths($room->time, $order->quantity);
-                    $duration->addMonths($totalMonths);
-
-                    $order->update(['duration' => $duration]);
+                    $order->update(['duration' => $newDuration]);
 
                     return response()->json([
                         'success' => true,
@@ -134,33 +139,20 @@ class OrderStatusController extends Controller
                         'payment_time' => $request->transaction_time,
                         'payment_method' => $request->payment_type,
                         'orderId' => $request->order_id,
+                        'new_duration' => $newDuration->toDateString()
                     ]);
                 } else {
-                    $order->update(['status' => 'Paid']);
-                    $roomName = explode(' - ', $order->detail)[0];
-                    $room = Room::where('ownerId', $order->ownerId)
-                        ->where('name', $roomName)
-                        ->first();
+                    $newDuration = Carbon::now()->addMonths($totalMonths);
+
+                    $order->update([
+                        'status' => 'Paid',
+                        'duration' => $newDuration
+                    ]);
+
                     if ($room) {
                         $room->availability -= 1;
                         $room->save();
                     }
-                    $times = strtolower($room->time);
-                    $duration = Carbon::now();
-                    if ($times == "1 bulan") {
-                        $duration = Carbon::now()->addMonth();
-                    } elseif ($times == "3 bulan") {
-                        $duration = Carbon::now()->addMonths(3);
-                    } elseif ($times == "6 bulan") {
-                        $duration = Carbon::now()->addMonths(6);
-                    } elseif ($times == "1 tahun") {
-                        $duration = Carbon::now()->addYear();
-                    } elseif ($times == "2 tahun") {
-                        $duration = Carbon::now()->addYears(2);
-                    } elseif ($times == "3 tahun") {
-                        $duration = Carbon::now()->addYears(3);
-                    }
-                    $order->update(['duration' => $duration]);
 
                     return response()->json([
                         'success' => true,
@@ -168,6 +160,7 @@ class OrderStatusController extends Controller
                         'payment_time' => $request->transaction_time,
                         'payment_method' => $request->payment_type,
                         'orderId' => $request->order_id,
+                        'new_duration' => $newDuration->toDateString()
                     ]);
                 }
             }
@@ -178,6 +171,7 @@ class OrderStatusController extends Controller
             'message' => 'Invalid signature or status',
         ]);
     }
+
 
     private function calculateTotalMonths($timePeriod, $quantity)
     {
