@@ -43,7 +43,7 @@ class OrderStatusController extends Controller
             'item_details' => [
                 [
                     'id' => $order->id,
-                    'price' => $order->price,
+                    'price' => $order->price * $request->quantity,
                     'quantity' => $request->quantity,
                     'name' => "Sewa untuk {$order->detail}",
                 ]
@@ -66,7 +66,9 @@ class OrderStatusController extends Controller
             'message' => 'Barang Berhasil Dicheckout',
             'snapToken' => $snapToken,
             'refnumber' => $uniqueTransactionRef,
-            'disorder' => $order
+            'disorder' => $order,
+            'total months'=>$totalMonths,
+            'duration'=>$duration
         ]);
     }
 
@@ -142,11 +144,9 @@ class OrderStatusController extends Controller
                         'new_duration' => $newDuration->toDateString()
                     ]);
                 } else {
-                    $newDuration = Carbon::now()->addMonths($totalMonths);
 
                     $order->update([
                         'status' => 'Paid',
-                        'duration' => $newDuration
                     ]);
 
                     if ($room) {
@@ -160,7 +160,6 @@ class OrderStatusController extends Controller
                         'payment_time' => $request->transaction_time,
                         'payment_method' => $request->payment_type,
                         'orderId' => $request->order_id,
-                        'new_duration' => $newDuration->toDateString()
                     ]);
                 }
             }
