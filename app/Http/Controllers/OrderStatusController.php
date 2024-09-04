@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\Mail\PencairanCompleted;
 use App\Mail\PeringatanJatuhTempo;
 use App\Models\Pencairan;
 use Carbon\Carbon;
@@ -407,6 +408,7 @@ class OrderStatusController extends Controller
             $pencairan = Pencairan::findOrFail($id);
             $withdrawalAmount = $pencairan->amount;
             $ownerId = $pencairan->ownerId;
+            $email = $pencairan->user->email;
 
             $currentBalance = Order::where('ownerId', $ownerId)
                 ->where('status', 'Paid')
@@ -417,7 +419,7 @@ class OrderStatusController extends Controller
                     ->limit(1)
                     ->decrement('price', $withdrawalAmount);
                 $pencairan->delete();
-
+                Mail::to($email)->send(new PencairanCompleted());
                 return redirect()->route('showpencairan')->with('success', 'Approved successfully.');
             } else {
                 return redirect()->route('showpencairan')->with('error', 'Insufficient balance.');
